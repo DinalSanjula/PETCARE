@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional
+from enum import Enum
 from pydantic import BaseModel, EmailStr, Field
 
 
@@ -11,7 +12,7 @@ class UserRole(str, Enum):
 class UserBase(BaseModel):
     name: str = Field(..., max_length=100)
     email: EmailStr
-    role: str
+    role: UserRole
     password: str
 
 class UserCreate(UserBase):
@@ -21,7 +22,7 @@ class UserResponse(BaseModel):
     id: int
     name: str
     email: EmailStr
-    role: str
+    role: UserRole
     created_at: datetime
     updated_at: datetime
 
@@ -31,5 +32,5 @@ class UserReplace(UserBase):
 class UserPatch(BaseModel):
     name: Optional[str] = Field(None, max_length=100)
     email: Optional[EmailStr] = None
-    role: Optional[str] = None
+    role: Optional[UserRole] = None
     password: Optional[str] = None
