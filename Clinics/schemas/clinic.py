@@ -17,6 +17,20 @@ class ClinicBase(Coordinates, BaseModel):
     profile_pic_url : Optional[HttpUrl] = Field(None, min_length=1, max_length=255, description="Profile photo")
     area_id : Optional[int] = Field(None)
 
+    @field_validator("phone")
+    def validate_phone(cls, v):
+        if v is None:
+            return v
+        cleared = "".join(ch for ch in v if ch.isdigit())
+
+        if cleared.startswith("94") and len(cleared) == 11:
+            return "+" + cleared
+
+        if cleared.startswith("0") and len(cleared) == 10:
+            return "+" + cleared[1:]
+
+        raise ValueError("Invalid phone number format or length")
+
 
 
 class ClinicCreate(ClinicBase):
@@ -29,6 +43,21 @@ class ClinicUpdate(Coordinates, BaseModel):
     address: Optional[str] = Field(None, min_length=1, max_length=120, description="Address of the clinic")
     profile_pic_url: Optional[HttpUrl] = Field(None, min_length=1, max_length=255, description="Profile photo")
     area_id: Optional[int] = Field(None)
+
+    @field_validator("phone")
+    def validate_phone(cls, v):
+        if v is None:
+            return v
+        cleared = "".join(ch for ch in v if ch.isdigit())
+
+        if cleared.startswith("94") and len(cleared) == 11:
+            return "+" + cleared
+
+        if cleared.startswith("0") and len(cleared) == 10:
+            return "+" + cleared[1:]
+
+        raise ValueError("Invalid phone number format or length")
+
 
 class ClinicResponse(ClinicBase):
     model_config = ConfigDict(from_attributes=True)
