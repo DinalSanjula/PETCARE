@@ -1,28 +1,12 @@
-from typing import Optional, List, Type, cast, Set, TypeVar
+from typing import List, cast, Set, Optional
 from fastapi import HTTPException, status
-from sqlalchemy import select, inspect, ColumnElement
+from sqlalchemy import select, inspect, ColumnElement, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import DeclarativeMeta, selectinload
-
-from Clinics.models import Clinic, Area, ClinicImage
+from sqlalchemy.orm import  selectinload
+from Clinics.models import Clinic, Area
 from Clinics.schemas.clinic import ClinicCreate, ClinicUpdate
-
-T = TypeVar("T", bound=DeclarativeMeta)
-
-async def get_or_404(session : AsyncSession, model:Type[T], pk:int, name:str = "item") -> T:
-    pk_col = inspect(model).primary_key[0]
-    cond = cast(ColumnElement[bool], pk_col == pk)
-    q = select(model).where(cond)
-    result = await session.execute(q)
-    obj = result.scalar_one_or_none()
-    if not obj:
-        raise HTTPException(status_code=404, detail=f"{name} not found")
-    return obj
-
-
-def remove_whitespaces(s : str) -> str:
-    return " ".join(s.strip().split())
+from Clinics.utils.helpers import remove_whitespaces, get_or_404
 
 
 async def create_formatted_address(session: AsyncSession, clinic: Clinic)-> str | None:
@@ -152,7 +136,7 @@ async def update_clinic(session : AsyncSession, clinic_id:int, clinic_data: Clin
 
     changed = False
 
-    if ["profile_pic_url"] in data:
+    if "profile_pic_url" in data:
         if data["profile_pic_url"] is not None:
             data["profile_pic_url"] = str(data["profile_pic_url"])
 
@@ -181,112 +165,49 @@ async def update_clinic(session : AsyncSession, clinic_id:int, clinic_data: Clin
 
 
 async def delete_clinic(session:AsyncSession, clinic_id : int)-> None:
-    clinic = get_or_404(session, Clinic, clinic_id, name="Clinic")
+    clinic = await get_or_404(session, Clinic, clinic_id, name="Clinic")
     try:
         await session.delete(clinic)
         await session.commit()
-    except Exception as e:
+    except Exception:
         await session.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete clinic")
 
 
+async def list_clinics(
+        session: AsyncSession,
+        limit : int = 20,
+        offset : int = 0,
+        *,
+        owner_id: Optional[int] = None,
+        area_id : Optional[int] = None,
+        name : Optional[str] = None,
+        phone : Optional[str] = None,
+        is_active : Optional[bool] = None,
+        with_related : bool = True
+)-> List[Clinic]:
 
-""" =============================================================================================================================  """
+    conditions = []
 
-async def create_clinic_image(
-        session:AsyncSession,
-        clinic_id:int,
-        filename:int,
-        url:str ,
-        content_type:str,
-        original_filename: Optional[str] = None
-) -> ClinicImage:
+    if owner_id is not None:
+        conditions.append(Clinic.owner_id == owner_id)
+    if area_id is not None:
+        conditions.append(Clinic.area_id == area_id)
+    if name is not None:
+        conditions.append(Clinic.name.ilike(f"%{name}%"))
+    if phone is not None:
+        conditions.append(Clinic.phone == phone)
+    if is_active is not None:
+        conditions.append(Clinic.is_active == is_active)
 
-    await get_or_404(session, Clinic, clinic_id, name="Clinic")
+    q = select(Clinic)
+    if conditions:
+        q = q.where(and_(*conditions))
+    if with_related:
+        q = q.options(selectinload(Clinic.area), selectinload(Clinic.images))
 
-    image = ClinicImage(
-        clinic_id = clinic_id,
-        filename = filename,
-        original_filename = original_filename,
-        url = url,
-        content_type = content_type
-    )
+    q = q.limit(limit).offset(offset)
 
-    session.add(image)
-    try:
-        await session.commit()
-        await session.refresh(image)
-    except IntegrityError as e:
-        await session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e.orig))
-
-    return image
-
-async def get_image_by_id(session:AsyncSession, image_id:int)-> ClinicImage:
-    cond = cast(ColumnElement[bool], ClinicImage.id == image_id)
-    q = select(ClinicImage).where(cond)
     result = await session.execute(q)
-    img = result.scalar_one_or_none()
-    if img is None:
-        HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found")
-    return img
-
-async def list_images_for_clinic(session:AsyncSession, clinic_id:int)-> List[ClinicImage]:
-    cond = cast(ColumnElement[bool], ClinicImage.clinic_id == clinic_id)
-    q = select(ClinicImage).where(cond).order_by(ClinicImage.id.asc())
-    result = await session.execute(q)
-    return list(result.scalars().all())
-
-async def update_clinic_image(
-        session:AsyncSession,
-        image_id:int,
-        filename:Optional[int] = None,
-        url:Optional[str] = None,
-        content_type:Optional[str] = None,
-        original_filename: Optional[str] = None
-) -> ClinicImage:
-
-    image = await get_image_by_id(session, image_id)
-    changed = False
-
-    if filename is not None:
-        image.filename = filename
-        changed = True
-
-    if url is not None:
-        image.url = url
-        changed = True
-
-    if content_type is not None:
-        image.content_type = content_type
-        changed = True
-
-    if original_filename is not None:
-        image.original_filename = original_filename
-        changed = True
-
-    if changed:
-        session.add(image)
-        try:
-            await session.commit()
-            await session.refresh(image)
-        except IntegrityError as e:
-            await session.rollback()
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
-    return image
-
-async def delete_image(session:AsyncSession, image_id:int) -> None:
-    image = await get_image_by_id(session, image_id)
-
-    # success = await storage.delete(image.filename)
-    # if not success:
-    #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete image file from storage")
-    #
-
-    try:
-        await session.delete(image)
-        await session.commit()
-    except Exception:
-        await session.rollback()
-        raise HTTPException(status_code=500, detail="Failed to delete database record")
+    clinics = list(result.scalars().unique().all())
+    return clinics
