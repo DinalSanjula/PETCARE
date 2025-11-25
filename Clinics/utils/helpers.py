@@ -21,5 +21,5 @@ async def get_or_404(session : AsyncSession, model:Type[T], pk:int, name:str = "
     return obj
 
 
-def remove_whitespaces(s : str) -> str:
+def normalize_address(s : str) -> str:
     return " ".join(s.strip().split())
