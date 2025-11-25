@@ -6,12 +6,12 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import  selectinload
 from Clinics.models import Clinic, Area
 from Clinics.schemas.clinic import ClinicCreate, ClinicUpdate
-from Clinics.utils.helpers import remove_whitespaces, get_or_404
+from Clinics.utils.helpers import normalize_address, get_or_404
 
 
 async def create_formatted_address(session: AsyncSession, clinic: Clinic)-> str | None:
     if clinic.address:
-        address = remove_whitespaces(clinic.address)
+        address = normalize_address(clinic.address)
     else:
         address = None
 
@@ -37,7 +37,7 @@ async def create_clinic(session : AsyncSession, clinic_data : ClinicCreate) -> C
         name = clinic_data.name,
         description = clinic_data.description,
         phone = clinic_data.phone,
-        address = clinic_data.address and remove_whitespaces(clinic_data.address),
+        address =clinic_data.address and normalize_address(clinic_data.address),
         profile_pic_url = str(clinic_data.profile_pic_url) if clinic_data.profile_pic_url else None,
         area_id = clinic_data.area_id,
         latitude = clinic_data.latitude,
@@ -144,7 +144,7 @@ async def update_clinic(session : AsyncSession, clinic_id:int, clinic_data: Clin
         if key not in UPDATABLE_FIELDS:
             continue
         if key == "address" and isinstance(val, str):
-            val = remove_whitespaces(val)
+            val = normalize_address(val)
         setattr(clinic, key, val)
         changed = True
 

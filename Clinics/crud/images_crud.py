@@ -10,7 +10,7 @@ from Clinics.storage.minio_storage import delete_file
 async def create_clinic_image(
         session:AsyncSession,
         clinic_id:int,
-        filename:int,
+        filename:str,
         url:str ,
         content_type:str,
         original_filename: Optional[str] = None
