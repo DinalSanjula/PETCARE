@@ -4,7 +4,7 @@ from sqlalchemy.orm import declarative_base
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-# Build absolute database path
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))    # app/database
 DB_PATH = os.path.join(BASE_DIR, "petcare.db")
 
@@ -17,7 +17,7 @@ engine = create_async_engine(
     future=True
 )
 
-# Create async session factory
+# Create async session
 AsyncSessionLocal = async_sessionmaker(
     engine,
     class_=AsyncSession,
@@ -26,15 +26,10 @@ AsyncSessionLocal = async_sessionmaker(
     autocommit=False,
 )
 
-# Base class for models
 Base = declarative_base()
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    """
-    FastAPI dependency for database sessions.
-    Provides an AsyncSession to routes/services.
-    """
     async with AsyncSessionLocal() as session:
         try:
             yield session
@@ -45,13 +40,11 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def init_database():
-    """Initialize database tables"""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     print("Database initialized successfully")
 
 
 async def close_database():
-    """Close database connections"""
     await engine.dispose()
     print("Database connections closed")
