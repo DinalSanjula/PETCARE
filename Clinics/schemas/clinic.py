@@ -23,11 +23,14 @@ class ClinicBase(Coordinates, BaseModel):
             return v
         cleared = "".join(ch for ch in v if ch.isdigit())
 
+        if cleared.startswith("+94") and len(cleared) == 11:
+            return cleared
+
         if cleared.startswith("94") and len(cleared) == 11:
             return "+" + cleared
 
         if cleared.startswith("0") and len(cleared) == 10:
-            return "+" + cleared[1:]
+            return "+94" + cleared[1:]
 
         raise ValueError("Invalid phone number format or length")
 
@@ -50,11 +53,14 @@ class ClinicUpdate(Coordinates, BaseModel):
             return v
         cleared = "".join(ch for ch in v if ch.isdigit())
 
+        if cleared.startswith("+94") and len(cleared) == 11:
+            return cleared
+
         if cleared.startswith("94") and len(cleared) == 11:
             return "+" + cleared
 
         if cleared.startswith("0") and len(cleared) == 10:
-            return "+" + cleared[1:]
+            return "+94" + cleared[1:]
 
         raise ValueError("Invalid phone number format or length")
 
@@ -63,7 +69,10 @@ class ClinicResponse(ClinicBase):
     model_config = ConfigDict(from_attributes=True)
 
     id : int
+    owner_id : int
     formatted_address : Optional[str] = None
+    geocoded_at : Optional[datetime] = None
+    geocode_source : Optional[str] = None
     created_at : datetime
     updated_at : datetime
     is_active : bool

@@ -1,4 +1,6 @@
 # storage/minio_storage.py
+import io
+
 from minio import Minio
 from minio.error import S3Error
 from pathlib import Path
@@ -11,11 +13,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure from env (recommended)
-MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT", "localhost:9000")
-MINIO_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY", "minioadmin")
-MINIO_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY", "minioadmin")
-MINIO_SECURE = os.environ.get("MINIO_SECURE", "false").lower() in ("1", "true", "yes")
-BUCKET = os.environ.get("MINIO_BUCKET", "clinic-images")
+MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT")
+MINIO_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY")
+MINIO_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY")
+MINIO_SECURE = os.environ.get("MINIO_SECURE").lower() in ("1", "true", "yes")
+BUCKET = os.environ.get("MINIO_BUCKET")
 PUBLIC_BASE = os.environ.get("MINIO_PUBLIC_BASE", f"http://{MINIO_ENDPOINT}/{BUCKET}")  # used for public URL
 
 # Minio client is synchronous; call it via asyncio.to_thread
@@ -41,10 +43,12 @@ def generate_stored_filename(original_filename: str) -> str:
 
 
 async def _put_object(filename: str, data: bytes, content_type: str) -> None:
-    client = _get_client()
+
     # MinIO's put_object expects a readable file-like or bytes obj; use to_thread
     def _put():
-        client.put_object(BUCKET, filename, data, length=len(data), content_type=content_type)
+        client = _get_client()
+        stream = io.BytesIO(data)
+        client.put_object(BUCKET, filename, stream, length=len(data), content_type=content_type)
     await asyncio.to_thread(_put)
 
 

@@ -2,13 +2,20 @@ from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException, Depends, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from Clinics.schemas.clinic import ClinicCreate, ClinicUpdate, ClinicResponse
-from Clinics.crud.clinic_crud import create_clinic, update_clinic, get_clinic_by_id, get_clinic_by_name, \
-    get_clinic_by_owner, get_clinic_by_phone, delete_clinic, list_clinics
+from Clinics.schemas.clinic import ClinicCreate, ClinicUpdate, ClinicResponse, ClinicBase
+from Clinics.crud.clinic_crud import (create_clinic as create_clinic_crud,
+                                      update_clinic as update_clinic_crud,
+                                      get_clinic_by_id as get_clinic_by_id_crud,
+                                      get_clinic_by_name,
+                                      get_clinic_by_owner,
+                                      get_clinic_by_phone,
+                                      delete_clinic,
+                                      list_clinics)
+
 from db import get_db
 from Clinics.utils.auth import get_current_user
 
-router = APIRouter(prefix="/clinics", tags=["clinics"])
+router = APIRouter()
 
 @router.post("/", response_model=ClinicResponse, status_code=status.HTTP_201_CREATED)
 async def create_new_clinic(clinic: ClinicCreate,
@@ -17,13 +24,13 @@ async def create_new_clinic(clinic: ClinicCreate,
 
     if clinic.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to access")
-    created = await create_clinic(session=session, clinic_data=clinic)
+    created = await create_clinic_crud(session=session, clinic_data=clinic)
     return created
 
 
 @router.get("/{clinic_id}", response_model=ClinicResponse)
 async def read_clinic_by_id(clinic_id: int, session : AsyncSession = Depends(get_db), with_related: bool = Query(True)):
-    clinic = await get_clinic_by_id(session=session, clinic_id=clinic_id, with_related=with_related)
+    clinic = await get_clinic_by_id_crud(session=session, clinic_id=clinic_id, with_related=with_related)
     return clinic
 
 @router.get("/by-name/{name}", response_model=ClinicResponse)
@@ -33,6 +40,11 @@ async def read_clinic_by_name(name: str, session : AsyncSession = Depends(get_db
 
 @router.get("/by-phone/{phone}", response_model=ClinicResponse)
 async def read_clinic_by_phone(phone: str, session : AsyncSession = Depends(get_db), with_related: bool = Query(True)):
+    try:
+        phone = ClinicBase.validate_phone(phone)
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid phone")
+
     clinic = await get_clinic_by_phone(session=session, phone=phone, with_related=with_related)
     return clinic
 
@@ -70,16 +82,18 @@ async def list_of_clinics(
 @router.patch("/{clinic_id}", response_model=ClinicResponse)
 async def patch_clinics(clinic_id : int, clinic_data : ClinicUpdate, session:AsyncSession =  Depends(get_db),
                         current_user = Depends(get_current_user)):
-    clinic_obj = await get_clinic_by_id(session, clinic_id, with_related=False)
+    clinic_obj = await get_clinic_by_id_crud(session, clinic_id, with_related=False)
     if clinic_obj.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
-    updated = await update_clinic(session=session, clinic_id=clinic_id, clinic_data=clinic_data)
+    updated = await update_clinic_crud(session=session, clinic_id=clinic_id, clinic_data=clinic_data)
     return updated
 
+
+#Have to test
 @router.delete("/{clinic_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_clinic(clinic_id:int, session:AsyncSession = Depends(get_db), current_user = Depends(get_current_user)):
-    clinic_obj = await get_clinic_by_id(session, clinic_id, with_related=False)
+    clinic_obj = await get_clinic_by_id_crud(session, clinic_id, with_related=False)
     if clinic_obj.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 

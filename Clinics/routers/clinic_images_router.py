@@ -10,7 +10,7 @@ from Clinics.storage.minio_storage import generate_stored_filename, upload_file,
 from PIL import Image
 import io
 
-router = APIRouter(prefix="/images", tags=["clinic-images"])
+router = APIRouter()
 
 @router.post("/clinics/{clinic_id}/", response_model=ClinicImageResponse, status_code=status.HTTP_201_CREATED, summary="Upload image for clinic")
 async def upload_clinic_image(clinic_id:int, file:UploadFile = File(...),

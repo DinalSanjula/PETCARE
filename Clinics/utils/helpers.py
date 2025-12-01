@@ -5,6 +5,9 @@ from sqlalchemy import select, inspect, ColumnElement
 from fastapi import HTTPException, status
 
 
+import re
+from datetime import datetime, timezone
+from typing import Optional
 
 
 
@@ -21,5 +24,13 @@ async def get_or_404(session : AsyncSession, model:Type[T], pk:int, name:str = "
     return obj
 
 
-def normalize_address(s : str) -> str:
-    return " ".join(s.strip().split())
+
+def normalize_address(s: Optional[str]) -> Optional[str]:
+    if not s:
+        return s
+    s = s.strip()
+    s = re.sub(r"\s+", " ", s)
+    return s
+
+def now_utc():
+    return datetime.now(timezone.utc)
