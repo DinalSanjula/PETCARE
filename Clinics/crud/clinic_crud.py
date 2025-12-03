@@ -214,7 +214,7 @@ async def update_clinic(session : AsyncSession, clinic_id:int, clinic_data: Clin
     else:
         coordinates_provided = False
 
-    address_and_area_changed = (k in data for k in ("address", "area_id"))
+    address_and_area_changed = any(k in data for k in ("address", "area_id"))
 
     if coordinates_provided:
         clinic.geocoded_at = now_utc()
