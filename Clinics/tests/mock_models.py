@@ -8,5 +8,4 @@ class User(Base):                      # <-- must match relationship("User")
     id = Column(Integer, primary_key=True)
     email = Column(String(100))
 
-    # Optional: needed only if your real model would define this
     clinics = relationship("Clinic", back_populates="owner", passive_deletes=True)
