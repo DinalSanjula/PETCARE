@@ -12,7 +12,7 @@ import io
 
 router = APIRouter()
 
-@router.post("/clinics/{clinic_id}/", response_model=ClinicImageResponse, status_code=status.HTTP_201_CREATED, summary="Upload image for clinic")
+@router.post("/clinics/{clinic_id}", response_model=ClinicImageResponse, status_code=status.HTTP_201_CREATED, summary="Upload image for clinic")
 async def upload_clinic_image(clinic_id:int, file:UploadFile = File(...),
                               session : AsyncSession = Depends(get_db)):
 
@@ -47,12 +47,12 @@ async def upload_clinic_image(clinic_id:int, file:UploadFile = File(...),
 
     return created
 
-@router.get("/clinics/{clinic_id}/", response_model=List[ClinicImageResponse])
+@router.get("/clinics/{clinic_id}", response_model=List[ClinicImageResponse])
 async def images_for_clinic(clinic_id:int, session: AsyncSession = Depends(get_db)):
     images = await list_images_for_clinic(session=session, clinic_id=clinic_id)
     return images
 
-@router.get("/{image_id}/", response_model=ClinicImageResponse)
+@router.get("/{image_id}", response_model=ClinicImageResponse)
 async def get_image(image_id:int, session:AsyncSession = Depends(get_db)):
     img = await get_image_by_id(session=session, image_id=image_id)
     if img is None:
@@ -186,7 +186,7 @@ async def patch_image(
 
 
 
-@router.delete("/{image_id}/", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{image_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_image_endpoint(image_id:int,
                        session:AsyncSession = Depends(get_db),
                        current_user = Depends(get_current_user)):
