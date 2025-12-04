@@ -46,7 +46,7 @@ async def update_area(area_id:int, area_up:AreaUpdate, session : AsyncSession = 
     return area
 
 @router.post("/admin/{area_id}/re-geocode", response_model=AreaResponse, dependencies=[Depends(require_admin)])
-async def update_area(area_id:int, session : AsyncSession = Depends(get_db)):
+async def re_geocode(area_id:int, session : AsyncSession = Depends(get_db)):
     area = await re_geocode_area(session=session, area_id=area_id)
     return area
 
