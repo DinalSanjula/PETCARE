@@ -11,22 +11,6 @@ from app.auth.security import get_current_active_user
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ServiceResponse[UserResponse])
-async def create_user_endpoint (
-        user: UserCreate,
-        db: AsyncSession = Depends(get_db_session)):
-
-    #Create a new user
-    result = await create_user(user, db)
-
-    if not result.success:
-        if "exists" in result.message.lower():
-            raise HTTPException(status_code=409, detail=result.message)
-        raise HTTPException(status_code=400, detail=result.message)
-
-    return result
-
-
 @router.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=ServiceResponse[UserResponse])
 async def get_user_by_id_endpoint(
     user_id: int,
