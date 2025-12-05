@@ -31,7 +31,7 @@ class UserReplace(UserBase):
 class UserPatch(BaseModel):
     name: Optional[str] = Field(None, max_length=100)
     email: Optional[EmailStr] = None
-    age: Optional[int] = Field(None, ge=0, le=200)
+    password: Optional[str] = Field(None, min_length=8)
     role: Optional[UserRole] = None
     password: Optional[str] = Field(None, min_length=8)
 
