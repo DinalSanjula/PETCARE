@@ -7,7 +7,6 @@ from app.models.user_model import UserRole
 class UserBase(BaseModel):
     name: str = Field(..., max_length=100)
     email: EmailStr
-    age: int = Field(..., ge=0, le=200)
     role: UserRole = UserRole.OWNER
 
 
@@ -33,7 +32,6 @@ class UserPatch(BaseModel):
     email: Optional[EmailStr] = None
     password: Optional[str] = Field(None, min_length=8)
     role: Optional[UserRole] = None
-    password: Optional[str] = Field(None, min_length=8)
 
 
 class UserLogin(BaseModel):
