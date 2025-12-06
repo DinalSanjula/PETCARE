@@ -9,18 +9,19 @@ from Clinics.crud.clinic_crud import (create_clinic as create_clinic_crud,
                                       get_clinic_by_name,
                                       get_clinic_by_owner,
                                       get_clinic_by_phone,
-                                      delete_clinic,
+                                      delete_clinic as delete_clinic_crud,
                                       list_clinics)
 
 from db import get_db
-from Clinics.utils.auth import get_current_user
+from app.auth.security import get_current_active_user
+from app.models.user_model import User
 
 router = APIRouter()
 
 @router.post("/", response_model=ClinicResponse, status_code=status.HTTP_201_CREATED)
 async def create_new_clinic(clinic: ClinicCreate,
                             session : AsyncSession = Depends(get_db),
-                            current_user = Depends(get_current_user)):
+                            current_user :User = Depends(get_current_active_user)):
 
     if clinic.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to access")
@@ -81,7 +82,8 @@ async def list_of_clinics(
 
 @router.patch("/{clinic_id}", response_model=ClinicResponse)
 async def patch_clinics(clinic_id : int, clinic_data : ClinicUpdate, session:AsyncSession =  Depends(get_db),
-                        current_user = Depends(get_current_user)):
+                        current_user : User = Depends(get_current_active_user)):
+
     clinic_obj = await get_clinic_by_id_crud(session, clinic_id, with_related=False)
     if clinic_obj.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
@@ -90,14 +92,13 @@ async def patch_clinics(clinic_id : int, clinic_data : ClinicUpdate, session:Asy
     return updated
 
 
-#Have to test
 @router.delete("/{clinic_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_clinic(clinic_id:int, session:AsyncSession = Depends(get_db), current_user = Depends(get_current_user)):
+async def delete_clinic(clinic_id:int, session:AsyncSession = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     clinic_obj = await get_clinic_by_id_crud(session, clinic_id, with_related=False)
     if clinic_obj.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
-    await delete_clinic(session=session, clinic_id=clinic_id)
+    await delete_clinic_crud(session=session, clinic_id=clinic_id)
     return None
 
 

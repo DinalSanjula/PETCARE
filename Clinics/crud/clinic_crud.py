@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import  selectinload
 
 from Clinics.crud.geocode import geocode_async, OpenCageRateLimitError, OpenCageInvalidInputError, OpenCageUnknownError
-from Clinics.models import Clinic, Area
+from Clinics.models.models import Clinic, Area
 from Clinics.schemas.clinic import ClinicCreate, ClinicUpdate
 from Clinics.utils.helpers import normalize_address, get_or_404, now_utc
 

@@ -2,19 +2,26 @@ from typing import List, Optional
 from fastapi import APIRouter, UploadFile, File, HTTPException, status, Form, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from Clinics.utils.auth import get_current_user
+from Clinics.crud.clinic_crud import get_clinic_by_id
+from app.auth.security import get_current_active_user
 from db import get_db
 from Clinics.schemas.clinic_image import ClinicImageCreate, ClinicImageResponse, ClinicImageUpdate
 from Clinics.crud.images_crud import create_clinic_image, update_clinic_image, delete_image, get_image_by_id, list_images_for_clinic
 from Clinics.storage.minio_storage import generate_stored_filename, upload_file,delete_file as minio_delete_file
 from PIL import Image
 import io
+from app.models.user_model import User
 
 router = APIRouter()
 
 @router.post("/clinics/{clinic_id}", response_model=ClinicImageResponse, status_code=status.HTTP_201_CREATED, summary="Upload image for clinic")
 async def upload_clinic_image(clinic_id:int, file:UploadFile = File(...),
-                              session : AsyncSession = Depends(get_db)):
+                              session : AsyncSession = Depends(get_db),
+                              current_user: User = Depends(get_current_active_user)):
+
+    clinic = await get_clinic_by_id(clinic_id=clinic_id, session=session)
+    if clinic.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to access")
 
     ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
     if file.content_type not in ALLOWED_TYPES:
@@ -67,10 +74,14 @@ async def patch_image(
     content_type: Optional[str] = Form(None),
     url: Optional[str] = Form(None),
     session: AsyncSession = Depends(get_db),
+    current_user : User = Depends(get_current_active_user)
 ):
     img = await get_image_by_id(session, image_id)
     if img is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found!")
+
+    if img.clinic.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
     updates = {}
 
@@ -189,7 +200,7 @@ async def patch_image(
 @router.delete("/{image_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_image_endpoint(image_id:int,
                        session:AsyncSession = Depends(get_db),
-                       current_user = Depends(get_current_user)):
+                       current_user: User = Depends(get_current_active_user)):
 
     img = await get_image_by_id(session, image_id)
     if img is None:

@@ -5,7 +5,6 @@ from Clinics.routers.area_router import router as area_router
 
 app = FastAPI()
 
-# Include routers
+app.include_router(area_router, prefix="/areas")
 app.include_router(clinic_router, prefix="/clinics")
 app.include_router(image_router, prefix="/images")
-app.include_router(area_router, prefix="/areas")

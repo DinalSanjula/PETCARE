@@ -4,7 +4,7 @@ from typing import Optional, List, cast
 
 from sqlalchemy.orm import selectinload
 
-from Clinics.models import Clinic, ClinicImage
+from Clinics.models.models import Clinic, ClinicImage
 from Clinics.utils.helpers import get_or_404
 from fastapi import HTTPException, status
 from sqlalchemy import select, ColumnElement

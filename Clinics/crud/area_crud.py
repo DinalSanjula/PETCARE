@@ -4,9 +4,8 @@ from fastapi import HTTPException, status
 from sqlalchemy import select, ColumnElement
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
-from Clinics.models import Area
+from Clinics.models.models import Area
 from Clinics.schemas.area import AreaCreate, AreaUpdate  # AreaResponse is used by FastAPI response_model
 from Clinics.crud.geocode import geocode_async, OpenCageUnknownError, OpenCageRateLimitError, OpenCageInvalidInputError
 from Clinics.utils.helpers import normalize_address, now_utc

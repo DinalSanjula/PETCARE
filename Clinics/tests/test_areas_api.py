@@ -1,8 +1,6 @@
 import pytest
-from Clinics.schemas.area import AreaCreate
 from sqlalchemy import select
-from db import Base
-from Clinics.models import Area
+from Clinics.models.models import Area
 
 @pytest.mark.anyio
 async def test_create_area_returns_201_and_persists(client, async_session):
@@ -30,14 +28,14 @@ async def test_list_areas_and_pagination(client):
     await client.post("/areas/admin", json={"name": "A2", "main_region": "R1"})
     await client.post("/areas/admin", json={"name": "B1", "main_region": "R2"})
 
-    resp = await client.get("/areas/areas?limit=2")
+    resp = await client.get("/areas?limit=2")
     assert resp.status_code == 200
     data = resp.json()
     assert isinstance(data, list)
     assert len(data) <= 2
 
     # filter by region
-    resp2 = await client.get("/areas/areas?main_region=R1")
+    resp2 = await client.get("/areas?main_region=R1")
     assert resp2.status_code == 200
     names = [a["name"] for a in resp2.json()]
     assert "A1" in names and "A2" in names

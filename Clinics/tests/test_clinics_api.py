@@ -1,17 +1,9 @@
 import pytest
-from types import SimpleNamespace
-from main import app as fastapi_app
-from Clinics.utils.auth import get_current_user
-
-# Fake user for any auth
-async def fake_user():
-    return SimpleNamespace(id=1)
-
 
 @pytest.mark.anyio
 async def test_create_clinic(client):
     payload = {
-        "owner_id": 1,
+        "owner_id": 1,  # must match test user id
         "name": "Golden Vet",
         "description": "Good clinic",
         "phone": "0771234567",
@@ -144,11 +136,12 @@ async def test_update_clinic(client):
     assert resp2.status_code == 200
     assert resp2.json()["name"] == "New Clinic"
 
-@pytest.mark.skip(reason="Temporarily skipping delete clinic test")
+
+from app.auth.security import get_current_active_user
+
 @pytest.mark.anyio
 async def test_delete_clinic(client):
 
-    fastapi_app.dependency_overrides[get_current_user] = fake_user
 
     payload = {
         "owner_id": 1,
@@ -162,15 +155,13 @@ async def test_delete_clinic(client):
 
     # create
     resp = await client.post("/clinics/", json=payload)
-    assert resp.status_code == 201, resp.text
+    assert resp.status_code == 201
     cid = resp.json()["id"]
 
     # delete
     del_resp = await client.delete(f"/clinics/{cid}")
-    assert del_resp.status_code == 204, del_resp.text
+    assert del_resp.status_code == 204
 
     # verify gone
     get_resp = await client.get(f"/clinics/{cid}")
-    assert get_resp.status_code == 404, get_resp.text
-
-fastapi_app.dependency_overrides.pop(get_current_user, None)
+    assert get_resp.status_code == 404

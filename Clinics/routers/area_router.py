@@ -2,7 +2,6 @@ from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException, Depends, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.util import await_only
 
 from Clinics.schemas.area import AreaResponse, AreaCreate, AreaUpdate
 from Clinics.utils.admin_permission import require_admin
@@ -11,7 +10,7 @@ from Clinics.crud.area_crud import create_area as create, get_area, re_geocode_a
 
 router = APIRouter()
 
-@router.get("/areas", response_model=List[AreaResponse])
+@router.get("", response_model=List[AreaResponse])
 async def list_multiple_areas(q : Optional[str] = Query(None, description="Search text for area name"),
                      main_region : Optional[str] = Query(None, description="Filter by region"),
                      limit : int = Query(50, ge=1, le=200),
