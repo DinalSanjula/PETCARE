@@ -75,7 +75,7 @@ async def get_user_by_email(email: str, db: AsyncSession) -> Optional[User]:
     return result.scalar_one_or_none()
 
 
-# GET ALL USERS
+# GET ALL USER
 async def get_all_users(limit: int, offset: int, db: AsyncSession) -> ServiceListResponse[UserResponse]:
     try:
         total = (await db.execute(select(func.count(User.id)))).scalar()
@@ -108,7 +108,7 @@ async def get_all_users(limit: int, offset: int, db: AsyncSession) -> ServiceLis
         )
 
 
-# UPDATE USER (PUT)
+# UPDATE USER
 async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> ServiceResponse[UserResponse]:
     try:
         stmt = select(User).where(User.id == user_id)
@@ -126,7 +126,7 @@ async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> Serv
             if await get_user_by_email(data.email, db):
                 return ServiceResponse(
                     success=False,
-                    message="Email already use",
+                    message="Email already in use",
                     data=None
                 )
 
@@ -141,7 +141,7 @@ async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> Serv
 
         return ServiceResponse(
             success=True,
-            message="User updated successfully",
+            message="User update successfully",
             data=UserResponse.from_orm(user)
         )
 
@@ -149,7 +149,7 @@ async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> Serv
         await db.rollback()
         return ServiceResponse(
             success=False,
-            message=f"Error updating user: {str(e)}",
+            message=f"Error update user: {str(e)}",
             data=None
         )
 
@@ -202,12 +202,12 @@ async def patch_user(user_id: int, data: UserPatch, db: AsyncSession) -> Service
         await db.rollback()
         return ServiceResponse(
             success=False,
-            message=f"Error update user: {str(e)}",
+            message=f"Error updating user: {str(e)}",
             data=None
         )
 
 
-# DELETE USEr
+# Delete user
 async def delete_user(user_id: int, db: AsyncSession) -> ServiceResponse[str]:
     try:
         stmt = select(User).where(User.id == user_id)
