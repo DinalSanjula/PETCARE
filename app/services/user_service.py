@@ -2,22 +2,20 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete, func
 from app.models.user_model import User
-from app.schemas.user_schema import UserCreate, UserReplace, UserPatch, UserResponse
+from app.schemas.user_schema import (UserCreate,UserReplace,UserPatch,UserResponse)
 from app.auth.security import get_password_hash
-from app.schemas.service_schema import ServiceResponse, ServiceListResponse, ServiceDeleteResponse
+from app.schemas.service_schema import (ServiceResponse,ServiceListResponse)
 
 
-# Create user
+# CREATE USER
 async def create_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[UserResponse]:
     try:
-        #Check email exist
+        # Check email exists
         if await get_user_by_email(user.email, db):
-            return ServiceResponse(False, "User with this email already exists", None)
+            return ServiceResponse(success=False, message="User with this email already exists", data=None )
 
-        #Create hashed password
         hashed_pw = get_password_hash(user.password)
 
-        # Save user
         db_user = User(
             name=user.name,
             email=user.email,
@@ -28,12 +26,19 @@ async def create_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[Use
         await db.commit()
         await db.refresh(db_user)
 
-        return ServiceResponse(True,"User created successfully",UserResponse.from_orm(db_user)
+        return ServiceResponse(
+            success=True,
+            message="User created successfully",
+            data=UserResponse.from_orm(db_user)
         )
 
     except Exception as e:
         await db.rollback()
-        return ServiceResponse(False, f"Error creating user: {str(e)}", None)
+        return ServiceResponse(
+            success=False,
+            message=f"Error creating user: {str(e)}",
+            data=None
+        )
 
 
 # GET USER BY ID
@@ -43,12 +48,24 @@ async def get_user_by_id(user_id: int, db: AsyncSession) -> ServiceResponse[User
         user = (await db.execute(stmt)).scalar_one_or_none()
 
         if not user:
-            return ServiceResponse(False, "User not found", None)
+            return ServiceResponse(
+                success=False,
+                message="User not found",
+                data=None
+            )
 
-        return ServiceResponse(True, "User retrieved successfully", UserResponse.from_orm(user))
+        return ServiceResponse(
+            success=True,
+            message="User retrieved successfully",
+            data=UserResponse.from_orm(user)
+        )
 
     except Exception as e:
-        return ServiceResponse(False, f"Error retrieving user: {str(e)}", None)
+        return ServiceResponse(
+            success=False,
+            message=f"Error retrieving user: {str(e)}",
+            data=None
+        )
 
 
 # GET USER BY EMAIL
@@ -58,40 +75,61 @@ async def get_user_by_email(email: str, db: AsyncSession) -> Optional[User]:
     return result.scalar_one_or_none()
 
 
-# GET ALL USERS (FAST & SAFE)
+# GET ALL USER
 async def get_all_users(limit: int, offset: int, db: AsyncSession) -> ServiceListResponse[UserResponse]:
     try:
-        # Count
         total = (await db.execute(select(func.count(User.id)))).scalar()
 
-        # Fetch paginated users
-        users = (await db.execute(
-            select(User).limit(limit).offset(offset)
-        )).scalars().all()
+        users = (
+            await db.execute(
+                select(User).limit(limit).offset(offset)
+            )
+        ).scalars().all()
 
         user_list = [UserResponse.from_orm(u) for u in users]
 
-        return ServiceListResponse(True, "Users retrieved successfully", user_list, total, limit, offset)
+        return ServiceListResponse(
+            success=True,
+            message="Users retrieved successfully",
+            data=user_list,
+            total=total,
+            limit=limit,
+            offset=offset
+        )
 
     except Exception as e:
-        return ServiceListResponse(False, f"Error retrieving users: {str(e)}", [], 0, limit, offset)
+        return ServiceListResponse(
+            success=False,
+            message=f"Error retrieving users: {str(e)}",
+            data=[],
+            total=0,
+            limit=limit,
+            offset=offset
+        )
 
 
-# UPDATE USER (PUT)
+# UPDATE USER
 async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> ServiceResponse[UserResponse]:
     try:
         stmt = select(User).where(User.id == user_id)
         user = (await db.execute(stmt)).scalar_one_or_none()
 
         if not user:
-            return ServiceResponse(False, "User not found", None)
+            return ServiceResponse(
+                success=False,
+                message="User not found",
+                data=None
+            )
 
-        # Check email conflict
+        # Email conflict check
         if data.email != user.email:
             if await get_user_by_email(data.email, db):
-                return ServiceResponse(False, "Email already in use", None)
+                return ServiceResponse(
+                    success=False,
+                    message="Email already in use",
+                    data=None
+                )
 
-        # Replace values
         user.name = data.name
         user.email = data.email
         user.age = data.age
@@ -101,30 +139,45 @@ async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> Serv
         await db.commit()
         await db.refresh(user)
 
-        return ServiceResponse(True, "User updated successfully", UserResponse.from_orm(user))
+        return ServiceResponse(
+            success=True,
+            message="User update successfully",
+            data=UserResponse.from_orm(user)
+        )
 
     except Exception as e:
         await db.rollback()
-        return ServiceResponse(False, f"Error updating user: {str(e)}", None)
+        return ServiceResponse(
+            success=False,
+            message=f"Error update user: {str(e)}",
+            data=None
+        )
 
 
-# PATCH USER (PARTIAL UPDATE)
+# PATCH
 async def patch_user(user_id: int, data: UserPatch, db: AsyncSession) -> ServiceResponse[UserResponse]:
     try:
         stmt = select(User).where(User.id == user_id)
         user = (await db.execute(stmt)).scalar_one_or_none()
 
         if not user:
-            return ServiceResponse(False, "User not found", None)
+            return ServiceResponse(
+                success=False,
+                message="User not found",
+                data=None
+            )
 
-        # Conditional updates
         if data.name is not None:
             user.name = data.name
 
         if data.email is not None:
             if data.email != user.email:
                 if await get_user_by_email(data.email, db):
-                    return ServiceResponse(False, "Email already in use", None)
+                    return ServiceResponse(
+                        success=False,
+                        message="Email already use",
+                        data=None
+                    )
             user.email = data.email
 
         if data.age is not None:
@@ -139,29 +192,41 @@ async def patch_user(user_id: int, data: UserPatch, db: AsyncSession) -> Service
         await db.commit()
         await db.refresh(user)
 
-        return ServiceResponse(True, "User updated successfully", UserResponse.from_orm(user))
+        return ServiceResponse(
+            success=True,
+            message="User updated successfully",
+            data=UserResponse.from_orm(user)
+        )
 
     except Exception as e:
         await db.rollback()
-        return ServiceResponse(False, f"Error updating user: {str(e)}", None)
+        return ServiceResponse(
+            success=False,
+            message=f"Error updating user: {str(e)}",
+            data=None
+        )
 
 
-# DELETE USER
+# Delete user
 async def delete_user(user_id: int, db: AsyncSession) -> ServiceResponse[str]:
     try:
-        user = await get_user_by_email(user_id, db)
-
         stmt = select(User).where(User.id == user_id)
         user = (await db.execute(stmt)).scalar_one_or_none()
 
         if not user:
-            return ServiceResponse(False, "User not found", None)
+            return ServiceResponse(
+                success=False,
+                message="User not found",
+                data=None
+            )
 
         await db.execute(delete(User).where(User.id == user_id))
         await db.commit()
 
-        return ServiceResponse(True, "User deleted successfully", "deleted")
+        return ServiceResponse(success=True,message="User deleted successfully",data="deleted"
+        )
 
     except Exception as e:
         await db.rollback()
-        return ServiceResponse(False, f"Error deleting user: {str(e)}", None)
+        return ServiceResponse(success=False,message=f"Error deleting user: {str(e)}" , data=None
+        )
