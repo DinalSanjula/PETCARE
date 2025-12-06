@@ -9,19 +9,7 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 
-# Provide an async fake user callable early so routers that imported
-# get_current_user at import-time can still pick it up.
-async def _fake_user():
-    return SimpleNamespace(id=1)
 
-
-# Try patching the auth module early (best-effort, silent fail ok)
-try:
-    import Clinics.utils.auth as _auth_mod
-
-    _auth_mod.get_current_user = _fake_user
-except Exception:
-    pass
 
 # -------- Now import testing libs and app/db --------
 import pytest
