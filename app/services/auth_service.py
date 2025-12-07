@@ -5,17 +5,13 @@ from datetime import timedelta
 from app.models.user_model import User
 from app.schemas.user_schema import UserCreate, UserLogin, Token
 from app.schemas.service_schema import ServiceResponse
-from app.auth.security import (
-    verify_password,
-    get_password_hash,
-    create_access_token,
-    create_refresh_token,
-)
+from app.auth.security import (verify_password, get_password_hash, create_access_token, create_refresh_token,)
 from app.services.user_service import get_user_by_email, create_user
 
 
+#Register new user and return access & refresh tokens
 async def register_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[Token]:
-    """Register new user and return access & refresh tokens."""
+
     try:
         # Check if user exists
         existing = await get_user_by_email(user.email, db)
