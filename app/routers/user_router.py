@@ -8,7 +8,7 @@ from app.services.user_service import create_user, get_user_by_id, get_all_users
 from app.auth.security import get_current_active_user
 
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter()
 
 
 @router.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=ServiceResponse[UserResponse])
@@ -79,3 +79,4 @@ async def delete_user_endpoint(
         raise HTTPException(status_code=404, detail=result.message)
 
     return result
+
