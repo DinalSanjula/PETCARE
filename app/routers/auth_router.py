@@ -8,7 +8,7 @@ from app.services.auth_service import register_user, login_user
 
 
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+router = APIRouter()
 
 
 # REGISTER

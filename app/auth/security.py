@@ -14,16 +14,14 @@ from app.database.session import get_db_session
 from app.models.user_model import User
 from app.schemas.user_schema import TokenData
 
-# load .env
 load_dotenv()
 
 # Ensure defaults but prefer env values
-SECRET_KEY = os.getenv("SECRET_KEY")  # MUST be a string in your .env
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))
 
-# Defensive check - fail early with clear message
 if not SECRET_KEY or not isinstance(SECRET_KEY, (str, bytes)):
     raise RuntimeError(
         "Missing or invalid SECRET_KEY. Set SECRET_KEY in your .env to a secure string "

@@ -64,7 +64,7 @@ async def register_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[T
 
 
 async def authenticate_user(email: str, password: str, db: AsyncSession) -> Optional[User]:
-    """Return user if credentials are correct."""
+
     user = await get_user_by_email(email, db)
     if not user:
         return None
@@ -74,7 +74,7 @@ async def authenticate_user(email: str, password: str, db: AsyncSession) -> Opti
 
 
 async def login_user(user_login: UserLogin, db: AsyncSession) -> ServiceResponse[Token]:
-    """Login user and return access & refresh tokens."""
+
     try:
         user = await authenticate_user(user_login.email, user_login.password, db)
         if not user:
