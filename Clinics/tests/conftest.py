@@ -2,93 +2,66 @@
 import os
 import sys
 from types import SimpleNamespace
+import importlib
 
-# --- ensure project root is importable BEFORE any Clinics imports ---
+# ensure project root is importable BEFORE any Clinics imports
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-
-
-
-# -------- Now import testing libs and app/db --------
 import pytest
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import select
 
-from main import app
-from db import Base, get_db
+# import the FastAPI app (root main)
+try:
+    from main import app as project_app
+except Exception:
+    from app.main import app as project_app
 
-# --- Load model modules BEFORE metadata.create_all so all tables get created ---
-# This line is CRITICAL: it ensures the 'users' table exists before FK creation.
+# Import shared DB session resources from app.database.session
+from db import AsyncSessionLocal
+
+# Ensure User model is imported/registered
+importlib.import_module("app.models.user_model")
 from app.models.user_model import User
 
-# modules we monkeypatch
+# Modules we monkeypatch
 import Clinics.crud.area_crud as area_crud_module
 import Clinics.utils.admin_permission as admin_perm_module
 
-# Import auth helpers
+# Import auth helpers if present
 try:
     from app.auth.security import get_current_active_user, get_password_hash
 except Exception:
     get_current_active_user = None
     get_password_hash = None
 
-TEST_SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
-
-
 @pytest.fixture(scope="session")
 def anyio_backend():
     return "asyncio"
 
-
-@pytest.fixture(scope="session")
-async def engine():
-    eng = create_async_engine(TEST_SQLALCHEMY_DATABASE_URL, future=True, echo=False)
-
-    # --- Create ALL tables (including users) ---
-    async with eng.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-    yield eng
-    await eng.dispose()
-
-
 @pytest.fixture()
-async def async_session(engine):
-    AsyncSessionLocal = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
-    async with AsyncSessionLocal() as session:
-        yield session
-        try:
-            await session.rollback()
-        except Exception:
-            pass
+async def client(async_client, monkeypatch):
+    """
+    Clinics-specific client fixture. Reuses the shared async_client from root conftest.
+    - monkeypatches geocode and admin permission
+    - fakes MinIO storage
+    - creates or loads a test user in the shared DB and overrides get_current_active_user
+    """
 
-
-@pytest.fixture()
-async def client(async_session, monkeypatch):
-    # 1) override get_db
-    async def _get_test_db():
-        try:
-            yield async_session
-        finally:
-            pass
-
-    app.dependency_overrides[get_db] = _get_test_db
-
-    # 2) stub geocode (avoid network)
+    # 1) stub geocode (avoid network)
     async def fake_geocode(q, countrycode=None):
         return None, None, None
 
     monkeypatch.setattr(area_crud_module, "geocode_async", fake_geocode)
 
-    # 3) stub admin permission
+    # 2) stub admin permission
     async def fake_require_admin():
         return None
 
     monkeypatch.setattr(admin_perm_module, "require_admin", fake_require_admin)
 
-    # ---- Fake MinIO client ----
+    # 3) Fake MinIO client
     class _FakeMinioClient:
         def __init__(self):
             self._store = {}
@@ -126,37 +99,31 @@ async def client(async_session, monkeypatch):
     except Exception:
         pass
 
-    # ---- Create real test user + override get_current_active_user ----
+    # 4) create or load test user using shared AsyncSessionLocal
     test_user = None
     if get_password_hash and get_current_active_user:
-        # ---- Create or load test user ----
-        from sqlalchemy import select
+        async with AsyncSessionLocal() as session:
+            existing = await session.execute(select(User).where(User.email == "test@example.com"))
+            test_user = existing.scalars().first()
 
-        existing = await async_session.execute(select(User).where(User.email == "test@example.com"))
-        test_user = existing.scalars().first()
-
-        if not test_user:
-            test_user = User(
-                name="Test User",
-                email="test@example.com",
-                password_hash=get_password_hash("testpassword"),
-                role="owner",
-            )
-            async_session.add(test_user)
-            await async_session.commit()
-            await async_session.refresh(test_user)
+            if not test_user:
+                test_user = User(
+                    name="Test User",
+                    email="test@example.com",
+                    password_hash=get_password_hash("strongpassword"),
+                    role="owner",
+                )
+                session.add(test_user)
+                await session.commit()
+                await session.refresh(test_user)
 
         async def _override_current_user():
             return test_user
 
-        app.dependency_overrides[get_current_active_user] = _override_current_user
+        project_app.dependency_overrides[get_current_active_user] = _override_current_user
 
-    # 6) HTTP client using ASGITransport
-    from httpx import AsyncClient, ASGITransport
-    transport = ASGITransport(app=app)
+    # finally yield the shared async_client coming from root conftest
+    yield async_client
 
-    async with AsyncClient(transport=transport, base_url="http://testserver") as ac:
-        yield ac
-
-    # cleanup
-    app.dependency_overrides.clear()
+    # cleanup overrides
+    project_app.dependency_overrides.clear()
