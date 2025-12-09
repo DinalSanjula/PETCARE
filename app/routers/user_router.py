@@ -79,4 +79,3 @@ async def delete_user_endpoint(
         raise HTTPException(status_code=404, detail=result.message)
 
     return result
-
