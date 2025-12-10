@@ -12,3 +12,4 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(area_router, prefix="/areas")
 app.include_router(clinic_router, prefix="/clinics")
 app.include_router(image_router, prefix="/images")
+

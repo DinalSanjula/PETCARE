@@ -1,6 +1,6 @@
-from typing import Optional, List
+from typing import Optional, List, cast
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete, func
+from sqlalchemy import select, delete, func, ColumnElement
 from app.models.user_model import User
 from app.schemas.user_schema import (UserCreate,UserReplace,UserPatch,UserResponse)
 from app.auth.security import get_password_hash
