@@ -20,11 +20,11 @@ class UserResponse(UserBase):
     updated_at: datetime
 
     class Config:
-        from_attributes = True  # ORM mode
+        from_attributes = True  # ORM mode / to push DB to create objects
 
 
 class UserReplace(UserBase):
-    password: str = Field(..., min_length=8)
+    password: str = Field(..., min_length=8)    #can
 
 
 class UserPatch(BaseModel):
@@ -42,7 +42,7 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     refresh_token: str
-    token_type: str = "bearer"
+    token_type: str = "bearer" # bearer token is get our access token key and verify logging
 
 
 class TokenData(BaseModel):

@@ -7,7 +7,7 @@ from app.routers.auth_router import router as auth_router
 from app.routers.user_router import router as user_router
 
 
-app = FastAPI()
+app = FastAPI(description="PetCare Service")
 
 # call Included routers
 app.include_router(auth_router , prefix="/auth")
