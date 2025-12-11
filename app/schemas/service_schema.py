@@ -1,20 +1,23 @@
 from typing import Generic, TypeVar, List, Optional
-from pydantic.generics import GenericModel
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
 
 T = TypeVar("T")
 
+class ServiceResponse(BaseModel, Generic[T]):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
-class ServiceResponse(GenericModel, Generic[T]):
     success: bool
     message: str
     data: Optional[T] = None
 
 
-class ServiceListResponse(GenericModel, Generic[T]):
+class ServiceListResponse(BaseModel, Generic[T]):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     success: bool
     message: str
-    data: List[T] = []   # allow empty list
+    data: List[T] = []
     total: int
     limit: int
     offset: int
@@ -23,3 +26,12 @@ class ServiceListResponse(GenericModel, Generic[T]):
 class ServiceDeleteResponse(BaseModel):
     success: bool
     message: str
+
+
+
+
+#
+# class ServiceResponse(GenericModel, Generic[T]):
+#     success: bool
+#     message: str
+#     data: Optional[T] = None
