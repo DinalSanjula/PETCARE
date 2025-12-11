@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from app.models.user_model import UserRole
 
 
@@ -19,12 +19,14 @@ class UserResponse(UserBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True  # ORM mode / to push DB to create objects
+    model_config = ConfigDict(from_attributes=True)  # v2
+
+    # class Config:
+    #     from_attributes = True  # ORM mode (v1)
 
 
 class UserReplace(UserBase):
-    password: str = Field(..., min_length=8)    #can
+    password: str = Field(..., min_length=8)
 
 
 class UserPatch(BaseModel):
@@ -42,7 +44,7 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     refresh_token: str
-    token_type: str = "bearer" # bearer token is get our access token key and verify logging
+    token_type: str = "bearer"
 
 
 class TokenData(BaseModel):

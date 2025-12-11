@@ -1,10 +1,13 @@
+from typing import Optional, List, cast
+from sqlalchemy import select, delete, func, ColumnElement
 from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete, func
+
 from app.models.user_model import User
-from app.schemas.user_schema import (UserCreate,UserReplace,UserPatch,UserResponse)
+from app.schemas.user_schema import (UserCreate, UserReplace, UserPatch, UserResponse)
 from app.auth.security import get_password_hash
-from app.schemas.service_schema import (ServiceResponse,ServiceListResponse)
+from app.schemas.service_schema import (ServiceResponse, ServiceListResponse)
 
 
 # CREATE USER
@@ -29,7 +32,7 @@ async def create_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[Use
         return ServiceResponse(
             success=True,
             message="User created successfully",
-            data=UserResponse.from_orm(db_user)
+            data=UserResponse.model_validate(db_user)
         )
 
     except Exception as e:
@@ -44,7 +47,8 @@ async def create_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[Use
 # GET USER BY ID
 async def get_user_by_id(user_id: int, db: AsyncSession) -> ServiceResponse[UserResponse]:
     try:
-        stmt = select(User).where(User.id == user_id)
+        cond = cast(ColumnElement[bool], User.id == user_id)
+        stmt = select(User).where(cond)
         user = (await db.execute(stmt)).scalar_one_or_none()
 
         if not user:
@@ -57,7 +61,7 @@ async def get_user_by_id(user_id: int, db: AsyncSession) -> ServiceResponse[User
         return ServiceResponse(
             success=True,
             message="User retrieved successfully",
-            data=UserResponse.from_orm(user)
+            data=UserResponse.model_validate(user)
         )
 
     except Exception as e:
@@ -86,7 +90,7 @@ async def get_all_users(limit: int, offset: int, db: AsyncSession) -> ServiceLis
             )
         ).scalars().all()
 
-        user_list = [UserResponse.from_orm(u) for u in users]
+        user_list = [UserResponse.model_validate(u) for u in users]
 
         return ServiceListResponse(
             success=True,
@@ -142,7 +146,7 @@ async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> Serv
         return ServiceResponse(
             success=True,
             message="User update successfully",
-            data=UserResponse.from_orm(user)
+            data=UserResponse.model_validate(user)
         )
 
     except Exception as e:
@@ -195,7 +199,7 @@ async def patch_user(user_id: int, data: UserPatch, db: AsyncSession) -> Service
         return ServiceResponse(
             success=True,
             message="User updated successfully",
-            data=UserResponse.from_orm(user)
+            data=UserResponse.model_validate(user)
         )
 
     except Exception as e:
