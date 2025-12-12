@@ -1,4 +1,4 @@
-from typing import Optional, List, cast
+from typing import Optional, List
 from sqlalchemy import select, delete, func, ColumnElement
 from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -47,8 +47,7 @@ async def create_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[Use
 # GET USER BY ID
 async def get_user_by_id(user_id: int, db: AsyncSession) -> ServiceResponse[UserResponse]:
     try:
-        cond = cast(ColumnElement[bool], User.id == user_id)
-        stmt = select(User).where(cond)
+        stmt = select(User).where(User.id == user_id)
         user = (await db.execute(stmt)).scalar_one_or_none()
 
         if not user:

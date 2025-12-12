@@ -1,13 +1,13 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional, List, cast
+from typing import Optional, List
 
 from sqlalchemy.orm import selectinload
 
 from Clinics.models.models import Clinic, ClinicImage
 from Clinics.utils.helpers import get_or_404
 from fastapi import HTTPException, status
-from sqlalchemy import select, ColumnElement
+from sqlalchemy import select
 from Clinics.storage.minio_storage import delete_file
 
 async def create_clinic_image(
@@ -40,8 +40,7 @@ async def create_clinic_image(
     return image
 
 async def get_image_by_id(session:AsyncSession, image_id:int)-> ClinicImage:
-    cond = cast(ColumnElement[bool], ClinicImage.id == image_id)
-    q = select(ClinicImage).where(cond).options(selectinload(ClinicImage.clinic))
+    q = select(ClinicImage).where(ClinicImage.id == image_id).options(selectinload(ClinicImage.clinic))
     result = await session.execute(q)
     img = result.scalar_one_or_none()
     if img is None:
@@ -49,8 +48,7 @@ async def get_image_by_id(session:AsyncSession, image_id:int)-> ClinicImage:
     return img
 
 async def list_images_for_clinic(session:AsyncSession, clinic_id:int)-> List[ClinicImage]:
-    cond = cast(ColumnElement[bool], ClinicImage.clinic_id == clinic_id)
-    q = select(ClinicImage).where(cond).order_by(ClinicImage.id.asc()).options(selectinload(ClinicImage.clinic))
+    q = select(ClinicImage).where(ClinicImage.clinic_id == clinic_id).order_by(ClinicImage.id.asc()).options(selectinload(ClinicImage.clinic))
     result = await session.execute(q)
     return list(result.scalars().all())
 
