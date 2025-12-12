@@ -33,7 +33,7 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
     tokens_obj = getattr(result, "data", {}) or {}
     try:
         if hasattr(tokens_obj, "dict") and callable(getattr(tokens_obj, "dict")):
-            tokens = tokens_obj.dict()
+            tokens = tokens_obj.model_dump()
         elif isinstance(tokens_obj, dict):
             tokens = tokens_obj
         else:
@@ -95,7 +95,7 @@ async def login(user_login: UserLogin, db: AsyncSession = Depends(get_db)):
     tokens_obj = getattr(result, "data", {}) or {}
     try:
         if hasattr(tokens_obj, "dict") and callable(getattr(tokens_obj, "dict")):
-            tokens = tokens_obj.dict()
+            tokens = tokens_obj.model_dump()
         elif isinstance(tokens_obj, dict):
             tokens = tokens_obj
         else:
