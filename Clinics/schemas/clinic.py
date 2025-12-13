@@ -37,7 +37,7 @@ class ClinicBase(Coordinates, BaseModel):
 
 
 class ClinicCreate(ClinicBase):
-    owner_id: int = Field(...,description="owner id that came from owner/user table")
+    pass
 
 class ClinicUpdate(Coordinates, BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=100, description="Name of the Clinic")

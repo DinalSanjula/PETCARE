@@ -1,13 +1,20 @@
+import os
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import declarative_base
+from dotenv import load_dotenv
 
-DATABASE_URL = "sqlite+aiosqlite:///./clinic_demo.db"
+load_dotenv()
 
+# Correct async PostgreSQL URL
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql+asyncpg://test:test@localhost:5432/test_db"
+)
 
 # Async engine
 engine = create_async_engine(
     DATABASE_URL,
-    echo=False,              # optional
+    echo=False,
     future=True
 )
 
@@ -17,10 +24,10 @@ AsyncSessionLocal = async_sessionmaker(
     expire_on_commit=False,
     autoflush=False,
     autocommit=False,
-    class_=AsyncSession,
+    class_=AsyncSession
 )
 
-# Base model
+# Base model class
 Base = declarative_base()
 
 # Dependency for FastAPI
@@ -30,4 +37,3 @@ async def get_db():
             yield session
         finally:
             await session.close()
-

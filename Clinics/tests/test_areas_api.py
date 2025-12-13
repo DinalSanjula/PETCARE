@@ -3,7 +3,7 @@ from sqlalchemy import select
 from Clinics.models.models import Area
 
 @pytest.mark.anyio
-async def test_create_area_returns_201_and_persists(client, async_session):
+async def test_create_area_returns_201_and_persists(client, db_session):
     payload = {
         "name": "Testville",
         "main_region": "North",
@@ -16,7 +16,7 @@ async def test_create_area_returns_201_and_persists(client, async_session):
     assert "id" in data
 
     # verify DB row exists
-    result = await async_session.execute(select(Area).where(Area.name == "Testville"))
+    result = await db_session.execute(select(Area).where(Area.name == "Testville"))
     row = result.scalar_one_or_none()
     assert row is not None
     assert row.main_region == "North"

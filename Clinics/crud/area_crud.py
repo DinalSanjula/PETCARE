@@ -1,7 +1,7 @@
 # crud/area.py
-from typing import List, Optional, Tuple, cast
+from typing import List, Optional, Tuple
 from fastapi import HTTPException, status
-from sqlalchemy import select, ColumnElement
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -87,8 +87,7 @@ async def list_areas(session: AsyncSession, q: Optional[str] = None, main_region
         q_norm = f"%{q.strip().lower()}%"
         query = query.where((Area.name.ilike(q_norm)) | (Area.normalized_name.ilike(q_norm)))
     if main_region:
-        cond = cast(ColumnElement[bool], Area.main_region == main_region)
-        query = query.where(cond)
+        query = query.where(Area.main_region == main_region)
 
 
     query = query.limit(limit).offset(offset)

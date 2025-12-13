@@ -1,6 +1,6 @@
 # tests/debug_routes.py
 import pytest
-from app.main import app
+from main import app
 
 @pytest.mark.anyio
 async def test_routes_exist(async_client):

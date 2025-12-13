@@ -1,6 +1,6 @@
-from typing import List, cast, Set, Optional
+from typing import List, Set, Optional
 from fastapi import HTTPException, status
-from sqlalchemy import select, inspect, ColumnElement, and_
+from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import  selectinload
@@ -103,8 +103,7 @@ async def create_clinic(session : AsyncSession, clinic_data : ClinicCreate) -> C
         await session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e.orig))
 
-    cond = cast(ColumnElement[bool], Clinic.id == data.id)
-    q = (select(Clinic).options(selectinload(Clinic.images), selectinload(Clinic.area)).where(cond))
+    q = (select(Clinic).options(selectinload(Clinic.images), selectinload(Clinic.area)).where(Clinic.id == data.id))
     res = await session.execute(q)
     data = res.scalar_one()
     return data
@@ -113,9 +112,8 @@ async def create_clinic(session : AsyncSession, clinic_data : ClinicCreate) -> C
 
 async def get_clinic_by_id(session: AsyncSession, clinic_id: int, with_related: bool = True) -> Clinic:
 
-    pk_col = inspect(Clinic).primary_key[0]
-    cond = cast(ColumnElement[bool], pk_col == clinic_id)
-    q = select(Clinic).where(cond)
+
+    q = select(Clinic).where(Clinic.id == clinic_id)
 
     if with_related:
         q = q.options(selectinload(Clinic.area), selectinload(Clinic.images))
@@ -131,8 +129,7 @@ async def get_clinic_by_id(session: AsyncSession, clinic_id: int, with_related: 
 
 async def get_clinic_by_phone(session : AsyncSession, phone : str, with_related: bool = True) -> Clinic:
 
-    cond = cast(ColumnElement[bool], Clinic.phone == phone)
-    q = select(Clinic).where(cond)
+    q = select(Clinic).where(Clinic.phone == phone)
 
     if with_related:
         q = q.options(selectinload(Clinic.area), selectinload(Clinic.images))
@@ -148,8 +145,7 @@ async def get_clinic_by_phone(session : AsyncSession, phone : str, with_related:
 
 async def get_clinic_by_name(session: AsyncSession, name: str, with_related: bool = True) -> Clinic:
 
-    cond = cast(ColumnElement[bool], Clinic.name == name)
-    q = select(Clinic).where(cond)
+    q = select(Clinic).where(Clinic.name == name)
 
     if with_related:
         q= q.options(selectinload(Clinic.area), selectinload(Clinic.images))
@@ -164,8 +160,7 @@ async def get_clinic_by_name(session: AsyncSession, name: str, with_related: boo
 
 
 async def get_clinic_by_owner(session: AsyncSession, owner_id: int, limit: int, offset: int,  with_related: bool = True) -> List[Clinic]:
-    cond = cast(ColumnElement[bool], Clinic.owner_id == owner_id)
-    q = select(Clinic).where(cond)
+    q = select(Clinic).where(Clinic.owner_id == owner_id)
 
     if with_related:
         q = q.options(selectinload(Clinic.area), selectinload(Clinic.images))
@@ -278,8 +273,7 @@ async def update_clinic(session : AsyncSession, clinic_id:int, clinic_data: Clin
             await session.rollback()
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e.orig))
 
-        cond = cast(ColumnElement[bool], Clinic.id == clinic.id)
-        q = (select(Clinic).options(selectinload(Clinic.images), selectinload(Clinic.area)).where(cond))
+        q = (select(Clinic).options(selectinload(Clinic.images), selectinload(Clinic.area)).where(Clinic.id == clinic_id))
         res = await session.execute(q)
         clinic = res.scalar_one()
     return clinic
