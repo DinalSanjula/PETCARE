@@ -1,67 +1,33 @@
 # Clinics/tests/conftest.py
-import os
-import sys
-from types import SimpleNamespace
 import importlib
-
-# ensure project root is importable BEFORE any Clinics imports
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
-
 import pytest
 from sqlalchemy import select
+from httpx import AsyncClient, ASGITransport
 
-# import the FastAPI app (root main)
-try:
-    from main import app as project_app
-except Exception:
-    from app.main import app as project_app
 
-# Import shared DB session resources from app.database.session
-from db import AsyncSessionLocal
-
-# Ensure User model is imported/registered
-importlib.import_module("app.models.user_model")
-from app.models.user_model import User
-
-# Modules we monkeypatch
-import Clinics.crud.area_crud as area_crud_module
-import Clinics.utils.admin_permission as admin_perm_module
-
-# Import auth helpers if present
-try:
-    from app.auth.security import get_current_active_user, get_password_hash
-except Exception:
-    get_current_active_user = None
-    get_password_hash = None
-
-@pytest.fixture(scope="session")
-def anyio_backend():
-    return "asyncio"
-
-@pytest.fixture()
-async def client(async_client, monkeypatch):
+@pytest.fixture
+async def client(monkeypatch, db_session):
     """
-    Clinics-specific client fixture. Reuses the shared async_client from root conftest.
-    - monkeypatches geocode and admin permission
-    - fakes MinIO storage
-    - creates or loads a test user in the shared DB and overrides get_current_active_user
+    Clinics-specific test client with:
+    - mocked geocode
+    - mocked admin
+    - mocked minio
+    - test user injected
+    - get_db overridden to use db_session
     """
 
-    # 1) stub geocode (avoid network)
+    # -----------------------------
+    # 1) Stub geocoding
+    # -----------------------------
     async def fake_geocode(q, countrycode=None):
         return None, None, None
 
-    monkeypatch.setattr(area_crud_module, "geocode_async", fake_geocode)
+    monkeypatch.setattr("Clinics.crud.geocode.geocode_async", fake_geocode, raising=False)
+    monkeypatch.setattr("Clinics.crud.area_crud.geocode_async", fake_geocode, raising=False)
 
-    # 2) stub admin permission
-    async def fake_require_admin():
-        return None
-
-    monkeypatch.setattr(admin_perm_module, "require_admin", fake_require_admin)
-
-    # 3) Fake MinIO client
+    # -----------------------------
+    # 2) Fake MinIO Client
+    # -----------------------------
     class _FakeMinioClient:
         def __init__(self):
             self._store = {}
@@ -73,57 +39,104 @@ async def client(async_client, monkeypatch):
             return None
 
         def put_object(self, bucket, object_name, data, length, content_type=None):
-            if hasattr(data, "read"):
-                content = data.read()
-            else:
-                content = data
-            self._store[(bucket, object_name)] = {
-                "data": content,
-                "content_type": content_type,
-            }
-            return None
+            content = data.read() if hasattr(data, "read") else data
+            self._store[(bucket, object_name)] = {"data": content, "content_type": content_type}
 
         def remove_object(self, bucket, object_name):
             self._store.pop((bucket, object_name), None)
-            return None
 
-    monkeypatch.setattr(
-        "Clinics.storage.minio_storage._get_client",
-        lambda: _FakeMinioClient(),
-        raising=False
-    )
     try:
         import Clinics.storage.minio_storage as _ms
         _ms._client = _FakeMinioClient()
         _ms.PUBLIC_BASE = "http://testserver/fake"
     except Exception:
-        pass
+        monkeypatch.setattr("Clinics.storage.minio_storage._get_client", lambda: _FakeMinioClient(), raising=False)
 
-    # 4) create or load test user using shared AsyncSessionLocal
+    # -----------------------------
+    # 3) Load or create test user directly via db_session
+    # -----------------------------
     test_user = None
-    if get_password_hash and get_current_active_user:
-        async with AsyncSessionLocal() as session:
-            existing = await session.execute(select(User).where(User.email == "test@example.com"))
-            test_user = existing.scalars().first()
+    try:
+        from app.auth.security import get_current_active_user, get_password_hash
+    except Exception:
+        get_current_active_user = None
+        get_password_hash = None
 
-            if not test_user:
-                test_user = User(
-                    name="Test User",
-                    email="test@example.com",
-                    password_hash=get_password_hash("strongpassword"),
-                    role="owner",
-                )
-                session.add(test_user)
-                await session.commit()
-                await session.refresh(test_user)
+    try:
+        from app.models.user_model import User
+    except Exception:
+        User = None
+
+    if User and get_password_hash and get_current_active_user:
+        result = await db_session.execute(
+            select(User).where(User.email == "test@example.com")
+        )
+        test_user = result.scalars().first()
+
+        if not test_user:
+            test_user = User(
+                name="Test User",
+                email="test@example.com",
+                password_hash=get_password_hash("strongpassword"),
+                role="owner",
+            )
+            db_session.add(test_user)
+            await db_session.commit()
+            await db_session.refresh(test_user)
 
         async def _override_current_user():
             return test_user
 
+    # -----------------------------
+    # 4) Load FastAPI application
+    # -----------------------------
+    try:
+        project_app = importlib.import_module("main").app
+    except Exception:
+        project_app = importlib.import_module("app.main").app
+
+
+
+    # -----------------------------
+    # 5) REQUIRED FIX:
+    #    Override require_admin at FastAPI dependency layer
+    # -----------------------------
+    try:
+        from Clinics.utils.admin_permission import require_admin
+    except Exception:
+        require_admin = None
+
+    if require_admin:
+        async def _override_admin():
+            return None
+
+        project_app.dependency_overrides[require_admin] = _override_admin
+
+    # -----------------------------
+    # 6) Override get_current_user
+    # -----------------------------
+    if get_current_active_user:
         project_app.dependency_overrides[get_current_active_user] = _override_current_user
 
-    # finally yield the shared async_client coming from root conftest
-    yield async_client
+    # -----------------------------
+    # 7) Override get_db to use db_session
+    # -----------------------------
+    try:
+        from db import get_db as app_get_db
+    except Exception:
+        app_get_db = None
 
-    # cleanup overrides
+    if app_get_db:
+        async def _override_get_db():
+            yield db_session
+        project_app.dependency_overrides[app_get_db] = _override_get_db
+
+    # -----------------------------
+    # 8) Return HTTP client
+    # -----------------------------
+    transport = ASGITransport(app=project_app)
+
+    async with AsyncClient(transport=transport, base_url="http://testserver") as ac:
+        yield ac
+
     project_app.dependency_overrides.clear()

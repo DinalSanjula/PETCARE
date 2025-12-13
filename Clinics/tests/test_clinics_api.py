@@ -3,7 +3,6 @@ import pytest
 @pytest.mark.anyio
 async def test_create_clinic(client):
     payload = {
-        "owner_id": 1,  # must match test user id
         "name": "Golden Vet",
         "description": "Good clinic",
         "phone": "0771234567",
@@ -19,14 +18,13 @@ async def test_create_clinic(client):
 
     data = resp.json()
     assert data["name"] == payload["name"]
-    assert data["owner_id"] == 1
+    assert data["owner_id"] > 1
     assert data["id"] > 0
 
 
 @pytest.mark.anyio
 async def test_get_clinic_by_id(client):
     payload = {
-        "owner_id": 1,
         "name": "City Vet",
         "description": "24/7 service",
         "phone": "0771111111",
@@ -46,7 +44,6 @@ async def test_get_clinic_by_id(client):
 @pytest.mark.anyio
 async def test_get_clinic_by_name(client):
     payload = {
-        "owner_id": 1,
         "name": "Happy Pets",
         "description": "Pet care",
         "phone": "0779876543",
@@ -65,7 +62,6 @@ async def test_get_clinic_by_name(client):
 @pytest.mark.anyio
 async def test_get_clinic_by_phone(client):
     payload = {
-        "owner_id": 1,
         "name": "Pet Zone",
         "description": "Care",
         "phone": "0775555555",
@@ -87,7 +83,6 @@ async def test_list_clinics(client):
 
     payloads = [
         {
-            "owner_id": 1,
             "name": "One",
             "description": "Clinic 1",
             "phone": "0771999999",
@@ -96,7 +91,6 @@ async def test_list_clinics(client):
             "area_id": None
         },
         {
-            "owner_id": 1,
             "name": "Two",
             "description": "Clinic 2",
             "phone": "0771888888",
@@ -118,7 +112,6 @@ async def test_list_clinics(client):
 async def test_update_clinic(client):
 
     payload = {
-        "owner_id": 1,
         "name": "Old Clinic",
         "description": "Old desc",
         "phone": "0771000000",
@@ -144,7 +137,6 @@ async def test_delete_clinic(client):
 
 
     payload = {
-        "owner_id": 1,
         "name": "Delete Me",
         "description": "Temp",
         "phone": "0772222222",

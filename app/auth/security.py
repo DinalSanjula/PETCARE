@@ -27,7 +27,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))
 
 # DB session getter: import here to avoid circular import at module import time
-from app.database.session import get_db_session  # keep the name your app uses
+# from app.database.session import get_db_session  # keep the name your app uses
+from db import get_db as get_db_session
 from app.models.user_model import User
 from app.schemas.user_schema import TokenData
 

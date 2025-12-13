@@ -23,9 +23,8 @@ async def create_new_clinic(clinic: ClinicCreate,
                             session : AsyncSession = Depends(get_db),
                             current_user :User = Depends(get_current_active_user)):
 
-    if clinic.owner_id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to access")
-    created = await create_clinic_crud(session=session, clinic_data=clinic)
+    clinic_data = clinic.model_copy(update={"owner_id":current_user.id})
+    created = await create_clinic_crud(session=session, clinic_data=clinic_data)
     return created
 
 
