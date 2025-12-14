@@ -1,28 +1,34 @@
 import sys
+import os
+import asyncio
 from pathlib import Path
+from logging.config import fileConfig
+
+from alembic import context
+from sqlalchemy import pool
+from sqlalchemy.ext.asyncio import create_async_engine
+
+# ------------------------------------------------------------------
+# Ensure project root is on sys.path
+# ------------------------------------------------------------------
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from logging.config import fileConfig
-from alembic import context
-
-from sqlalchemy import pool
-from sqlalchemy.ext.asyncio import async_engine_from_config
-import asyncio
-
-# ---- IMPORTANT PART ----
+# ------------------------------------------------------------------
+# Import Base and models
+# ------------------------------------------------------------------
 from db import Base
-
-# Import models so tables are registered
 import app.models.user_model
 import Clinics.models.models
-# ------------------------
+# ------------------------------------------------------------------
 
+# Alembic Config object
 config = context.config
 
+# Configure logging
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# ONE metadata only
+# Metadata for autogenerate
 target_metadata = Base.metadata
 
 
@@ -39,9 +45,14 @@ def do_run_migrations(connection):
 
 
 def run_migrations_offline():
-    url = config.get_main_option("sqlalchemy.url")
+    """Run migrations in 'offline' mode."""
+    database_url = os.getenv("DATABASE_URL")
+
+    if not database_url:
+        raise RuntimeError("DATABASE_URL is not set")
+
     context.configure(
-        url=url,
+        url=database_url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -52,9 +63,14 @@ def run_migrations_offline():
 
 
 def run_migrations_online():
-    connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section),
-        prefix="sqlalchemy.",
+    """Run migrations in 'online' mode (ASYNC)."""
+    database_url = os.getenv("DATABASE_URL")
+
+    if not database_url:
+        raise RuntimeError("DATABASE_URL is not set")
+
+    connectable = create_async_engine(
+        database_url,
         poolclass=pool.NullPool,
         future=True,
     )
