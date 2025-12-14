@@ -46,6 +46,8 @@ async def create_clinic(session : AsyncSession, clinic_data : ClinicCreate) -> C
         queries = []
         if clinic_data.area_id:
             area = await session.get(Area, clinic_data.area_id)
+            if not area:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Area with id {clinic_data.area_id} does not exist")
             if area and getattr(area, "name", None):
                 addr = f"{address_norm}, {area.name}"
                 queries.append(addr)

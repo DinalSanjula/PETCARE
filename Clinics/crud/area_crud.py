@@ -40,18 +40,19 @@ async def create_area(session: AsyncSession, area_in: AreaCreate) -> Area:
 
     base_q = area_in.formatted_address or normalize_address(name_raw) or name_raw
 
-    lat = None
-    lng = None
+    lat = area_in.latitude
+    lng = area_in.longitude
     formatted = area_in.formatted_address
     geocoded_at = None
     geocode_source = None
 
-    geo_lat, geo_lng, geo_formatted, source = await _try_geocode_for_area(base_q, main_region)
-    if geo_lat is not None:
-        lat, lng = geo_lat, geo_lng
-        formatted = formatted or geo_formatted
-        geocoded_at = now_utc()
-        geocode_source = source
+    if lat is not None or lng is None:
+        geo_lat, geo_lng, geo_formatted, source = await _try_geocode_for_area(base_q, main_region)
+        if geo_lat is not None:
+            lat, lng = geo_lat, geo_lng
+            formatted = formatted or geo_formatted
+            geocoded_at = now_utc()
+            geocode_source = source
 
     area = Area(
         name=name_raw,
