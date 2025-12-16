@@ -19,10 +19,7 @@ class UserResponse(UserBase):
     created_at: datetime
     updated_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)  # v2
-
-    # class Config:
-    #     from_attributes = True  # ORM mode (v1)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserReplace(UserBase):

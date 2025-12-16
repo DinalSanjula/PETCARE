@@ -1,4 +1,3 @@
-# app/auth/security.py
 from typing import Optional, Dict, Any
 from datetime import datetime, timedelta, timezone
 import os
@@ -12,12 +11,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import logging
 
-# load .env
 load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-# Auth scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
