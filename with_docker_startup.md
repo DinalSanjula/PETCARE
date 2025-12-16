@@ -1,6 +1,5 @@
 
 
-
 # 📘 PETCARE – Docker Development Guide 
 
 This project uses **Docker + automatic Alembic migrations** to provide a **stable and consistent backend environment** for all teammates.
@@ -16,8 +15,12 @@ This project uses **Docker + automatic Alembic migrations** to provide a **stabl
 - NOT tied to Git branches
 - NOT tied to container restarts
 
-👉 **Each developer MUST use a unique `COMPOSE_PROJECT_NAME`**  
-This prevents database corruption and Alembic issues.
+👉 **Each developer MUST use a unique `COMPOSE_PROJECT_NAME`**
+
+This prevents:
+- database corruption
+- missing tables
+- random Alembic errors
 
 ---
 
@@ -55,7 +58,7 @@ cd PETCARE
 
 git checkout testing-branch
 
-(or main if instructed/ needed)
+(or main if instructed)
 
 
 ---
@@ -122,7 +125,7 @@ Swagger Docs: http://localhost:8000/docs
 ✅ Setup complete
 
 
----------------------------------------------------------------------------------------
+---
 
 2️⃣ Daily Development Guide
 
@@ -139,7 +142,7 @@ That’s it.
 
 DB starts
 
-Migrations auto-run (if needed)
+Alembic runs automatically (if needed)
 
 App starts
 
@@ -149,7 +152,7 @@ App starts
 
 🔁 Switching branches (IMPORTANT)
 
-You do NOT reset Docker when switching branches.
+❗ You do NOT reset Docker when switching branches
 
 Correct way:
 
@@ -182,6 +185,20 @@ docker compose up -d --build
 
 ---
 
+🔁 After merging branches (IMPORTANT)
+
+If you merge testing-branch → main:
+
+git checkout main
+git merge testing-branch
+docker compose restart app
+
+❌ No rebuild needed
+❌ No DB reset needed
+
+
+---
+
 🧪 Running tests
 
 docker compose exec app pytest -q
@@ -193,7 +210,7 @@ docker compose exec app pytest -q
 
 docker compose logs -f app
 
-Or: Docker Desktop → Containers → petcare_app → Logs
+Or via: Docker Desktop → Containers → petcare_app → Logs
 
 
 ---
@@ -224,7 +241,7 @@ First-time setup
 
 Migration history is broken
 
-Explicitly instructed
+Explicitly instructed by team
 
 
 docker compose down -v
@@ -243,7 +260,7 @@ Start everything:
 
 docker compose up -d
 
-Build + start (after Dockerfile/dependency changes):
+Build + start (after Dockerfile / dependency changes):
 
 docker compose up -d --build
 
@@ -285,6 +302,10 @@ Follow logs live:
 
 docker compose logs -f app
 
+Check tables exist:
+
+docker compose exec db psql -U test -d test_db -c "\dt"
+
 
 ---
 
@@ -297,9 +318,7 @@ docker compose logs -f app
 ❌ Do NOT reset DB daily
 
 ✅ Always use Docker commands
-✅ Migrations are automatic
+✅ Alembic runs automatically (ENTRYPOINT fixed)
 ✅ One person creates migrations, others only pull
 ✅ Branch switching = restart app, not reset DB
 
-
----
