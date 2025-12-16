@@ -14,6 +14,7 @@ services:
     volumes:
       - pgdata_test:/var/lib/postgresql/data
 
+
   app:
     build: .
     container_name: petcare_app
@@ -26,8 +27,10 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
+    entrypoint: [ ]
     command: >
       sh -c "
+      echo 'RUN_MIGRATIONS='$RUN_MIGRATIONS &&
       if [ \"$RUN_MIGRATIONS\" = \"true\" ]; then
         alembic upgrade head;
       fi &&
