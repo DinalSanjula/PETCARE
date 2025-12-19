@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.user_model import User
-from app.schemas.user_schema import UserCreate, UserReplace, UserPatch, UserResponse
-from app.schemas.service_schema import ServiceResponse, ServiceListResponse
-from app.services.user_service import create_user, get_user_by_id, get_all_users, update_user, patch_user, delete_user
-from app.auth.security import get_current_active_user
+from Users.models.user_model import User
+from Users.schemas.user_schema import UserCreate, UserReplace, UserPatch, UserResponse
+from Users.schemas.service_schema import ServiceResponse, ServiceListResponse
+from Users.services.user_service import create_user, get_user_by_id, get_all_users, update_user, patch_user, delete_user
+from Users.auth.security import get_current_active_user
 from db import get_db
 
 

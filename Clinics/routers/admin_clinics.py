@@ -4,10 +4,10 @@ from fastapi import APIRouter, HTTPException, Depends, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from Clinics.schemas.clinic import ClinicAdminResponse
 from Clinics.crud.clinic_crud import set_clinic_active, list_clinics
-from app.schemas.service_schema import ServiceResponse
+from Users.schemas.service_schema import ServiceResponse
 
 from db import get_db
-from app.auth.security import get_current_active_user, require_admin
+from Users.auth.security import get_current_active_user, require_admin
 
 router = APIRouter(tags=["Admin Clinics"])
 

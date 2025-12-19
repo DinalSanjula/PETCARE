@@ -11,7 +11,7 @@ async def test_get_all_users_requires_auth(async_client):
 @pytest.mark.anyio
 async def test_get_all_users_with_token(async_client, test_user_token, db_session):
     # Promote token user to admin for this test
-    from app.models.user_model import User
+    from Users.models.user_model import User
     from sqlalchemy import select
 
     token = test_user_token["access_token"]
@@ -46,7 +46,7 @@ async def test_get_all_users_with_token(async_client, test_user_token, db_sessio
 
 @pytest.mark.anyio
 async def test_get_user_by_id_and_delete(async_client, test_user_token, db_session):
-    from app.models.user_model import User
+    from Users.models.user_model import User
     from sqlalchemy import select
 
     token = test_user_token["access_token"]

@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import logging
 
-from app.models import UserRole
+from Users.models import UserRole
 
 load_dotenv()
 
@@ -24,8 +24,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
 REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))
 
 from db import get_db as get_db_session
-from app.models.user_model import User
-from app.schemas.user_schema import TokenData
+from Users.models.user_model import User
+from Users.schemas.user_schema import TokenData
 
 _FALLBACK_SECRET: Optional[str] = None
 

@@ -2,11 +2,11 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import timedelta
 
-from app.models.user_model import User
-from app.schemas.user_schema import UserCreate, UserLogin, Token
-from app.schemas.service_schema import ServiceResponse
-from app.auth.security import (verify_password, get_password_hash, create_access_token, create_refresh_token,)
-from app.services.user_service import get_user_by_email, create_user
+from Users.models.user_model import User
+from Users.schemas.user_schema import UserCreate, UserLogin, Token
+from Users.schemas.service_schema import ServiceResponse
+from Users.auth.security import (verify_password, get_password_hash, create_access_token, create_refresh_token, )
+from Users.services.user_service import get_user_by_email, create_user
 
 
 #Register new user and return access & refresh tokens

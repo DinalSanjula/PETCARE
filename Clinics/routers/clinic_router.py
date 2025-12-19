@@ -13,8 +13,8 @@ from Clinics.crud.clinic_crud import (create_clinic as create_clinic_crud,
                                       list_clinics)
 
 from db import get_db
-from app.auth.security import get_current_active_user
-from app.models.user_model import User
+from Users.auth.security import get_current_active_user
+from Users.models.user_model import User
 
 router = APIRouter(tags=["Clinics"])
 

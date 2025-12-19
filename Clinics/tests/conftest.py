@@ -74,13 +74,13 @@ async def client(monkeypatch, db_session):
     test_user = None
 
     try:
-        from app.auth.security import get_current_active_user, get_password_hash
+        from Users.auth.security import get_current_active_user, get_password_hash
     except Exception:
         get_current_active_user = None
         get_password_hash = None
 
     try:
-        from app.models.user_model import User
+        from Users.models.user_model import User
     except Exception:
         User = None
 
@@ -116,13 +116,13 @@ async def client(monkeypatch, db_session):
     try:
         project_app = importlib.import_module("main").app
     except Exception:
-        project_app = importlib.import_module("app.main").app
+        project_app = importlib.import_module("Users.main").app
 
     # -----------------------------
     # 5) Override require_admin
     # -----------------------------
 
-    from app.auth.security import require_admin
+    from Users.auth.security import require_admin
 
     async def _override_admin():
         return None

@@ -1,4 +1,4 @@
-# PETCARE/app/tests/conftest.py
+# PETCARE/Users/tests/conftest.py
 import pytest
 from httpx import AsyncClient, ASGITransport
 

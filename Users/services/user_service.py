@@ -4,10 +4,10 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete, func
 
-from app.models.user_model import User, UserRole
-from app.schemas.user_schema import (UserCreate, UserReplace, UserPatch, UserResponse)
-from app.auth.security import get_password_hash
-from app.schemas.service_schema import (ServiceResponse, ServiceListResponse)
+from Users.models.user_model import User, UserRole
+from Users.schemas.user_schema import (UserCreate, UserReplace, UserPatch, UserResponse)
+from Users.auth.security import get_password_hash
+from Users.schemas.service_schema import (ServiceResponse, ServiceListResponse)
 
 
 # CREATE USER

@@ -2,11 +2,11 @@ from fastapi import HTTPException, status, Depends, APIRouter
 from fastapi.responses import JSONResponse
 import logging
 
-from app.auth import security
-from app.schemas.user_schema import UserCreate, UserLogin
+from Users.auth import security
+from Users.schemas.user_schema import UserCreate, UserLogin
 from sqlalchemy.ext.asyncio import AsyncSession
-# from app.database.session import get_db_session
-from app.services.auth_service import register_user, login_user
+# from Users.database.session import get_db_session
+from Users.services.auth_service import register_user, login_user
 from db import get_db
 
 router = APIRouter()

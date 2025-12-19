@@ -28,8 +28,8 @@ DATABASE_URL = (
 # ---------------------------------------------------------
 CANDIDATE_MODULES = [
     "db",
-    "app.db",
-    "app.models.user_model",
+    "Users.db",
+    "Users.models.user_model",
     "Clinics.models.models",
     "Clinics.models",
     "Clinics.db",

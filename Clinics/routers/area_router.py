@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from Clinics.schemas.area import AreaResponse, AreaCreate, AreaUpdate
-from app.auth.security import require_admin
+from Users.auth.security import require_admin
 from db import get_db
 from Clinics.crud.area_crud import create_area as create, get_area, re_geocode_area, update_area as update, delete_area as delete, list_areas, autocomplete
 

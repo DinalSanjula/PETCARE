@@ -3,14 +3,14 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, status, Form, De
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from Clinics.crud.clinic_crud import get_clinic_by_id
-from app.auth.security import get_current_active_user
+from Users.auth.security import get_current_active_user
 from db import get_db
 from Clinics.schemas.clinic_image import ClinicImageCreate, ClinicImageResponse, ClinicImageUpdate
 from Clinics.crud.images_crud import create_clinic_image, update_clinic_image, delete_image, get_image_by_id, list_images_for_clinic
 from Clinics.storage.minio_storage import generate_stored_filename, upload_file,delete_file as minio_delete_file
 from PIL import Image
 import io
-from app.models.user_model import User
+from Users.models.user_model import User
 
 router = APIRouter(tags=["Images"])
 

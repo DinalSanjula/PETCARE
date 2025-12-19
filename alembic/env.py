@@ -17,7 +17,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 # Import Base and models
 # ------------------------------------------------------------------
 from db import Base
-import app.models.user_model
+import Users.models.user_model
 import Clinics.models.models
 # ------------------------------------------------------------------
 
