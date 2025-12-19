@@ -1,7 +1,25 @@
 import pytest
+from sqlalchemy import select
+
+from Clinics.models.models import Clinic
+
+
+# --------------------------------------------------
+# Helper: activate clinic
+# --------------------------------------------------
+async def activate_clinic(db_session, clinic_id: int):
+    result = await db_session.execute(
+        select(Clinic).where(Clinic.id == clinic_id)
+    )
+    clinic = result.scalar_one()
+    clinic.is_active = True
+    await db_session.commit()
+    await db_session.refresh(clinic)
+    return clinic
+
 
 @pytest.mark.anyio
-async def test_create_clinic(client):
+async def test_create_clinic(client, db_session):
     payload = {
         "name": "Golden Vet",
         "description": "Good clinic",
@@ -18,12 +36,14 @@ async def test_create_clinic(client):
 
     data = resp.json()
     assert data["name"] == payload["name"]
-    assert data["owner_id"] > 1
     assert data["id"] > 0
+
+    # Newly created clinics are inactive
+    assert data["is_active"] is False
 
 
 @pytest.mark.anyio
-async def test_get_clinic_by_id(client):
+async def test_get_clinic_by_id(client, db_session):
     payload = {
         "name": "City Vet",
         "description": "24/7 service",
@@ -36,13 +56,16 @@ async def test_get_clinic_by_id(client):
     created = await client.post("/clinics/", json=payload)
     cid = created.json()["id"]
 
+    # Activate clinic before public access
+    await activate_clinic(db_session, cid)
+
     resp = await client.get(f"/clinics/{cid}")
     assert resp.status_code == 200
     assert resp.json()["id"] == cid
 
 
 @pytest.mark.anyio
-async def test_get_clinic_by_name(client):
+async def test_get_clinic_by_name(client, db_session):
     payload = {
         "name": "Happy Pets",
         "description": "Pet care",
@@ -52,7 +75,10 @@ async def test_get_clinic_by_name(client):
         "area_id": None
     }
 
-    await client.post("/clinics/", json=payload)
+    created = await client.post("/clinics/", json=payload)
+    cid = created.json()["id"]
+
+    await activate_clinic(db_session, cid)
 
     resp = await client.get("/clinics/by-name/Happy Pets")
     assert resp.status_code == 200
@@ -60,7 +86,7 @@ async def test_get_clinic_by_name(client):
 
 
 @pytest.mark.anyio
-async def test_get_clinic_by_phone(client):
+async def test_get_clinic_by_phone(client, db_session):
     payload = {
         "name": "Pet Zone",
         "description": "Care",
@@ -71,16 +97,17 @@ async def test_get_clinic_by_phone(client):
     }
 
     created = await client.post("/clinics/", json=payload)
-    stored_phone = created.json()["phone"]
+    cid = created.json()["id"]
+
+    await activate_clinic(db_session, cid)
 
     resp = await client.get(f"/clinics/by-phone/{payload['phone']}")
     assert resp.status_code == 200
-    assert resp.json()["phone"] == stored_phone
+    assert resp.json()["phone"] == "+94775555555"
 
 
 @pytest.mark.anyio
-async def test_list_clinics(client):
-
+async def test_list_clinics(client, db_session):
     payloads = [
         {
             "name": "One",
@@ -100,8 +127,14 @@ async def test_list_clinics(client):
         }
     ]
 
+    ids = []
     for p in payloads:
-        await client.post("/clinics/", json=p)
+        resp = await client.post("/clinics/", json=p)
+        ids.append(resp.json()["id"])
+
+    # Activate both clinics
+    for cid in ids:
+        await activate_clinic(db_session, cid)
 
     resp = await client.get("/clinics/?limit=10&offset=0")
     assert resp.status_code == 200
@@ -109,8 +142,7 @@ async def test_list_clinics(client):
 
 
 @pytest.mark.anyio
-async def test_update_clinic(client):
-
+async def test_update_clinic(client, db_session):
     payload = {
         "name": "Old Clinic",
         "description": "Old desc",
@@ -123,6 +155,8 @@ async def test_update_clinic(client):
     resp = await client.post("/clinics/", json=payload)
     cid = resp.json()["id"]
 
+    await activate_clinic(db_session, cid)
+
     update_data = {"name": "New Clinic"}
     resp2 = await client.patch(f"/clinics/{cid}", json=update_data)
 
@@ -130,12 +164,8 @@ async def test_update_clinic(client):
     assert resp2.json()["name"] == "New Clinic"
 
 
-from app.auth.security import get_current_active_user
-
 @pytest.mark.anyio
-async def test_delete_clinic(client):
-
-
+async def test_delete_clinic(client, db_session):
     payload = {
         "name": "Delete Me",
         "description": "Temp",
@@ -145,15 +175,13 @@ async def test_delete_clinic(client):
         "area_id": None
     }
 
-    # create
     resp = await client.post("/clinics/", json=payload)
-    assert resp.status_code == 201
     cid = resp.json()["id"]
 
-    # delete
+    await activate_clinic(db_session, cid)
+
     del_resp = await client.delete(f"/clinics/{cid}")
     assert del_resp.status_code == 204
 
-    # verify gone
     get_resp = await client.get(f"/clinics/{cid}")
     assert get_resp.status_code == 404

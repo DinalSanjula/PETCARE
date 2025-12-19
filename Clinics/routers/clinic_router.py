@@ -16,7 +16,7 @@ from db import get_db
 from app.auth.security import get_current_active_user
 from app.models.user_model import User
 
-router = APIRouter()
+router = APIRouter(tags=["Clinics"])
 
 @router.post("/", response_model=ClinicResponse, status_code=status.HTTP_201_CREATED)
 async def create_new_clinic(clinic: ClinicCreate,
@@ -63,7 +63,6 @@ async def list_of_clinics(
         area_id : Optional[int] = Query(None),
         name : Optional[str] = Query(None),
         phone : Optional[str] = Query(None),
-        is_active : Optional[bool] = Query(None),
         with_related : bool = Query(True)
 ):
     clinics = await list_clinics(
@@ -74,7 +73,7 @@ async def list_of_clinics(
         area_id=area_id,
         name=name,
         phone=phone,
-        is_active=is_active,
+        is_active=True,
         with_related=with_related
     )
     return clinics

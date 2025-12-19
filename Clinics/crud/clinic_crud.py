@@ -327,3 +327,20 @@ async def list_clinics(
     result = await session.execute(q)
     clinics = list(result.scalars().unique().all())
     return clinics
+
+async def set_clinic_active(
+        session : AsyncSession,
+        clinic_id : int,
+        active : bool,
+) -> Clinic:
+    clinic = await session.get(Clinic, clinic_id)
+
+    if not clinic:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Clinic not found")
+
+    clinic.is_active = active
+    session.add(clinic)
+    await session.commit()
+    await session.refresh(clinic)
+
+    return clinic

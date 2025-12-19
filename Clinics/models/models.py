@@ -18,7 +18,7 @@ class Clinic(Base):
     area_id = Column(Integer, ForeignKey("areas.id", ondelete="SET NULL"), nullable=True, index=True)
     latitude = Column(Float, nullable=True, index=True)
     longitude = Column(Float, nullable=True, index=True)
-    is_active = Column(Boolean, default=True, server_default=text("true"), nullable=False)
+    is_active = Column(Boolean, default=False, server_default=text("false"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(),nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(),nullable=False)
 

@@ -12,7 +12,7 @@ from PIL import Image
 import io
 from app.models.user_model import User
 
-router = APIRouter()
+router = APIRouter(tags=["Images"])
 
 @router.post("/clinics/{clinic_id}", response_model=ClinicImageResponse, status_code=status.HTTP_201_CREATED, summary="Upload image for clinic")
 async def upload_clinic_image(clinic_id:int, file:UploadFile = File(...),

@@ -1,4 +1,5 @@
 # Clinics/tests/conftest.py
+
 import importlib
 import pytest
 from sqlalchemy import select
@@ -22,8 +23,16 @@ async def client(monkeypatch, db_session):
     async def fake_geocode(q, countrycode=None):
         return None, None, None
 
-    monkeypatch.setattr("Clinics.crud.geocode.geocode_async", fake_geocode, raising=False)
-    monkeypatch.setattr("Clinics.crud.area_crud.geocode_async", fake_geocode, raising=False)
+    monkeypatch.setattr(
+        "Clinics.crud.geocode.geocode_async",
+        fake_geocode,
+        raising=False
+    )
+    monkeypatch.setattr(
+        "Clinics.crud.area_crud.geocode_async",
+        fake_geocode,
+        raising=False
+    )
 
     # -----------------------------
     # 2) Fake MinIO Client
@@ -40,7 +49,10 @@ async def client(monkeypatch, db_session):
 
         def put_object(self, bucket, object_name, data, length, content_type=None):
             content = data.read() if hasattr(data, "read") else data
-            self._store[(bucket, object_name)] = {"data": content, "content_type": content_type}
+            self._store[(bucket, object_name)] = {
+                "data": content,
+                "content_type": content_type
+            }
 
         def remove_object(self, bucket, object_name):
             self._store.pop((bucket, object_name), None)
@@ -50,12 +62,17 @@ async def client(monkeypatch, db_session):
         _ms._client = _FakeMinioClient()
         _ms.PUBLIC_BASE = "http://testserver/fake"
     except Exception:
-        monkeypatch.setattr("Clinics.storage.minio_storage._get_client", lambda: _FakeMinioClient(), raising=False)
+        monkeypatch.setattr(
+            "Clinics.storage.minio_storage._get_client",
+            lambda: _FakeMinioClient(),
+            raising=False
+        )
 
     # -----------------------------
-    # 3) Load or create test user directly via db_session
+    # 3) Load or create ACTIVE test user
     # -----------------------------
     test_user = None
+
     try:
         from app.auth.security import get_current_active_user, get_password_hash
     except Exception:
@@ -79,13 +96,19 @@ async def client(monkeypatch, db_session):
                 email="test@example.com",
                 password_hash=get_password_hash("strongpassword"),
                 role="owner",
+                is_active=True,   # ✅ IMPORTANT FIX
             )
             db_session.add(test_user)
             await db_session.commit()
             await db_session.refresh(test_user)
+        else:
+            # Ensure existing user is active
+            if not test_user.is_active:
+                test_user.is_active = True
+                await db_session.commit()
 
-        async def _override_current_user():
-            return test_user
+    async def _override_current_user():
+        return test_user
 
     # -----------------------------
     # 4) Load FastAPI application
@@ -95,28 +118,24 @@ async def client(monkeypatch, db_session):
     except Exception:
         project_app = importlib.import_module("app.main").app
 
+    # -----------------------------
+    # 5) Override require_admin
+    # -----------------------------
 
+    from app.auth.security import require_admin
+
+    async def _override_admin():
+        return None
+
+    project_app.dependency_overrides[require_admin] = _override_admin
 
     # -----------------------------
-    # 5) REQUIRED FIX:
-    #    Override require_admin at FastAPI dependency layer
-    # -----------------------------
-    try:
-        from Clinics.utils.admin_permission import require_admin
-    except Exception:
-        require_admin = None
-
-    if require_admin:
-        async def _override_admin():
-            return None
-
-        project_app.dependency_overrides[require_admin] = _override_admin
-
-    # -----------------------------
-    # 6) Override get_current_user
+    # 6) Override get_current_active_user
     # -----------------------------
     if get_current_active_user:
-        project_app.dependency_overrides[get_current_active_user] = _override_current_user
+        project_app.dependency_overrides[
+            get_current_active_user
+        ] = _override_current_user
 
     # -----------------------------
     # 7) Override get_db to use db_session
@@ -129,6 +148,7 @@ async def client(monkeypatch, db_session):
     if app_get_db:
         async def _override_get_db():
             yield db_session
+
         project_app.dependency_overrides[app_get_db] = _override_get_db
 
     # -----------------------------
@@ -136,7 +156,10 @@ async def client(monkeypatch, db_session):
     # -----------------------------
     transport = ASGITransport(app=project_app)
 
-    async with AsyncClient(transport=transport, base_url="http://testserver") as ac:
+    async with AsyncClient(
+        transport=transport,
+        base_url="http://testserver"
+    ) as ac:
         yield ac
 
     project_app.dependency_overrides.clear()

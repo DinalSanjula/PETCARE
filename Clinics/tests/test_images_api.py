@@ -1,10 +1,16 @@
-# Clinics/tests/test_images_api.py
 import pytest
 from io import BytesIO
 from PIL import Image
+from sqlalchemy import select
 
-PREFIX = "/images"   # Your router prefix
+from Clinics.models.models import Clinic
 
+PREFIX = "/images"
+
+
+# --------------------------------------------------
+# Helper: create png bytes
+# --------------------------------------------------
 async def create_png_bytes(color=(255, 0, 0)):
     buf = BytesIO()
     img = Image.new("RGB", (2, 2), color=color)
@@ -12,11 +18,25 @@ async def create_png_bytes(color=(255, 0, 0)):
     buf.seek(0)
     return buf.read()
 
+
+# --------------------------------------------------
+# Helper: activate clinic
+# --------------------------------------------------
+async def activate_clinic(db_session, clinic_id: int):
+    result = await db_session.execute(
+        select(Clinic).where(Clinic.id == clinic_id)
+    )
+    clinic = result.scalar_one()
+    clinic.is_active = True
+    await db_session.commit()
+    await db_session.refresh(clinic)
+    return clinic
+
+
 @pytest.mark.anyio
-async def test_upload_and_list_image(client):
-    # 1) Create clinic
+async def test_upload_and_list_image(client, db_session):
+    # 1) Create clinic (inactive by default)
     payload = {
-        "owner_id": 1,
         "name": "Img Clinic",
         "description": "For images",
         "phone": "0773333333",
@@ -24,9 +44,13 @@ async def test_upload_and_list_image(client):
         "profile_pic_url": None,
         "area_id": None
     }
+
     create_resp = await client.post("/clinics/", json=payload)
     assert create_resp.status_code == 201
     cid = create_resp.json()["id"]
+
+    # Activate clinic
+    await activate_clinic(db_session, cid)
 
     # 2) Upload image
     png_bytes = await create_png_bytes()
@@ -50,10 +74,9 @@ async def test_upload_and_list_image(client):
 
 
 @pytest.mark.anyio
-async def test_get_patch_and_delete_image(client):
+async def test_get_patch_and_delete_image(client, db_session):
     # 1) Create clinic
     payload = {
-        "owner_id": 1,
         "name": "Img Clinic 2",
         "description": "For images",
         "phone": "0774444444",
@@ -61,11 +84,15 @@ async def test_get_patch_and_delete_image(client):
         "profile_pic_url": None,
         "area_id": None
     }
+
     create_resp = await client.post("/clinics/", json=payload)
     assert create_resp.status_code == 201
     cid = create_resp.json()["id"]
 
-    # 2) Upload
+    # Activate clinic
+    await activate_clinic(db_session, cid)
+
+    # 2) Upload image
     png_bytes = await create_png_bytes((0, 255, 0))
     files = {"file": ("test2.png", png_bytes, "image/png")}
 
@@ -76,13 +103,13 @@ async def test_get_patch_and_delete_image(client):
     img = resp.json()
     img_id = img["id"]
 
-    # 3) Get
+    # 3) Get image
     get_url = f"{PREFIX}/{img_id}"
     get_resp = await client.get(get_url)
     assert get_resp.status_code == 200
     assert get_resp.json()["id"] == img_id
 
-    # 4) Patch metadata only (no file upload)
+    # 4) Patch metadata only
     patch_url = f"{PREFIX}/{img_id}"
     patch_resp = await client.patch(
         patch_url,
@@ -92,8 +119,12 @@ async def test_get_patch_and_delete_image(client):
         }
     )
     assert patch_resp.status_code == 200
+
     patched = patch_resp.json()
-    assert patched["original_filename"] == "renamed.png" or patched["url"] == "http://example/new.png"
+    assert (
+        patched["original_filename"] == "renamed.png"
+        or patched["url"] == "http://example/new.png"
+    )
 
     # 5) Delete
     del_url = f"{PREFIX}/{img_id}"

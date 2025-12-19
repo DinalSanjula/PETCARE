@@ -11,6 +11,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import logging
 
+from app.models import UserRole
+
 load_dotenv()
 
 logger = logging.getLogger(__name__)
@@ -116,8 +118,17 @@ async def get_current_user(
     if user is None:
         logger.debug("No user found for email for token: %s", token_data.email)
         raise credentials_exception
+
+    if not user.is_active:
+        logger.info("Blocked user attempted to access: %s", user.email)
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account is blocked. Please contact support")
+
     return user
 
+async def require_admin(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
+    return current_user
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
     return current_user

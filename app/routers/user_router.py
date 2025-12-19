@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-# from app.database.session import get_db_session
 from app.models.user_model import User
 from app.schemas.user_schema import UserCreate, UserReplace, UserPatch, UserResponse
 from app.schemas.service_schema import ServiceResponse, ServiceListResponse
@@ -20,7 +19,7 @@ async def get_user_by_id_endpoint(
     result = await get_user_by_id(user_id, db)
 
     if not result.success:
-        raise HTTPException(status_code=404, detail=result.message)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result.message)
 
     return result
 
@@ -45,8 +44,8 @@ async def update_user_endpoint(
 
     if not result.success:
         if "not found" in result.message.lower():
-            raise HTTPException(status_code=404, detail=result.message)
-        raise HTTPException(status_code=400, detail=result.message)
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result.message)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=result.message)
 
     return result
 
@@ -62,8 +61,8 @@ async def patch_user_endpoint(
 
     if not result.success:
         if "not found" in result.message.lower():
-            raise HTTPException(status_code=404, detail=result.message)
-        raise HTTPException(status_code=400, detail=result.message)
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result.message)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=result.message)
 
     return result
 
@@ -77,6 +76,6 @@ async def delete_user_endpoint(
     result = await delete_user(user_id, db)
 
     if not result.success:
-        raise HTTPException(status_code=404, detail=result.message)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result.message)
 
     return result

@@ -1,4 +1,5 @@
-# PETCARE/conftest.py  (ROOT)
+# PETCARE/conftest.py (ROOT)
+
 import os
 import importlib
 from pathlib import Path
@@ -7,7 +8,7 @@ from dotenv import load_dotenv
 import pytest
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
-    async_sessionmaker,  # <-- real SQLAlchemy function
+    async_sessionmaker,
     AsyncSession,
 )
 
@@ -56,11 +57,10 @@ async def test_engine():
     await engine.dispose()
 
 # ---------------------------------------------------------
-# SESSIONMAKER FIXTURE  (RENAMED!)
+# SESSIONMAKER FIXTURE
 # ---------------------------------------------------------
 @pytest.fixture(scope="session")
 def get_sessionmaker(test_engine):
-    """Return a SQLAlchemy async sessionmaker."""
     return async_sessionmaker(
         test_engine,
         expire_on_commit=False,
@@ -76,18 +76,12 @@ async def prepare_database(test_engine):
 
     async with test_engine.begin() as conn:
         for name, Base in bases:
-            print(f"Creating tables for Base from {name}: {sorted(Base.metadata.tables.keys())}")
             await conn.run_sync(Base.metadata.create_all)
-
-    print("TEST DATABASE_URL:", DATABASE_URL)
-    for name, Base in bases:
-        print(f"Discovered Base: {name} -> tables: {sorted(Base.metadata.tables.keys())}")
 
     yield
 
     async with test_engine.begin() as conn:
         for name, Base in bases:
-            print(f"Dropping tables for Base from {name}: {sorted(Base.metadata.tables.keys())}")
             await conn.run_sync(Base.metadata.drop_all)
 
 # ---------------------------------------------------------
@@ -96,16 +90,12 @@ async def prepare_database(test_engine):
 @pytest.fixture(scope="function")
 async def db_session(test_engine, get_sessionmaker):
     async with test_engine.connect() as conn:
-        trans = await conn.begin()
-
+        await conn.begin()
         session = get_sessionmaker(bind=conn)
-        # await session.begin_nested()
         try:
             yield session
         finally:
-            # await session.rollback()
             await session.close()
-            # await trans.rollback()
 
 # ---------------------------------------------------------
 # PERSISTENT SESSION FOR SEEDING USERS
@@ -119,14 +109,16 @@ async def persistent_session(get_sessionmaker):
 def anyio_backend():
     return "asyncio"
 
-# --- Backward-compatible alias fixtures for old tests ---
-
+# ---------------------------------------------------------
+# Backward-compatible alias
+# ---------------------------------------------------------
 @pytest.fixture()
 async def async_session(db_session):
-    """Old tests expect async_session -> map it to db_session."""
     return db_session
 
-
+# ---------------------------------------------------------
+# HTTP CLIENT
+# ---------------------------------------------------------
 from httpx import AsyncClient, ASGITransport
 from main import app as fastapi_app
 
@@ -134,18 +126,26 @@ from main import app as fastapi_app
 async def async_client(db_session):
     try:
         from db import get_db
+
         async def _override_get_db():
             yield db_session
+
         fastapi_app.dependency_overrides[get_db] = _override_get_db
     except Exception:
         pass
 
     transport = ASGITransport(app=fastapi_app)
-    async with AsyncClient(transport=transport, base_url="http://testserver") as ac:
+    async with AsyncClient(
+        transport=transport,
+        base_url="http://testserver"
+    ) as ac:
         yield ac
 
     fastapi_app.dependency_overrides.clear()
 
+# ---------------------------------------------------------
+# TOKEN USER (ACTIVE USER)
+# ---------------------------------------------------------
 @pytest.fixture()
 async def test_user_token(async_client):
     payload = {

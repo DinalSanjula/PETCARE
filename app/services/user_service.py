@@ -4,7 +4,7 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete, func
 
-from app.models.user_model import User
+from app.models.user_model import User, UserRole
 from app.schemas.user_schema import (UserCreate, UserReplace, UserPatch, UserResponse)
 from app.auth.security import get_password_hash
 from app.schemas.service_schema import (ServiceResponse, ServiceListResponse)
@@ -232,4 +232,64 @@ async def delete_user(user_id: int, db: AsyncSession) -> ServiceResponse[str]:
     except Exception as e:
         await db.rollback()
         return ServiceResponse(success=False,message=f"Error deleting user: {str(e)}" , data=None
+        )
+
+async def set_user_active(user_id : int, active : bool, db: AsyncSession) -> ServiceResponse[UserResponse]:
+    try:
+        stmt = select(User).where(User.id == user_id)
+        user = (await db.execute(stmt)).scalar_one_or_none()
+
+        if not user:
+            return ServiceResponse(
+                success=False,
+                message="User not found",
+                data=None
+            )
+
+        user.is_active = active
+        await db.commit()
+        await db.refresh(user)
+
+        return ServiceResponse(
+            success=True,
+            message="User status updated successfully",
+            data=UserResponse.model_validate(user)
+        )
+
+    except Exception as e:
+        await db.rollback()
+        return ServiceResponse(
+            success=False,
+            message=f"Error updating user status: {str(e)}",
+            data=None
+        )
+
+async def set_user_role(user_id: int, role: UserRole, db: AsyncSession)-> ServiceResponse[UserResponse]:
+    try:
+        stmt = select(User).where(User.id == user_id)
+        user = (await db.execute(stmt)).scalar_one_or_none()
+
+        if not user:
+            return ServiceResponse(
+                success=False,
+                message="User not found",
+                data=None
+            )
+
+        user.role = role
+        await db.commit()
+        await db.refresh(user)
+
+        return ServiceResponse(
+            success=True,
+            message="User role updated successfully",
+            data=UserResponse.model_validate(user)
+        )
+
+    except Exception as e:
+        await db.rollback()
+        return ServiceResponse(
+            success=False,
+            message=f"Error updating user role: {str(e)}",
+            data=None
         )

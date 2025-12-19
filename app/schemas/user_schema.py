@@ -47,3 +47,17 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
     user_id: Optional[int] = None  # remove if not used
+
+class UserAdminResponse(BaseModel):
+    id : int
+    name : str
+    email : EmailStr
+    role : UserRole
+    is_active : bool
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+class UserRoleUpdate(BaseModel):
+    role : UserRole
