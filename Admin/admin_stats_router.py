@@ -6,7 +6,7 @@ from Admin.admin_stats_schema import AdminStatsResponse
 from Admin.admin_stats_service import get_admin_stats
 from Users.auth.security import require_admin
 
-router = APIRouter(tags=["Admin"])
+router = APIRouter(tags=["Admin"], dependencies=[Depends(require_admin)])
 
 @router.get("/", response_model=AdminStatsResponse)
 async def admin_stats(

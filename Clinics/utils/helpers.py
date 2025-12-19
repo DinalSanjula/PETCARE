@@ -1,4 +1,6 @@
 from typing import Type, cast, TypeVar
+
+from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeMeta
 from sqlalchemy import select, inspect, ColumnElement
@@ -9,7 +11,8 @@ import re
 from datetime import datetime, timezone
 from typing import Optional
 
-
+from Users.auth.security import get_current_active_user
+from Users.models import UserRole, User
 
 T = TypeVar("T", bound=DeclarativeMeta)
 
@@ -34,3 +37,10 @@ def normalize_address(s: Optional[str]) -> Optional[str]:
 
 def now_utc():
     return datetime.now(timezone.utc)
+
+def require_roles(*roles: UserRole):
+    def checker(user: User = Depends(get_current_active_user)):
+        if user.role not in roles:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+        return user
+    return checker

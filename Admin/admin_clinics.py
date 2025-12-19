@@ -9,10 +9,10 @@ from Users.schemas.service_schema import ServiceResponse
 from db import get_db
 from Users.auth.security import get_current_active_user, require_admin
 
-router = APIRouter(tags=["Admin Clinics"])
+router = APIRouter(tags=["Admin Clinics"], dependencies=[Depends(require_admin)])
 
 @router.patch("/{clinic_id}/suspend" , response_model=ServiceResponse[ClinicAdminResponse])
-async def suspend_clinic(clinic_id : int, db: AsyncSession = Depends(get_db), admin = Depends(require_admin)):
+async def suspend_clinic(clinic_id : int, db: AsyncSession = Depends(get_db)):
     clinic = await set_clinic_active(session=db, clinic_id=clinic_id, active=False)
 
     return ServiceResponse(
@@ -23,7 +23,7 @@ async def suspend_clinic(clinic_id : int, db: AsyncSession = Depends(get_db), ad
 
 
 @router.patch("/{clinic_id}/activate", response_model=ServiceResponse[ClinicAdminResponse])
-async def activate_clinic(clinic_id: int, db: AsyncSession = Depends(get_db), admin=Depends(require_admin)):
+async def activate_clinic(clinic_id: int, db: AsyncSession = Depends(get_db)):
     clinic = await set_clinic_active(session=db, clinic_id=clinic_id, active=True)
 
     return ServiceResponse(

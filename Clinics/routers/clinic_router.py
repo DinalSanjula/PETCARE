@@ -11,6 +11,8 @@ from Clinics.crud.clinic_crud import (create_clinic as create_clinic_crud,
                                       get_clinic_by_phone,
                                       delete_clinic as delete_clinic_crud,
                                       list_clinics)
+from Clinics.utils.helpers import require_roles
+from Users.models import UserRole
 
 from db import get_db
 from Users.auth.security import get_current_active_user
@@ -18,7 +20,7 @@ from Users.models.user_model import User
 
 router = APIRouter(tags=["Clinics"])
 
-@router.post("/", response_model=ClinicResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=ClinicResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
 async def create_new_clinic(clinic: ClinicCreate,
                             session : AsyncSession = Depends(get_db),
                             current_user :User = Depends(get_current_active_user)):
@@ -48,7 +50,7 @@ async def read_clinic_by_phone(phone: str, session : AsyncSession = Depends(get_
     clinic = await get_clinic_by_phone(session=session, phone=phone, with_related=with_related)
     return clinic
 
-@router.get("/owner/{owner_id}", response_model=List[ClinicResponse])
+@router.get("/owner/{owner_id}", response_model=List[ClinicResponse], dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
 async def read_clinic_by_owner(owner_id: int, session : AsyncSession = Depends(get_db), with_related: bool = Query(True),
                                limit : int = Query(20, ge=1, le=100), offset : int = Query(0, ge=0)):
     clinics = await get_clinic_by_owner(session=session, owner_id=owner_id, limit=limit, offset=offset, with_related=with_related)
@@ -78,7 +80,7 @@ async def list_of_clinics(
     )
     return clinics
 
-@router.patch("/{clinic_id}", response_model=ClinicResponse)
+@router.patch("/{clinic_id}", response_model=ClinicResponse, dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
 async def patch_clinics(clinic_id : int, clinic_data : ClinicUpdate, session:AsyncSession =  Depends(get_db),
                         current_user : User = Depends(get_current_active_user)):
 
@@ -90,7 +92,7 @@ async def patch_clinics(clinic_id : int, clinic_data : ClinicUpdate, session:Asy
     return updated
 
 
-@router.delete("/{clinic_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{clinic_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
 async def delete_clinic(clinic_id:int, session:AsyncSession = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     clinic_obj = await get_clinic_by_id_crud(session, clinic_id, with_related=False)
     if clinic_obj.owner_id != current_user.id:

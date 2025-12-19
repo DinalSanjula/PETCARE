@@ -1,5 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from Clinics.utils.helpers import require_roles
+from Users.models import UserRole
 from Users.models.user_model import User
 from Users.schemas.user_schema import UserCreate, UserReplace, UserPatch, UserResponse
 from Users.schemas.service_schema import ServiceResponse, ServiceListResponse
@@ -16,6 +19,9 @@ async def get_user_by_id_endpoint(
     user_id: int,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)):
+
+    if current_user.role != UserRole.ADMIN and current_user.id != user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
     result = await get_user_by_id(user_id, db)
 
     if not result.success:
@@ -23,7 +29,7 @@ async def get_user_by_id_endpoint(
 
     return result
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=ServiceListResponse[UserResponse])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=ServiceListResponse[UserResponse], dependencies=[Depends(require_roles(UserRole.ADMIN))])
 async def get_all_users_endpoint(
     limit: int = Query(10, ge=1),
     offset: int = Query(0, ge=0),
@@ -40,6 +46,9 @@ async def update_user_endpoint(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    if current_user.role != UserRole.ADMIN and current_user.id != user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
+
     result = await update_user(user_id, user, db)
 
     if not result.success:
@@ -57,6 +66,8 @@ async def patch_user_endpoint(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
+    if current_user.role != UserRole.ADMIN and current_user.id != user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
     result = await patch_user(user_id, user, db)
 
     if not result.success:
@@ -67,7 +78,7 @@ async def patch_user_endpoint(
     return result
 
 
-@router.delete("/{user_id}", status_code=status.HTTP_200_OK, response_model=ServiceResponse[str])
+@router.delete("/{user_id}", status_code=status.HTTP_200_OK, response_model=ServiceResponse[str], dependencies=[Depends(require_roles(UserRole.ADMIN))])
 async def delete_user_endpoint(
     user_id: int,
     db: AsyncSession = Depends(get_db),

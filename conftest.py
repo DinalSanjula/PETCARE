@@ -75,13 +75,13 @@ async def prepare_database(test_engine):
     bases = discover_bases()
 
     async with test_engine.begin() as conn:
-        for name, Base in bases:
+        for _, Base in bases:
             await conn.run_sync(Base.metadata.create_all)
 
     yield
 
     async with test_engine.begin() as conn:
-        for name, Base in bases:
+        for _, Base in bases:
             await conn.run_sync(Base.metadata.drop_all)
 
 # ---------------------------------------------------------
@@ -98,7 +98,7 @@ async def db_session(test_engine, get_sessionmaker):
             await session.close()
 
 # ---------------------------------------------------------
-# PERSISTENT SESSION FOR SEEDING USERS
+# PERSISTENT SESSION (OPTIONAL)
 # ---------------------------------------------------------
 @pytest.fixture()
 async def persistent_session(get_sessionmaker):
@@ -137,31 +137,90 @@ async def async_client(db_session):
     transport = ASGITransport(app=fastapi_app)
     async with AsyncClient(
         transport=transport,
-        base_url="http://testserver"
+        base_url="http://testserver",
     ) as ac:
         yield ac
 
     fastapi_app.dependency_overrides.clear()
 
 # ---------------------------------------------------------
-# TOKEN USER (ACTIVE USER)
+# TOKEN FIXTURES (RBAC)
 # ---------------------------------------------------------
+
 @pytest.fixture()
-async def test_user_token(async_client):
+async def owner_token(async_client):
     payload = {
-        "name": "Token User",
-        "email": "tokenuser@example.com",
+        "name": "Owner User",
+        "email": "owner@example.com",
         "password": "strongpassword",
-        "role": "owner"
+        "role": "owner",
     }
 
-    # Register (ignore if already exists)
     await async_client.post("/auth/register", json=payload)
 
-    # Login
     resp = await async_client.post(
         "/auth/login",
-        json={"email": payload["email"], "password": payload["password"]}
+        json={"email": payload["email"], "password": payload["password"]},
+    )
+    assert resp.status_code == 200
+
+    return resp.json()["data"]
+
+
+@pytest.fixture()
+async def clinic_token(async_client):
+    payload = {
+        "name": "Clinic User",
+        "email": "clinic@example.com",
+        "password": "strongpassword",
+        "role": "clinic",
+    }
+
+    await async_client.post("/auth/register", json=payload)
+
+    resp = await async_client.post(
+        "/auth/login",
+        json={"email": payload["email"], "password": payload["password"]},
+    )
+    assert resp.status_code == 200
+
+    return resp.json()["data"]
+
+
+@pytest.fixture()
+async def admin_token(async_client):
+    payload = {
+        "name": "Admin User",
+        "email": "admin@example.com",
+        "password": "strongpassword",
+        "role": "admin",
+    }
+
+    await async_client.post("/auth/register", json=payload)
+
+    resp = await async_client.post(
+        "/auth/login",
+        json={"email": payload["email"], "password": payload["password"]},
+    )
+    assert resp.status_code == 200
+
+    return resp.json()["data"]
+
+
+@pytest.fixture()
+async def welfare_token(async_client):
+    payload = {
+        "name": "Welfare User",
+        "email": "welfare@example.com",
+        "password": "strongpassword",
+        "role": "welfare",
+    }
+
+    await async_client.post("/auth/register", json=payload)
+
+    resp = await async_client.post(
+        "/auth/login",
+        json={"email": payload["email"], "password": payload["password"]},
     )
     assert resp.status_code == 200
 

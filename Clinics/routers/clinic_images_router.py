@@ -3,6 +3,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, status, Form, De
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from Clinics.crud.clinic_crud import get_clinic_by_id
+from Clinics.utils.helpers import require_roles
 from Users.auth.security import get_current_active_user
 from db import get_db
 from Clinics.schemas.clinic_image import ClinicImageCreate, ClinicImageResponse, ClinicImageUpdate
@@ -10,11 +11,12 @@ from Clinics.crud.images_crud import create_clinic_image, update_clinic_image, d
 from Clinics.storage.minio_storage import generate_stored_filename, upload_file,delete_file as minio_delete_file
 from PIL import Image
 import io
-from Users.models.user_model import User
+from Users.models.user_model import User, UserRole
 
 router = APIRouter(tags=["Images"])
 
-@router.post("/clinics/{clinic_id}", response_model=ClinicImageResponse, status_code=status.HTTP_201_CREATED, summary="Upload image for clinic")
+@router.post("/clinics/{clinic_id}", response_model=ClinicImageResponse, status_code=status.HTTP_201_CREATED,
+             summary="Upload image for clinic", dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
 async def upload_clinic_image(clinic_id:int, file:UploadFile = File(...),
                               session : AsyncSession = Depends(get_db),
                               current_user: User = Depends(get_current_active_user)):
@@ -66,7 +68,7 @@ async def get_image(image_id:int, session:AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found!")
     return img
 
-@router.patch("/{image_id}", response_model=ClinicImageResponse)
+@router.patch("/{image_id}", response_model=ClinicImageResponse, dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
 async def patch_image(
     image_id: int,
     file: Optional[UploadFile] = File(None),
@@ -197,7 +199,7 @@ async def patch_image(
 
 
 
-@router.delete("/{image_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{image_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
 async def delete_image_endpoint(image_id:int,
                        session:AsyncSession = Depends(get_db),
                        current_user: User = Depends(get_current_active_user)):
