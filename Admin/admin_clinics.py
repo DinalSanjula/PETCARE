@@ -17,7 +17,7 @@ async def suspend_clinic(clinic_id : int, db: AsyncSession = Depends(get_db), ad
 
     return ServiceResponse(
         success=True,
-        message="Clinic suspended successfully",
+        message="Clinic suspended or rejected successfully",
         data=ClinicAdminResponse.model_validate(clinic)
     )
 
@@ -28,7 +28,7 @@ async def activate_clinic(clinic_id: int, db: AsyncSession = Depends(get_db), ad
 
     return ServiceResponse(
         success=True,
-        message="Clinic suspended successfully",
+        message="Clinic activated successfully",
         data=ClinicAdminResponse.model_validate(clinic)
     )
 
