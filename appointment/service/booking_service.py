@@ -20,7 +20,6 @@ async def has_conflict(db: AsyncSession , clinic_id: int , start_time , end_time
     result = await db.execute(stmt)
     return result.scalars().first() is not None
 
-
 async def create_booking(db: AsyncSession , booking_data : BookingCreate):
     conflict = await has_conflict(db,
         booking_data.clinic_id,
