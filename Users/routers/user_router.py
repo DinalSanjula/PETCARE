@@ -11,7 +11,7 @@ from Users.auth.security import get_current_active_user
 from db import get_db
 
 
-router = APIRouter()
+router = APIRouter(tags=["Users"])
 
 
 @router.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=ServiceResponse[UserResponse])

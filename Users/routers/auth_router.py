@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from Users.services.auth_service import register_user, login_user
 from db import get_db
 
-router = APIRouter()
+router = APIRouter(tags=["Sign"])
 
 #Register endpoint
 @router.post("/register", status_code=status.HTTP_201_CREATED)
