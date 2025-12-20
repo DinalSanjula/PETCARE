@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 # from app.database.session import get_db_session
 from app.models.user_model import User
 from app.schemas.user_schema import UserCreate, UserReplace, UserPatch, UserResponse
-from app.schemas.service_schema import ServiceResponse, ServiceListResponse
+from app.schemas.service_response_schema import ServiceResponse, ServiceListResponse
 from app.services.user_service import create_user, get_user_by_id, get_all_users, update_user, patch_user, delete_user
 from app.auth.security import get_current_active_user
 from db import get_db
