@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey
-from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import enum
 from db import Base
@@ -11,7 +10,7 @@ class BookingStatus(enum.Enum):
     RESCHEDULED = "RESCHEDULED"
 
 class Booking(Base):
-    __tablename__ = "booking"
+    __tablename__ = "bookings"
 
     id = Column(Integer , primary_key=True , index=True)
     clinic_id = Column(Integer, ForeignKey("clinics.id"), nullable=False)

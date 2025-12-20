@@ -7,7 +7,7 @@ from sqlalchemy import select, delete, func
 from app.models.user_model import User
 from app.schemas.user_schema import (UserCreate, UserReplace, UserPatch, UserResponse)
 from app.auth.security import get_password_hash
-from app.schemas.service_schema import (ServiceResponse, ServiceListResponse)
+from app.schemas.service_response_schema import (ServiceResponse, ServiceListResponse)
 
 
 # CREATE USER
