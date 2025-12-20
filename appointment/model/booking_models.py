@@ -15,7 +15,6 @@ class Booking(Base):
     id = Column(Integer , primary_key=True , index=True)
     clinic_id = Column(Integer, ForeignKey("clinics.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    #pet_id = Column()
     start_time = Column(DateTime(timezone=True), nullable=False)
     end_time = Column(DateTime(timezone=True), nullable=False)
     status = Column(Enum(BookingStatus), nullable=False, default=BookingStatus.CONFIRMED)
