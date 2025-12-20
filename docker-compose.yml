@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
+
+
+  app:
+    build: .
+    container_name: petcare_app
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/Users
+    entrypoint: [ ]
+    command: >
+      sh -c "
+      echo 'RUN_MIGRATIONS='$RUN_MIGRATIONS &&
+      if [ \"$RUN_MIGRATIONS\" = \"true\" ]; then
+        alembic upgrade head;
+      fi &&
+      uvicorn main:app --host 0.0.0.0 --port 8000
+      "
+
+volumes:
+  pgdata_test:
