@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, Boolean, UniqueConstraint
 from sqlalchemy.sql import func
 import enum
 from db import Base
@@ -21,3 +21,20 @@ class Booking(Base):
 
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+
+
+class TimeSlot(Base):
+    __tablename__ = "time_slots"
+
+    id = Column(Integer, primary_key=True, index=True)
+    clinic_id = Column(Integer, ForeignKey("clinics.id", ondelete="CASCADE"), nullable=False)
+    day_of_week = Column(String(10), nullable=False)
+    start_time = Column(String(5), nullable=False)
+    end_time = Column(String(5), nullable=False)
+    slot_index = Column(Integer, nullable=True)
+
+    is_active = Column(Boolean, default=True)
+
+    __table_args__ = (
+        UniqueConstraint('clinic_id', 'day_of_week', 'start_time', name='uix_clinic_day_start'),
+    )

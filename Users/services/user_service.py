@@ -135,7 +135,6 @@ async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> Serv
 
         user.name = data.name
         user.email = data.email
-        user.age = data.age
         user.role = data.role
         user.password_hash = get_password_hash(data.password)
 
@@ -182,9 +181,6 @@ async def patch_user(user_id: int, data: UserPatch, db: AsyncSession) -> Service
                         data=None
                     )
             user.email = data.email
-
-        if data.age is not None:
-            user.age = data.age
 
         if data.role is not None:
             user.role = data.role
