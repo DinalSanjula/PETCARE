@@ -14,6 +14,19 @@ services:
     volumes:
       - pgdata_test:/var/lib/postgresql/data
 
+  minio:
+    image: minio/minio
+    container_name: petcare_minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
 
   app:
     build: .
@@ -23,11 +36,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      minio:
+        condition: service_started
     ports:
       - "8000:8000"
     volumes:
       - .:/Users
-    entrypoint: [ ]
+    entrypoint: []
     command: >
       sh -c "
       echo 'RUN_MIGRATIONS='$RUN_MIGRATIONS &&
@@ -39,3 +54,4 @@ services:
 
 volumes:
   pgdata_test:
+  minio_data:
