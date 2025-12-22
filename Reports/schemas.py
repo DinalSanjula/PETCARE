@@ -1,31 +1,64 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, ConfigDict
+from typing import Optional, List
 from datetime import datetime
 from enum import Enum
 from models import ReportStatus
 
-
 class ReportStatusEnum(str, Enum):
-    NEW = "new"
-    IN_PROGRESS = "in_progress"
-    RESOLVED = "resolved"
+    OPEN = "OPEN"
+    IN_PROGRESS = "IN_PROGRESS"
+    RESCUED = "RESCUED"
+    TREATED = "TREATED"
+    TRANSFERRED = "TRANSFERRED"
+    CLOSED = "CLOSED"
+    REJECTED = "REJECTED"
+
+class ReportImageBase(BaseModel):
+    image_url: str
+
+class ReportImageOut(ReportImageBase):
+    id: int
+    report_id: int
+    model_config = ConfigDict(from_attributes=True)
+
+class ReportNoteBase(BaseModel):
+    note: str
+
+class ReportNoteCreate(ReportNoteBase):
+    pass
+
+class ReportNoteOut(ReportNoteBase):
+    id: int
+    report_id: int
+    created_by: Optional[str] = None
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
 
 class ReportBase(BaseModel):
+    animal_type: str
+    condition: str
     description: str
-    location_lat: Optional[str] = None
-    location_lng: Optional[str] = None
+    address: str
+    contact_phone: Optional[str] = None
 
 class ReportCreate(ReportBase):
     pass
 
 class ReportUpdate(BaseModel):
-    status: ReportStatusEnum
+    animal_type: Optional[str] = None
+    condition: Optional[str] = None
+    description: Optional[str] = None
+    address: Optional[str] = None
+    contact_phone: Optional[str] = None
+
+class ReportStatusUpdate(BaseModel):
+    status: ReportStatus
 
 class ReportOut(ReportBase):
     id: int
-    image_url: Optional[str] = None
-    status: ReportStatusEnum
+    status: ReportStatus
     created_at: datetime
+    reporter_user_id: Optional[int] = None
+    assigned_clinic_id: Optional[int] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

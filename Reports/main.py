@@ -3,12 +3,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from database import Base, engine
 from routers import reports
+from contextlib import asynccontextmanager
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
 
-app = FastAPI(title="PetCare API", description="API for PetCare Application", version="1.0.0")
-
+app = FastAPI(
+    title="PetCare API", 
+    description="API for PetCare Application", 
+    version="1.0.0", 
+    lifespan=lifespan
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,12 +26,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
 
 app.include_router(reports.router)
 
 @app.get("/")
-def read_root():
+async def read_root():
     return {"message": "Welcome to PetCare API"}
