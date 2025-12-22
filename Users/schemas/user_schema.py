@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
-from app.models.user_model import UserRole
+from Users.models.user_model import UserRole
 
 
 class UserBase(BaseModel):
@@ -19,10 +19,7 @@ class UserResponse(UserBase):
     created_at: datetime
     updated_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)  # v2
-
-    # class Config:
-    #     from_attributes = True  # ORM mode (v1)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserReplace(UserBase):
@@ -50,3 +47,17 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
     user_id: Optional[int] = None  # remove if not used
+
+class UserAdminResponse(BaseModel):
+    id : int
+    name : str
+    email : EmailStr
+    role : UserRole
+    is_active : bool
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+class UserRoleUpdate(BaseModel):
+    role : UserRole

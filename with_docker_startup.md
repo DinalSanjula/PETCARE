@@ -1,19 +1,20 @@
 
+---
 
-# 📘 PETCARE – Docker Development Guide 
+# 📘 PETCARE – Docker Development Guide
 
-This project uses **Docker + automatic Alembic migrations** to provide a **stable and consistent backend environment** for all teammates.
+This project uses **Docker + automatic Alembic migrations** to provide a **stable, predictable, and team-safe backend environment**.
 
-> ✅ **Alembic migrations run automatically on container startup**  
-> ❌ **Never run Alembic manually**
+> ✅ Alembic migrations run automatically on container startup  
+> ❌ Never run Alembic manually  
 
 ---
 
-## 🧠 Core Concept (READ FIRST)
+## 🧠 Core Concept (READ FIRST – VERY IMPORTANT)
 
-- Docker databases are tied to **Docker Compose Project Name**
-- NOT tied to Git branches
-- NOT tied to container restarts
+- Docker databases are tied to the **Docker Compose Project Name**
+- ❌ NOT tied to Git branches
+- ❌ NOT tied to container restarts
 
 👉 **Each developer MUST use a unique `COMPOSE_PROJECT_NAME`**
 
@@ -21,6 +22,7 @@ This prevents:
 - database corruption
 - missing tables
 - random Alembic errors
+- cross-branch DB conflicts
 
 ---
 
@@ -37,9 +39,9 @@ Install:
 - Docker Desktop (**must be running**)
 
 No need to install:
-- ❌ PostgreSQL
-- ❌ Python locally (optional)
+- ❌ PostgreSQL locally
 - ❌ Alembic locally
+- ❌ Python locally (optional)
 
 ---
 
@@ -56,14 +58,14 @@ cd PETCARE
 
 2️⃣ Checkout the working branch
 
-git checkout testing-branch
+git checkout staging
 
 (or main if instructed)
 
 
 ---
 
-3️⃣ Create .env file (VERY IMPORTANT) - Ask me about this
+3️⃣ Create .env file (VERY IMPORTANT)
 
 Each developer must use a unique project name.
 
@@ -75,12 +77,14 @@ Example:
 
 COMPOSE_PROJECT_NAME=petcare_kamal
 
+⚠️ If RUN_MIGRATIONS is missing or false, database tables will NOT be created.
+
 
 ---
 
 4️⃣ One-time cleanup (REQUIRED)
 
-⚠️ This removes old corrupted shared databases.
+⚠️ This removes old corrupted/shared databases.
 
 docker compose down -v
 docker volume prune -f
@@ -92,18 +96,20 @@ docker volume prune -f
 
 docker compose up -d --build
 
-This will automatically:
+This automatically:
 
-Build the app image
+Builds the app image
 
-Start PostgreSQL
+Starts PostgreSQL
 
-Run Alembic migrations automatically
+Runs Alembic migrations
 
-Start Uvicorn
+Starts Uvicorn
+
+Starts MinIO
 
 
-✅ No manual Alembic command needed
+✅ No manual Alembic commands needed
 
 
 ---
@@ -126,6 +132,8 @@ Swagger Docs: http://localhost:8000/docs
 
 
 ---
+---
+---
 
 2️⃣ Daily Development Guide
 
@@ -142,9 +150,9 @@ That’s it.
 
 DB starts
 
-Alembic runs automatically (if needed)
-
 App starts
+
+Alembic runs automatically if needed
 
 
 
@@ -152,7 +160,7 @@ App starts
 
 🔁 Switching branches (IMPORTANT)
 
-❗ You do NOT reset Docker when switching branches
+❗ DO NOT reset Docker when switching branches
 
 Correct way:
 
@@ -161,7 +169,7 @@ docker compose restart app
 
 or
 
-git switch testing-branch
+git switch staging
 docker compose restart app
 
 ❌ NO docker compose down
@@ -185,9 +193,9 @@ docker compose up -d --build
 
 ---
 
-🔁 After merging branches (IMPORTANT)
+🔁 After merging branches
 
-If you merge testing-branch → main:
+Example: testing-branch → main
 
 git checkout main
 git merge testing-branch
@@ -210,7 +218,7 @@ docker compose exec app pytest -q
 
 docker compose logs -f app
 
-Or via: Docker Desktop → Containers → petcare_app → Logs
+Or via Docker Desktop: Containers → petcare_app → Logs
 
 
 ---
@@ -231,7 +239,20 @@ Docker network
 
 ---
 
-3️⃣ Reset Commands (⚠️ USE WITH CARE)
+3️⃣ Docker Compose Changes (IMPORTANT)
+
+⚠️ If docker-compose.yml is edited (services, ports, env, volumes):
+
+git pull
+docker compose down
+docker compose up -d --build
+
+This is required ONLY when the compose file changes.
+
+
+---
+
+4️⃣ Reset Commands (⚠️ USE WITH CARE)
 
 ❗ Reset database (DELETES ALL DATA)
 
@@ -241,7 +262,7 @@ First-time setup
 
 Migration history is broken
 
-Explicitly instructed by team
+Explicitly instructed by the team
 
 
 docker compose down -v
@@ -252,73 +273,62 @@ docker compose up -d --build
 
 ---
 
-4️⃣ Important Docker Commands (Quick Reference)
+5️⃣ MinIO (Object Storage)
 
-🔧 Core Commands
+MinIO runs automatically via Docker Compose.
 
-Start everything:
+Access:
 
-docker compose up -d
+Console: http://localhost:9001
 
-Build + start (after Dockerfile / dependency changes):
-
-docker compose up -d --build
-
-Stop everything:
-
-docker compose down
-
-Restart app only:
-
-docker compose restart app
+API: http://localhost:9000
 
 
----
+Credentials:
 
-🧪 Testing
+Username: minioadmin
 
-Run all tests:
+Password: minioadmin
 
-docker compose exec app pytest
 
-Quiet mode:
+⚠️ Inside backend code:
 
-docker compose exec app pytest -q
+❌ Do NOT use localhost
+
+✅ Use minio:9000
+
 
 
 ---
 
-🔍 Debugging
-
-Check container status:
+6️⃣ Quick Health Check (When Something Feels Broken)
 
 docker compose ps
-
-View app logs:
-
-docker compose logs app
-
-Follow logs live:
-
-docker compose logs -f app
-
-Check tables exist:
-
 docker compose exec db psql -U test -d test_db -c "\dt"
+docker compose exec app printenv DATABASE_URL
+docker compose logs -f app
 
 
 ---
 
-🧠 Key Rules (VERY IMPORTANT)
+🏆 Key Rules (READ THIS IF NOTHING ELSE)
 
-❌ Do NOT run uvicorn locally
-❌ Do NOT run alembic upgrade head manually
+❌ Do NOT run Uvicorn locally
+❌ Do NOT run Alembic manually
 ❌ Do NOT install PostgreSQL locally
-❌ Do NOT share COMPOSE_PROJECT_NAME with teammates
+❌ Do NOT share COMPOSE_PROJECT_NAME
 ❌ Do NOT reset DB daily
 
 ✅ Always use Docker commands
-✅ Alembic runs automatically (ENTRYPOINT fixed)
+✅ Alembic runs automatically
 ✅ One person creates migrations, others only pull
-✅ Branch switching = restart app, not reset DB
+✅ Branch switch = restart app
+✅ Compose change = rebuild
+✅ DB reset = last resort
 
+
+---
+
+If in doubt → ask before resetting the database.
+
+---

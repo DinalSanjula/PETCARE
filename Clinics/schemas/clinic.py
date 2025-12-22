@@ -80,4 +80,14 @@ class ClinicResponse(ClinicBase):
     images : Optional[List[ClinicImageResponse]] = None
 
 
+class ClinicAdminResponse(BaseModel):
+    id : int
+    name : str
+    owner_id : int
+    is_active : bool
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
 
