@@ -43,6 +43,6 @@ async def reschedule_booking(
     return await booking_service.reschedule_booking(
         db,
         booking_id,
-        reschedule_data.start_te,
+        reschedule_data.start_time,
         reschedule_data.end_time
     )

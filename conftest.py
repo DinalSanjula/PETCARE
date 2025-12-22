@@ -225,3 +225,13 @@ async def welfare_token(async_client):
     assert resp.status_code == 200
 
     return resp.json()["data"]
+
+import pytest
+import socket
+
+@pytest.fixture(autouse=True)
+def disable_network_calls(monkeypatch):
+    def guard(*args, **kwargs):
+        raise RuntimeError("Network access disabled during tests")
+
+    monkeypatch.setattr(socket, "getaddrinfo", guard)
