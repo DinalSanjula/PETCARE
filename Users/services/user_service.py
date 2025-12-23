@@ -1,30 +1,33 @@
-from typing import Optional, List
-from sqlalchemy import select, delete, func, ColumnElement
-from typing import Optional, List
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Optional, Tuple, List
+
 from sqlalchemy import select, delete, func
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from Users.models.user_model import User, UserRole
-from Users.schemas.user_schema import (UserCreate, UserReplace, UserPatch, UserResponse)
+from Users.schemas.user_schema import UserCreate, UserReplace, UserPatch
+from Users.schemas.service_schema import ServiceResponse
 from Users.auth.security import get_password_hash
-from Users.schemas.service_schema import (ServiceResponse, ServiceListResponse)
 
 
-# CREATE USER
-async def create_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[UserResponse]:
+async def create_user(
+    user: UserCreate,
+    db: AsyncSession
+) -> ServiceResponse[User]:
     try:
-        # Check email exists
         if await get_user_by_email(user.email, db):
-            return ServiceResponse(success=False, message="User with this email already exists", data=None )
-
-        hashed_pw = get_password_hash(user.password)
+            return ServiceResponse(
+                success=False,
+                message="User with this email already exists",
+                data=None
+            )
 
         db_user = User(
             name=user.name,
             email=user.email,
-            password_hash=hashed_pw,
+            password_hash=get_password_hash(user.password),
             role=user.role
         )
+
         db.add(db_user)
         await db.commit()
         await db.refresh(db_user)
@@ -32,7 +35,7 @@ async def create_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[Use
         return ServiceResponse(
             success=True,
             message="User created successfully",
-            data=UserResponse.model_validate(db_user)
+            data=db_user
         )
 
     except Exception as e:
@@ -43,9 +46,10 @@ async def create_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[Use
             data=None
         )
 
-
-# GET USER BY ID
-async def get_user_by_id(user_id: int, db: AsyncSession) -> ServiceResponse[UserResponse]:
+async def get_user_by_id(
+    user_id: int,
+    db: AsyncSession
+) -> ServiceResponse[User]:
     try:
         stmt = select(User).where(User.id == user_id)
         user = (await db.execute(stmt)).scalar_one_or_none()
@@ -60,7 +64,7 @@ async def get_user_by_id(user_id: int, db: AsyncSession) -> ServiceResponse[User
         return ServiceResponse(
             success=True,
             message="User retrieved successfully",
-            data=UserResponse.model_validate(user)
+            data=user
         )
 
     except Exception as e:
@@ -70,49 +74,41 @@ async def get_user_by_id(user_id: int, db: AsyncSession) -> ServiceResponse[User
             data=None
         )
 
-
-# GET USER BY EMAIL
-async def get_user_by_email(email: str, db: AsyncSession) -> Optional[User]:
+async def get_user_by_email(
+    email: str,
+    db: AsyncSession
+) -> Optional[User]:
     stmt = select(User).where(User.email == email)
     result = await db.execute(stmt)
     return result.scalar_one_or_none()
 
 
-# GET ALL USER
-async def get_all_users(limit: int, offset: int, db: AsyncSession) -> ServiceListResponse[UserResponse]:
-    try:
-        total = (await db.execute(select(func.count(User.id)))).scalar()
+async def get_all_users(
+    limit: int,
+    offset: int,
+    db: AsyncSession
+) -> Tuple[List[User], int]:
+    total = (await db.execute(
+        select(func.count(User.id))
+    )).scalar()
 
-        users = (
-            await db.execute(
-                select(User).limit(limit).offset(offset)
-            )
-        ).scalars().all()
-
-        user_list = [UserResponse.model_validate(u) for u in users]
-
-        return ServiceListResponse(
-            success=True,
-            message="Users retrieved successfully",
-            data=user_list,
-            total=total,
-            limit=limit,
-            offset=offset
+    users = (
+        await db.execute(
+            select(User)
+            .limit(limit)
+            .offset(offset)
         )
+    ).scalars().all()
 
-    except Exception as e:
-        return ServiceListResponse(
-            success=False,
-            message=f"Error retrieving users: {str(e)}",
-            data=[],
-            total=0,
-            limit=limit,
-            offset=offset
-        )
+    return users, total
 
 
-# UPDATE USER
-async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> ServiceResponse[UserResponse]:
+
+async def update_user(
+    user_id: int,
+    data: UserReplace,
+    db: AsyncSession
+) -> ServiceResponse[User]:
     try:
         stmt = select(User).where(User.id == user_id)
         user = (await db.execute(stmt)).scalar_one_or_none()
@@ -124,7 +120,6 @@ async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> Serv
                 data=None
             )
 
-        # Email conflict check
         if data.email != user.email:
             if await get_user_by_email(data.email, db):
                 return ServiceResponse(
@@ -143,21 +138,23 @@ async def update_user(user_id: int, data: UserReplace, db: AsyncSession) -> Serv
 
         return ServiceResponse(
             success=True,
-            message="User update successfully",
-            data=UserResponse.model_validate(user)
+            message="User updated successfully",
+            data=user
         )
 
     except Exception as e:
         await db.rollback()
         return ServiceResponse(
             success=False,
-            message=f"Error update user: {str(e)}",
+            message=f"Error updating user: {str(e)}",
             data=None
         )
 
-
-# PATCH
-async def patch_user(user_id: int, data: UserPatch, db: AsyncSession) -> ServiceResponse[UserResponse]:
+async def patch_user(
+    user_id: int,
+    data: UserPatch,
+    db: AsyncSession
+) -> ServiceResponse[User]:
     try:
         stmt = select(User).where(User.id == user_id)
         user = (await db.execute(stmt)).scalar_one_or_none()
@@ -177,10 +174,10 @@ async def patch_user(user_id: int, data: UserPatch, db: AsyncSession) -> Service
                 if await get_user_by_email(data.email, db):
                     return ServiceResponse(
                         success=False,
-                        message="Email already use",
+                        message="Email already in use",
                         data=None
                     )
-            user.email = data.email
+                user.email = data.email
 
         if data.role is not None:
             user.role = data.role
@@ -194,7 +191,7 @@ async def patch_user(user_id: int, data: UserPatch, db: AsyncSession) -> Service
         return ServiceResponse(
             success=True,
             message="User updated successfully",
-            data=UserResponse.model_validate(user)
+            data=user
         )
 
     except Exception as e:
@@ -205,9 +202,10 @@ async def patch_user(user_id: int, data: UserPatch, db: AsyncSession) -> Service
             data=None
         )
 
-
-# Delete user
-async def delete_user(user_id: int, db: AsyncSession) -> ServiceResponse[str]:
+async def delete_user(
+    user_id: int,
+    db: AsyncSession
+) -> ServiceResponse[str]:
     try:
         stmt = select(User).where(User.id == user_id)
         user = (await db.execute(stmt)).scalar_one_or_none()
@@ -222,15 +220,26 @@ async def delete_user(user_id: int, db: AsyncSession) -> ServiceResponse[str]:
         await db.execute(delete(User).where(User.id == user_id))
         await db.commit()
 
-        return ServiceResponse(success=True,message="User deleted successfully",data="deleted"
+        return ServiceResponse(
+            success=True,
+            message="User deleted successfully",
+            data="deleted"
         )
 
     except Exception as e:
         await db.rollback()
-        return ServiceResponse(success=False,message=f"Error deleting user: {str(e)}" , data=None
+        return ServiceResponse(
+            success=False,
+            message=f"Error deleting user: {str(e)}",
+            data=None
         )
 
-async def set_user_active(user_id : int, active : bool, db: AsyncSession) -> ServiceResponse[UserResponse]:
+
+async def set_user_active(
+    user_id: int,
+    active: bool,
+    db: AsyncSession
+) -> ServiceResponse[User]:
     try:
         stmt = select(User).where(User.id == user_id)
         user = (await db.execute(stmt)).scalar_one_or_none()
@@ -249,7 +258,7 @@ async def set_user_active(user_id : int, active : bool, db: AsyncSession) -> Ser
         return ServiceResponse(
             success=True,
             message="User status updated successfully",
-            data=UserResponse.model_validate(user)
+            data=user
         )
 
     except Exception as e:
@@ -260,7 +269,11 @@ async def set_user_active(user_id : int, active : bool, db: AsyncSession) -> Ser
             data=None
         )
 
-async def set_user_role(user_id: int, role: UserRole, db: AsyncSession)-> ServiceResponse[UserResponse]:
+async def set_user_role(
+    user_id: int,
+    role: UserRole,
+    db: AsyncSession
+) -> ServiceResponse[User]:
     try:
         stmt = select(User).where(User.id == user_id)
         user = (await db.execute(stmt)).scalar_one_or_none()
@@ -279,7 +292,7 @@ async def set_user_role(user_id: int, role: UserRole, db: AsyncSession)-> Servic
         return ServiceResponse(
             success=True,
             message="User role updated successfully",
-            data=UserResponse.model_validate(user)
+            data=user
         )
 
     except Exception as e:

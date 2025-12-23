@@ -30,8 +30,3 @@ class ServiceDeleteResponse(BaseModel):
 
 
 
-#
-# class ServiceResponse(GenericModel, Generic[T]):
-#     success: bool
-#     message: str
-#     data: Optional[T] = None
