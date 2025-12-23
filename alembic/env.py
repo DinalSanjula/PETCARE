@@ -19,6 +19,8 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from db import Base
 import Users.models.user_model
 import Clinics.models.models
+import appointment.model.booking_models
+
 # ------------------------------------------------------------------
 
 # Alembic Config object
@@ -30,6 +32,27 @@ if config.config_file_name is not None:
 
 # Metadata for autogenerate
 target_metadata = Base.metadata
+
+
+def get_database_url():
+    """
+    Get database URL with fallback logic:
+    1. DATABASE_URL (Docker/production)
+    2. DATABASE_URL_LOCAL (local development)
+    3. Raise error if neither is set
+    """
+    database_url = os.getenv("DATABASE_URL") or os.getenv("DATABASE_URL_LOCAL")
+
+    if not database_url:
+        raise RuntimeError(
+            "DATABASE_URL is not set. Please set DATABASE_URL or DATABASE_URL_LOCAL environment variable."
+        )
+
+    # Debug: Print which URL is being used (hide password)
+    safe_url = database_url.split('@')[1] if '@' in database_url else database_url
+    print(f"[Alembic] Using database: {safe_url}")
+
+    return database_url
 
 
 def do_run_migrations(connection):
@@ -46,10 +69,7 @@ def do_run_migrations(connection):
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode."""
-    database_url = os.getenv("DATABASE_URL")
-
-    if not database_url:
-        raise RuntimeError("DATABASE_URL is not set")
+    database_url = get_database_url()
 
     context.configure(
         url=database_url,
@@ -64,10 +84,7 @@ def run_migrations_offline():
 
 def run_migrations_online():
     """Run migrations in 'online' mode (ASYNC)."""
-    database_url = os.getenv("DATABASE_URL")
-
-    if not database_url:
-        raise RuntimeError("DATABASE_URL is not set")
+    database_url = get_database_url()
 
     connectable = create_async_engine(
         database_url,
@@ -76,8 +93,17 @@ def run_migrations_online():
     )
 
     async def run_async_migrations():
-        async with connectable.connect() as connection:
-            await connection.run_sync(do_run_migrations)
+        try:
+            print("[Alembic] Connecting to database...")
+            async with connectable.connect() as connection:
+                print("[Alembic] Connected successfully, running migrations...")
+                await connection.run_sync(do_run_migrations)
+            print("[Alembic] Migrations completed successfully!")
+        except Exception as e:
+            print(f"[Alembic] Migration failed: {str(e)}")
+            raise
+        finally:
+            await connectable.dispose()
 
     asyncio.run(run_async_migrations())
 
