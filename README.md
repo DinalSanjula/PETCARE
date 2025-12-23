@@ -55,7 +55,7 @@ cd PETCARE
 #### 2️⃣ Checkout the working branch
 
 ```bash
-git checkout testing-branch
+git checkout staging
 # (or main if instructed)
 ```
 
