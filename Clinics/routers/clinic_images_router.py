@@ -22,7 +22,7 @@ async def upload_clinic_image(clinic_id:int, file:UploadFile = File(...),
                               current_user: User = Depends(get_current_active_user)):
 
     clinic = await get_clinic_by_id(clinic_id=clinic_id, session=session)
-    if clinic.owner_id != current_user.id:
+    if clinic.owner_id != current_user.id and current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to access")
 
     ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
@@ -82,7 +82,7 @@ async def patch_image(
     if img is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found!")
 
-    if img.clinic.owner_id != current_user.id:
+    if img.clinic.owner_id != current_user.id and current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
     updates = {}
@@ -208,7 +208,7 @@ async def delete_image_endpoint(image_id:int,
     if img is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found!")
 
-    if img.clinic.owner_id != current_user.id:
+    if img.clinic.owner_id != current_user.id and current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to delete")
 
     try:
