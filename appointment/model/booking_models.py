@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, Boolean, UniqueConstraint
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 import enum
 from db import Base
 
@@ -22,6 +23,9 @@ class Booking(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
+    clinic = relationship("Clinic", back_populates="bookings")
+    user = relationship("User")
+
 
 class TimeSlot(Base):
     __tablename__ = "time_slots"
@@ -38,3 +42,5 @@ class TimeSlot(Base):
     __table_args__ = (
         UniqueConstraint('clinic_id', 'day_of_week', 'start_time', name='uix_clinic_day_start'),
     )
+
+    clinic = relationship("Clinic", back_populates="time_slots")

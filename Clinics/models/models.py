@@ -25,6 +25,8 @@ class Clinic(Base):
     owner = relationship("User", back_populates="clinics", passive_deletes=True) #USe passive delete also in owner table
     area = relationship("Area", back_populates="clinics")
     images = relationship("ClinicImage", back_populates="clinic", cascade="all, delete-orphan", passive_deletes=True)
+    bookings = relationship("Booking", back_populates="clinic", cascade="all, delete-orphan", passive_deletes=True)
+    time_slots = relationship("TimeSlot", back_populates="clinic", cascade="all, delete-orphan", passive_deletes=True)
 
 
 class ClinicImage(Base):
