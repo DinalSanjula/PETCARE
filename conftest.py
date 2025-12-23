@@ -6,6 +6,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 import pytest
+from unittest.mock import MagicMock
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
@@ -33,6 +34,7 @@ CANDIDATE_MODULES = [
     "Clinics.models.models",
     "Clinics.models",
     "Clinics.db",
+    "appointment.model.booking_models",
 ]
 
 def discover_bases():
@@ -226,12 +228,27 @@ async def welfare_token(async_client):
 
     return resp.json()["data"]
 
-import pytest
-import socket
 
 @pytest.fixture(autouse=True)
-def disable_network_calls(monkeypatch):
-    def guard(*args, **kwargs):
-        raise RuntimeError("Network access disabled during tests")
+def mock_minio(monkeypatch):
+    """
+    Globally mock MinIO client to prevent network calls in tests.
+    """
+    mock_client = MagicMock()
+    # Mock common methods used
+    mock_client.bucket_exists.return_value = True
+    mock_client.make_bucket.return_value = None
+    mock_client.put_object.return_value = None
+    mock_client.remove_object.return_value = None
 
-    monkeypatch.setattr(socket, "getaddrinfo", guard)
+    # We patch the class itself in the module so instantiation returns our mock
+    # OR we can patch the global _client if that's easier.
+    # Let's patch Minio class in the storage module.
+
+    # We need to make sure we patch it where it is imported.
+    # storage/minio_storage.py imports Minio from minio
+
+    mock_minio_class = MagicMock(return_value=mock_client)
+    monkeypatch.setattr("Clinics.storage.minio_storage.Minio", mock_minio_class)
+
+    return mock_client

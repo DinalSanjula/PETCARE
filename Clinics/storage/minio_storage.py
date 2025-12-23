@@ -15,7 +15,7 @@ load_dotenv()
 MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT")
 MINIO_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY")
 MINIO_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY")
-MINIO_SECURE = os.environ.get("MINIO_SECURE").lower() in ("1", "true", "yes")
+MINIO_SECURE = os.environ.get("MINIO_SECURE", "false").lower() in ("1", "true", "yes")
 BUCKET = os.environ.get("MINIO_BUCKET")
 PUBLIC_BASE = os.environ.get("MINIO_PUBLIC_BASE", f"http://{MINIO_ENDPOINT}/{BUCKET}")  # used for public URL
 
