@@ -11,7 +11,7 @@ from Users.auth.security import get_current_active_user
 from db import get_db
 
 
-router = APIRouter()
+router = APIRouter(tags=["Users"])
 
 
 @router.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=ServiceResponse[UserResponse])
@@ -36,7 +36,15 @@ async def get_all_users_endpoint(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
-    return await get_all_users(limit, offset, db)
+    users, total = await get_all_users(limit, offset, db)
+    return ServiceListResponse(
+        success=True,
+        message="Users retrieved successfully",
+        data=users,
+        total=total,
+        limit=limit,
+        offset=offset
+    )
 
 
 @router.put("/{user_id}", status_code=status.HTTP_200_OK, response_model=ServiceResponse[UserResponse])

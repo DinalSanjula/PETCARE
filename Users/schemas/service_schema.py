@@ -28,10 +28,9 @@ class ServiceDeleteResponse(BaseModel):
     message: str
 
 
+class BookingServiceResponse(BaseModel, Generic[T]):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
-
-#
-# class ServiceResponse(GenericModel, Generic[T]):
-#     success: bool
-#     message: str
-#     data: Optional[T] = None
+    success: bool
+    message: str
+    data: Optional[T] = None
