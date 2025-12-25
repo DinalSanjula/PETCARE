@@ -55,7 +55,7 @@ async def list_images_for_clinic(session:AsyncSession, clinic_id:int)-> List[Cli
 async def update_clinic_image(
         session:AsyncSession,
         image_id:int,
-        filename:Optional[int] = None,
+        filename:Optional[str] = None,
         url:Optional[str] = None,
         content_type:Optional[str] = None,
         original_filename: Optional[str] = None
