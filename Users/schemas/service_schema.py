@@ -34,3 +34,11 @@ class BookingServiceResponse(BaseModel, Generic[T]):
     success: bool
     message: str
     data: Optional[T] = None
+
+
+class NotificationMsgResponse(BaseModel, Generic[T]):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    success: bool
+    message: str
+    data: Optional[T] = None

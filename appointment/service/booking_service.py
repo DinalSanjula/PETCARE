@@ -8,6 +8,8 @@ from datetime import datetime, date, time
 
 from fastapi import HTTPException, status
 
+from appointment.service.notification_service import create_notification
+
 
 async def has_conflict(db: AsyncSession, clinic_id: int, start_time, end_time) -> bool:
     stmt = select(Booking).where(
@@ -128,6 +130,13 @@ async def create_booking(db: AsyncSession, booking_data: BookingCreate) -> Booki
     await db.commit()
     await db.refresh(booking)
 
+    await create_notification(
+        db,
+        booking.user_id,
+        "Booking Confirmed",
+        "Your appointment has been successfully booked."
+    )
+
     return BookingServiceResponse(
         success=True,
         message="Booking create",
@@ -150,6 +159,13 @@ async def cancel_booking(db: AsyncSession, booking_id: int) -> BookingServiceRes
     booking.status = BookingStatus.CANCELLED
     await db.commit()
     await db.refresh(booking)
+
+    await create_notification(
+        db,
+        booking.user_id,
+        "Booking Cancelled",
+        "Your appointment has been cancelled."
+    )
 
     return BookingServiceResponse(
         success=True,
@@ -180,6 +196,13 @@ async def reschedule_booking(db: AsyncSession , booking_id: int , new_start_time
 
     await db.commit()
     await db.refresh(booking)
+
+    await create_notification(
+        db,
+        booking.user_id,
+        "Booking Rescheduled",
+        "Your appointment time has been changed."
+    )
 
     return BookingServiceResponse(
         success=True,
