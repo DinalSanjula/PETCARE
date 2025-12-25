@@ -85,7 +85,7 @@ async def patch_clinics(clinic_id : int, clinic_data : ClinicUpdate, session:Asy
                         current_user : User = Depends(get_current_active_user)):
 
     clinic_obj = await get_clinic_by_id_crud(session, clinic_id, with_related=False)
-    if clinic_obj.owner_id != current_user.id:
+    if clinic_obj.owner_id != current_user.id and current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
     updated = await update_clinic_crud(session=session, clinic_id=clinic_id, clinic_data=clinic_data)
@@ -95,7 +95,7 @@ async def patch_clinics(clinic_id : int, clinic_data : ClinicUpdate, session:Asy
 @router.delete("/{clinic_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
 async def delete_clinic(clinic_id:int, session:AsyncSession = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     clinic_obj = await get_clinic_by_id_crud(session, clinic_id, with_related=False)
-    if clinic_obj.owner_id != current_user.id:
+    if clinic_obj.owner_id != current_user.id and current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
     await delete_clinic_crud(session=session, clinic_id=clinic_id)
