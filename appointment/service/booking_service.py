@@ -8,7 +8,7 @@ from datetime import datetime, date, time
 
 from fastapi import HTTPException, status
 
-from appointment.service.notification_service import create_notification
+from notification.service.notification_service import create_notification
 
 
 async def has_conflict(db: AsyncSession, clinic_id: int, start_time, end_time) -> bool:

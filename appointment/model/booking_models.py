@@ -44,17 +44,3 @@ class TimeSlot(Base):
     )
 
     clinic = relationship("Clinic", back_populates="time_slots")
-
-
-class Notification(Base):
-    __tablename__ = "notifications"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    title = Column(String(100), nullable=False)
-    message = Column(String(300), nullable=False)
-    is_read = Column(Boolean, default=False)
-
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    user = relationship("user" , back_populates="notifications")

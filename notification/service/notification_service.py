@@ -1,8 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from appointment.model.booking_models import Notification
+
 from Users.schemas.service_schema import NotificationMsgResponse
+from notification.model.notification_model import Notification
 
 
 async def create_notification(db: AsyncSession, user_id: int, title: str, message: str)-> NotificationMsgResponse[Notification]:

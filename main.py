@@ -8,8 +8,8 @@ from Admin.admin_users import router as user_admin
 from Admin.admin_clinics import router as clinic_admin
 from Admin.admin_stats_router import router as admin_stats_router
 from Admin.admin_health import router as admin_health_router
-from appointment.router.notification_router import router as notification_router
 from appointment.router.booking_router import router as booking_router
+from notification.router.notification_router import router as notification_router
 
 app = FastAPI()
 
