@@ -9,6 +9,8 @@ from Admin.admin_clinics import router as clinic_admin
 from Admin.admin_stats_router import router as admin_stats_router
 from Admin.admin_health import router as admin_health_router
 from appointment.router.booking_router import router as booking_router
+from Reports.routers.reports_router import router as report_router
+from Reports.routers.report_messages import router as report_messages_router
 
 app = FastAPI()
 
@@ -22,3 +24,5 @@ app.include_router(image_router, prefix="/images")
 app.include_router(admin_stats_router, prefix="/admin/stats")
 app.include_router(admin_health_router, prefix="/admin/health")
 app.include_router(booking_router)
+app.include_router(report_router, prefix="/reports")
+app.include_router(report_messages_router, prefix="/reports")

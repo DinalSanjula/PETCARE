@@ -18,7 +18,7 @@ from Reports.services.report_messages import (
 )
 router = APIRouter(
     prefix="/reports",
-    tags=["reports"]
+    tags=["report messages"]
 )
 
 @router.post(
