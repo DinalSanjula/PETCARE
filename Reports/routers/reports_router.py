@@ -12,6 +12,7 @@ from Users.models import User, UserRole
 
 from Reports.schemas.schemas import (
     ReportResponse,
+    ReportResponseBase,  # ADD THIS
     ReportCreate,
     ReportUpdate,
     ReportImageResponse,
@@ -43,14 +44,11 @@ from Clinics.storage.reports_storage import (
     upload_report_image as upload_report_image_to_minio
 )
 
-router = APIRouter(
-    prefix="/reports",
-    tags=["reports"]
-)
+router = APIRouter(tags=["reports"])
 
 @router.post(
     "/",
-    response_model=ReportResponse,
+    response_model=ReportResponseBase,  # CHANGED
     status_code=status.HTTP_201_CREATED,
 )
 async def create_new_report(
@@ -91,7 +89,7 @@ async def create_new_report(
 
     return report
 
-@router.get("/", response_model=List[ReportResponse])
+@router.get("/", response_model=List[ReportResponseBase])  # CHANGED
 async def read_reports(
     skip: int = 0,
     limit: int = 100,
@@ -100,7 +98,7 @@ async def read_reports(
     return await list_reports(db, skip=skip, limit=limit)
 
 
-@router.get("/{report_id}", response_model=ReportResponse)
+@router.get("/{report_id}", response_model=ReportResponseBase)
 async def read_report(
     report_id: int,
     db: AsyncSession = Depends(get_db),
@@ -119,7 +117,7 @@ async def read_report(
 
     return report
 
-@router.patch("/{report_id}", response_model=ReportResponse)
+@router.patch("/{report_id}", response_model=ReportResponseBase)
 async def update_report_details(
     report_id: int,
     report_update: ReportUpdate,
@@ -139,7 +137,7 @@ async def update_report_details(
 
 @router.patch(
     "/{report_id}/status",
-    response_model=ReportResponse,
+    response_model=ReportResponseBase,  # CHANGED
     dependencies=[Depends(require_roles(UserRole.ADMIN))],
 )
 async def update_report_status_endpoint(
@@ -205,16 +203,8 @@ async def upload_report_image_endpoint(
 async def list_report_images(
     report_id: int,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
 ):
     report = await get_report_by_id(db, report_id)
-
-    if (
-        current_user.role != UserRole.ADMIN
-        and report.reporter_user_id != current_user.id
-    ):
-        raise HTTPException(status_code=403, detail="Not allowed")
-
     return await list_images_for_report(db, report_id)
 
 

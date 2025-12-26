@@ -1,10 +1,10 @@
-# PETCARE/Users/tests/conftest.py
+# PETCARE/Users/tests/test_reports_api.py
 
 """
 This file intentionally keeps Users tests lightweight.
 
 All shared fixtures (DB, async_client, RBAC tokens)
-are defined in the root-level conftest.py.
+are defined in the root-level test_reports_api.py.
 
 Pytest will automatically discover and use them.
 """

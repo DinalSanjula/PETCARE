@@ -1,12 +1,12 @@
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel, Field, HttpUrl, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict
 
 from Reports.models.models import ReportStatus
 
 class ReportImageBase(BaseModel):
-    image_url: HttpUrl = Field(
+    image_url: str = Field(
         ...,
         max_length=1000,
         description="stored image URL from MinIO"
@@ -19,7 +19,7 @@ class ReportImageCreate(ReportImageBase):
     )
 
 class ReportImageUpdate(BaseModel):
-    image_url: Optional[HttpUrl] = Field(
+    image_url: Optional[str] = Field(
         None,
         max_length=1000,
         description="updated image URL from MinIO"
@@ -28,6 +28,7 @@ class ReportImageUpdate(BaseModel):
 class ReportImageResponse(ReportImageBase):
     id: int
     report_id: int
+    created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -68,14 +69,17 @@ class ReportUpdate(BaseModel):
 class ReportStatusUpdate(BaseModel):
     status: ReportStatus
 
-class ReportResponse(ReportBase):
+class ReportResponseBase(ReportBase):
     id: int
     status: ReportStatus
     created_at: datetime
     reporter_user_id: Optional[int] = None
 
-    images: List[ReportImageResponse] = []
-    notes: List[ReportNoteResponse] = []
+    model_config = ConfigDict(from_attributes=True)
+
+class ReportResponse(ReportResponseBase):
+    images: Optional[List[ReportImageResponse]] = []
+    notes: Optional[List[ReportNoteResponse]] = []
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -89,9 +93,8 @@ class ReportMessageCreate(ReportMessageBase):
 class ReportMessageResponse(ReportMessageBase):
     id: int
     report_id: int
-    sender_user_id: Optional[int]
+    sender_user_id: Optional[int] = None
     is_read: bool
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
-

@@ -20,6 +20,7 @@ from db import Base
 import Users.models.user_model
 import Clinics.models.models
 import appointment.model.booking_models
+import Reports.models.models
 
 # ------------------------------------------------------------------
 

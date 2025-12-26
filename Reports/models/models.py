@@ -2,7 +2,7 @@
 from db import Base
 from sqlalchemy import (
     Column, Integer, String, Text,
-    Enum, DateTime, ForeignKey, func, Nullable, Boolean
+    Enum, DateTime, ForeignKey, func, Boolean
 )
 from sqlalchemy.orm import relationship
 import enum
@@ -27,13 +27,14 @@ class Report(Base):
     description = Column(Text, nullable=False)
     address = Column(String(255), nullable=False)
     contact_phone = Column(String(20), nullable=True)
-    status = Column(Enum(ReportStatus, name="report_status_enum"),default=ReportStatus.OPEN,Nullable=False)
+    status = Column(Enum(ReportStatus, name="report_status_enum"),default=ReportStatus.OPEN,nullable=False)
     reporter_user_id = Column(Integer,ForeignKey("users.id", ondelete="SET NULL"),nullable=True)
     created_at = Column(DateTime(timezone=True),server_default=func.now(),nullable=False)
 
 
     images = relationship("ReportImage",back_populates="report",cascade="all, delete-orphan",passive_deletes=True)
     notes = relationship("ReportNote",back_populates="report",cascade="all, delete-orphan",passive_deletes=True)
+    messages = relationship("ReportMessage", back_populates="report", cascade="all, delete-orphan", passive_deletes=True)
 
 
 class ReportImage(Base):
@@ -42,6 +43,8 @@ class ReportImage(Base):
     id = Column(Integer, primary_key=True, index=True)
     report_id = Column(Integer,ForeignKey("reports.id", ondelete="CASCADE"),nullable=False,index=True)
     image_url = Column(String(255), nullable=False)
+    created_at = Column(DateTime(timezone=True),server_default=func.now(),nullable=False)
+
 
     report = relationship("Report", back_populates="images")
 
@@ -51,7 +54,6 @@ class ReportNote(Base):
     id = Column(Integer, primary_key=True, index=True)
     report_id = Column(Integer,ForeignKey("reports.id", ondelete="CASCADE"),nullable=False,index=True)
     note = Column(Text, nullable=False)
-    created_by = Column(String(50), nullable=True)
     created_at = Column(DateTime(timezone=True),server_default=func.now(),nullable=False)
 
     report = relationship("Report", back_populates="notes")

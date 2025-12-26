@@ -1,4 +1,4 @@
-# Clinics/tests/conftest.py
+# Clinics/tests/test_reports_api.py
 
 """
 Clinics test configuration.
@@ -8,7 +8,7 @@ This file ONLY contains Clinics-specific mocks:
 - MinIO storage
 
 Auth, DB, client, and RBAC tokens are provided
-by the root-level conftest.py.
+by the root-level test_reports_api.py.
 """
 
 import pytest

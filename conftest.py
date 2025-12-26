@@ -1,4 +1,3 @@
-# PETCARE/conftest.py (ROOT)
 
 import os
 import importlib
@@ -13,6 +12,18 @@ from sqlalchemy.ext.asyncio import (
     AsyncSession,
 )
 
+def import_all_models():
+    """Ensure all models are imported before creating tables"""
+    try:
+        from Users.models import User
+        from Clinics.models.models import Clinic, ClinicImage, Area
+        from Reports.models.models import Report, ReportImage, ReportNote, ReportMessage
+        from appointment.model.booking_models import Booking, TimeSlot
+    except ImportError as e:
+        print(f"Warning: Could not import some models: {e}")
+
+# Call it before prepare_database
+import_all_models()
 # ---------------------------------------------------------
 # Load .env
 # ---------------------------------------------------------
@@ -35,6 +46,7 @@ CANDIDATE_MODULES = [
     "Clinics.models",
     "Clinics.db",
     "appointment.model.booking_models",
+    "Reports.models.models"
 ]
 
 def discover_bases():
