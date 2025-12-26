@@ -19,8 +19,9 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from db import Base
 import Users.models.user_model
 import Clinics.models.models
-import appointment.model.booking_models
+import Appointments.model.booking_models
 import Reports.models.models
+import Notification.model.notification_model
 
 # ------------------------------------------------------------------
 

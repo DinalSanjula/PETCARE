@@ -53,7 +53,7 @@ async def test_create_booking(async_client, clinic_token, owner_token):
         "slot_index": 1,
         "is_active": True
     }
-    s_resp = await async_client.post("/appointment/slots", json=slot_payload)
+    s_resp = await async_client.post("/Appointments/slots", json=slot_payload)
     assert s_resp.status_code == 201
 
     # 4. Create Booking
@@ -72,7 +72,7 @@ async def test_create_booking(async_client, clinic_token, owner_token):
         "end_time": booking_end.isoformat()
     }
 
-    response = await async_client.post("/appointment/bookings", json=booking_payload)
+    response = await async_client.post("/Appointments/bookings", json=booking_payload)
     assert response.status_code == 201
 
     data = response.json()
@@ -93,7 +93,7 @@ async def test_cancel_booking(async_client, clinic_token, owner_token):
     start_dt = datetime.utcnow() + timedelta(days=2)
     day_name = start_dt.strftime("%A")
 
-    await async_client.post("/appointment/slots", json={
+    await async_client.post("/Appointments/slots", json={
         "clinic_id": clinic_id,
         "day_of_week": day_name,
         "start_time": "10:00",
@@ -109,7 +109,7 @@ async def test_cancel_booking(async_client, clinic_token, owner_token):
     booking_end = datetime.combine(start_dt.date(), datetime.strptime("10:30", "%H:%M").time())
 
     # Create
-    create_res = await async_client.post("/appointment/bookings", json={
+    create_res = await async_client.post("/Appointments/bookings", json={
         "clinic_id": clinic_id,
         "user_id": user_id,
         "start_time": booking_start.isoformat(),
@@ -119,7 +119,7 @@ async def test_cancel_booking(async_client, clinic_token, owner_token):
     booking_id = create_res.json()["id"]
 
     # Cancel
-    response = await async_client.post(f"/appointment/bookings/{booking_id}/cancel")
+    response = await async_client.post(f"/Appointments/bookings/{booking_id}/cancel")
     assert response.status_code == 200
     assert response.json()["status"] == "CANCELLED"
 
@@ -138,7 +138,7 @@ async def test_reschedule_booking(async_client, clinic_token, owner_token):
     day_name = start_dt.strftime("%A")
 
     # Slot 1
-    await async_client.post("/appointment/slots", json={
+    await async_client.post("/Appointments/slots", json={
         "clinic_id": clinic_id,
         "day_of_week": day_name,
         "start_time": "11:00",
@@ -148,7 +148,7 @@ async def test_reschedule_booking(async_client, clinic_token, owner_token):
     })
 
     # Slot 2 (Target)
-    await async_client.post("/appointment/slots", json={
+    await async_client.post("/Appointments/slots", json={
         "clinic_id": clinic_id,
         "day_of_week": day_name,
         "start_time": "11:30",
@@ -164,7 +164,7 @@ async def test_reschedule_booking(async_client, clinic_token, owner_token):
     booking_end = datetime.combine(start_dt.date(), datetime.strptime("11:30", "%H:%M").time())
 
     # Create Booking
-    create_res = await async_client.post("/appointment/bookings", json={
+    create_res = await async_client.post("/Appointments/bookings", json={
         "clinic_id": clinic_id,
         "user_id": user_id,
         "start_time": booking_start.isoformat(),
@@ -177,7 +177,7 @@ async def test_reschedule_booking(async_client, clinic_token, owner_token):
     new_end = datetime.combine(start_dt.date(), datetime.strptime("12:00", "%H:%M").time())
 
     response = await async_client.post(
-        f"/appointment/bookings/{booking_id}/reschedule",
+        f"/Appointments/bookings/{booking_id}/reschedule",
         json={
             "start_time": new_start.isoformat(),
             "end_time": new_end.isoformat()

@@ -8,7 +8,7 @@ def test_create_time_slot(client):
         "is_active": True
     }
 
-    response = client.post("/appointment/slots", json=payload)
+    response = client.post("/Appointments/slots", json=payload)
     assert response.status_code == 201
 
     data = response.json()
@@ -19,7 +19,7 @@ def test_create_time_slot(client):
 
 def test_get_available_slots(client):
     response = client.get(
-        "/appointment/slots/1/available",
+        "/Appointments/slots/1/available",
         params={"date": "2025-01-01"}
     )
 

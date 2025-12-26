@@ -18,7 +18,7 @@ def import_all_models():
         from Users.models import User
         from Clinics.models.models import Clinic, ClinicImage, Area
         from Reports.models.models import Report, ReportImage, ReportNote, ReportMessage
-        from appointment.model.booking_models import Booking, TimeSlot
+        from Appointments.model.booking_models import Booking, TimeSlot
     except ImportError as e:
         print(f"Warning: Could not import some models: {e}")
 
@@ -45,7 +45,7 @@ CANDIDATE_MODULES = [
     "Clinics.models.models",
     "Clinics.models",
     "Clinics.db",
-    "appointment.model.booking_models",
+    "Appointments.model.booking_models",
     "Reports.models.models"
 ]
 
