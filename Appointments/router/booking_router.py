@@ -39,7 +39,7 @@ async def get_available_slots(clinic_id: int, date: date, db: AsyncSession = Dep
 
     return result.data
 
-@router.post("/bookings", response_model=BookingResponse, status_code=201, dependencies=Depends(require_roles(UserRole.OWNER, UserRole.WELFARE)))
+@router.post("/bookings", response_model=BookingResponse, status_code=201, dependencies=[Depends(require_roles(UserRole.OWNER, UserRole.WELFARE))])
 async def create_booking(booking_data: BookingCreate, db: AsyncSession = Depends(get_db), current_user : User = Depends(get_current_active_user)):
     result = await booking_service.create_booking(db, booking_data, current_user=current_user)
 
@@ -49,7 +49,7 @@ async def create_booking(booking_data: BookingCreate, db: AsyncSession = Depends
     return result.data
 
 @router.post("/bookings/{booking_id}/cancel", response_model=BookingResponse,
-             dependencies=Depends(require_roles(UserRole.OWNER, UserRole.CLINIC, UserRole.ADMIN, UserRole.WELFARE)))
+             dependencies=[Depends(require_roles(UserRole.OWNER, UserRole.CLINIC, UserRole.ADMIN, UserRole.WELFARE))])
 async def cancel_booking(booking_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     result = await booking_service.cancel_booking(db, booking_id, current_user=current_user)
 
@@ -59,11 +59,11 @@ async def cancel_booking(booking_id: int, db: AsyncSession = Depends(get_db), cu
     return result.data
 
 @router.post("/bookings/{booking_id}/reschedule", response_model=BookingResponse,
-             dependencies=Depends(require_roles(UserRole.OWNER, UserRole.CLINIC, UserRole.ADMIN, UserRole.WELFARE)))
+             dependencies=[Depends(require_roles(UserRole.OWNER, UserRole.CLINIC, UserRole.ADMIN, UserRole.WELFARE))])
 async def reschedule_booking(
     booking_id: int,
     data: RescheduleRequest,
-    db: AsyncSession = Depends(get_db), current_user : User = get_current_active_user
+    db: AsyncSession = Depends(get_db), current_user : User = Depends(get_current_active_user)
 ):
     result = await booking_service.reschedule_booking(
         db, booking_id, data.start_time, data.end_time, current_user=current_user

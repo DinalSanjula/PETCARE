@@ -44,3 +44,14 @@ def require_roles(*roles: UserRole):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
         return user
     return checker
+
+
+from datetime import timezone
+from zoneinfo import ZoneInfo
+
+SL_TZ = ZoneInfo("Asia/Colombo")
+
+def to_local_time(dt):
+    if dt is None:
+        return None
+    return dt.astimezone(SL_TZ)

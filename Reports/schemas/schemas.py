@@ -3,6 +3,7 @@ from typing import Optional, List
 
 from pydantic import BaseModel, Field, ConfigDict
 
+from Clinics.schemas.timezone import TimezoneAwareResponse
 from Reports.models.models import ReportStatus
 
 class ReportImageBase(BaseModel):
@@ -25,7 +26,7 @@ class ReportImageUpdate(BaseModel):
         description="updated image URL from MinIO"
     )
 
-class ReportImageResponse(ReportImageBase):
+class ReportImageResponse(TimezoneAwareResponse, ReportImageBase):
     id: int
     report_id: int
     created_at: datetime
@@ -41,7 +42,7 @@ class ReportNoteBase(BaseModel):
 class ReportNoteCreate(ReportNoteBase):
     pass
 
-class ReportNoteResponse(ReportNoteBase):
+class ReportNoteResponse(TimezoneAwareResponse, ReportNoteBase):
     id: int
     report_id: int
     created_by: Optional[str] = None
@@ -90,7 +91,7 @@ class ReportMessageBase(BaseModel):
 class ReportMessageCreate(ReportMessageBase):
     pass
 
-class ReportMessageResponse(ReportMessageBase):
+class ReportMessageResponse(TimezoneAwareResponse, ReportMessageBase):
     id: int
     report_id: int
     sender_user_id: Optional[int] = None

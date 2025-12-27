@@ -1,8 +1,10 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
+from Clinics.schemas.timezone import TimezoneAwareResponse
 
-class NotificationResponse(BaseModel):
+
+class NotificationResponse(TimezoneAwareResponse, BaseModel):
     id: int
     title: str
     message: str

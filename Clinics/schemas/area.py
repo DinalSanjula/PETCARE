@@ -3,6 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, ConfigDict
 from Clinics.schemas.coordinates import Coordinates
+from Clinics.schemas.timezone import TimezoneAwareResponse
 
 
 class AreaBase(Coordinates,BaseModel):
@@ -23,7 +24,7 @@ class AreaUpdate(Coordinates, BaseModel):
     formatted_address : Optional[str] = Field(None, max_length=255)
 
 
-class AreaResponse(AreaBase):
+class AreaResponse(TimezoneAwareResponse, AreaBase):
     model_config = ConfigDict(from_attributes=True)
 
     id : int

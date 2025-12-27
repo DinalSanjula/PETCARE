@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, HttpUrl, field_validator, ConfigDict
 from Clinics.schemas.area import AreaResponse
 from Clinics.schemas.clinic_image import ClinicImageResponse
 from Clinics.schemas.coordinates import Coordinates
+from Clinics.schemas.timezone import TimezoneAwareResponse
 
 
 class ClinicBase(Coordinates, BaseModel):
@@ -65,7 +66,7 @@ class ClinicUpdate(Coordinates, BaseModel):
         raise ValueError("Invalid phone number format or length")
 
 
-class ClinicResponse(ClinicBase):
+class ClinicResponse(TimezoneAwareResponse,ClinicBase):
     model_config = ConfigDict(from_attributes=True)
 
     id : int
@@ -80,7 +81,7 @@ class ClinicResponse(ClinicBase):
     images : Optional[List[ClinicImageResponse]] = None
 
 
-class ClinicAdminResponse(BaseModel):
+class ClinicAdminResponse(TimezoneAwareResponse, BaseModel):
     id : int
     name : str
     owner_id : int

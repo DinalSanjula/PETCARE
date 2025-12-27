@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
+
+from Clinics.schemas.timezone import TimezoneAwareResponse
 from Users.models.user_model import UserRole
 
 
@@ -14,7 +16,7 @@ class UserCreate(UserBase):
     password: str = Field(..., min_length=8)
 
 
-class UserResponse(UserBase):
+class UserResponse(TimezoneAwareResponse, UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
@@ -48,7 +50,7 @@ class TokenData(BaseModel):
     email: Optional[str] = None
     user_id: Optional[int] = None  # remove if not used
 
-class UserAdminResponse(BaseModel):
+class UserAdminResponse(TimezoneAwareResponse, BaseModel):
     id : int
     name : str
     email : EmailStr

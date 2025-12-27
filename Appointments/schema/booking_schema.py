@@ -1,6 +1,8 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
+from Clinics.schemas.timezone import TimezoneAwareResponse
+
 
 class BookingBase(BaseModel):
     clinic_id: int
@@ -11,7 +13,7 @@ class BookingBase(BaseModel):
 class BookingCreate(BookingBase):
     pass
 
-class BookingResponse(BookingBase):
+class BookingResponse(TimezoneAwareResponse, BookingBase):
     id: int
     status: str
 
@@ -34,7 +36,7 @@ class TimeSlotOut(TimeSlotBase):
 
     model_config = ConfigDict(from_attributes=True)
 
-class AvailableSlot(BaseModel):
+class AvailableSlot(TimezoneAwareResponse, BaseModel):
     start_time: datetime
     end_time: datetime
     is_booked: bool = False

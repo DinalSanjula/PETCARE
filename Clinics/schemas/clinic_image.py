@@ -1,5 +1,7 @@
 from datetime import datetime
 from typing import Optional
+from Clinics.schemas.timezone import TimezoneAwareResponse
+
 
 from pydantic import BaseModel, Field,HttpUrl, ConfigDict
 
@@ -18,7 +20,7 @@ class ClinicImageUpdate(BaseModel):
     url: Optional[HttpUrl] = Field(None, max_length=1000)
     content_type: Optional[str] = Field(None, max_length=255)
 
-class ClinicImageResponse(ClinicImageBase):
+class ClinicImageResponse(TimezoneAwareResponse, ClinicImageBase):
     model_config = ConfigDict(from_attributes=True)
 
     id : int
