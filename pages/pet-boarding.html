@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Boarding - PetCare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="../index.html" class="logo">
+                <span class="logo-text">PetCare</span>
+            </a>
+            <nav class="nav">
+                <a href="services-near-me.html" class="nav-link">Services Near Me</a>
+                <a href="pet-sitter-jobs.html" class="nav-link">Pet Sitter Jobs</a>
+                <a href="help-center.html" class="nav-link">Help Center</a>
+            </nav>
+            <div class="header-actions">
+                <a href="signup.html" class="btn-secondary">Sign Up</a>
+                <a href="login.html" class="btn-primary">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="service-landing-page">
+        <!-- Hero Section -->
+        <section class="service-hero" style="background-image: url('../images/15.jpg')">
+            <div class="hero-overlay">
+                <div class="container">
+                    <h1 class="service-hero-title">HOME-BASED PET BOARDING</h1>
+                    <p class="service-hero-subtitle">Connecting pet parent and nearby home pet boarding</p>
+                    <button class="hero-cta-btn" onclick="showModal()">I need pet boarding now</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <section class="service-content">
+            <div class="container">
+                <div class="content-layout">
+                    <!-- Left Column -->
+                    <div class="content-left">
+                        <h2 class="content-heading">Thousands of pet boarding. Thousands of happy pets.</h2>
+                        <p class="content-description">Book a personalized home pet boarding similar to pet hotel but 24 hours care with some home pet boarding provide home cooked food or pools—whether it's just for the weekend or over a few weeks. Hear how others talk about us:</p>
+                        
+                        <div class="testimonials-list">
+                            <div class="testimonial-item">
+                                <div class="testimonial-header">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="Nuria" class="testimonial-avatar" />
+                                    <div class="testimonial-info">
+                                        <div class="testimonial-location">Florida Pet Boarding</div>
+                                        <div class="testimonial-name">Nuria:</div>
+                                    </div>
+                                </div>
+                                <p class="testimonial-text">She is super nice and very trustworthy.</p>
+                            </div>
+                            <div class="testimonial-item">
+                                <div class="testimonial-header">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="Nicole" class="testimonial-avatar" />
+                                    <div class="testimonial-info">
+                                        <div class="testimonial-location">New York Dog Boarding</div>
+                                        <div class="testimonial-name">Nicole:</div>
+                                    </div>
+                                </div>
+                                <p class="testimonial-text">Brie is very caring and my puppy got used to her right away.</p>
+                            </div>
+                        </div>
+
+                        <button class="see-more-btn">See what others say</button>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="content-right">
+                        <div class="pricing-card">
+                            <h3 class="pricing-title">Price</h3>
+                            <div class="pricing-display">
+                                <span class="pricing-from">from $</span>
+                                <span class="pricing-amount">20</span>
+                                <span class="pricing-unit">/ night</span>
+                            </div>
+                            <ul class="pricing-features">
+                                <li>24x7 Personal Care</li>
+                                <li>Few Pets & Cage Free</li>
+                                <li>Daily Photo Updates</li>
+                            </ul>
+                            <button class="get-quotes-btn" onclick="showModal()">Get 5 nearest Quotes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-works-section">
+            <div class="container">
+                <h2 class="section-title-main">How to get the perfect pet boarding</h2>
+                <div class="how-works-steps">
+                    <div class="work-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Click [Book]</h3>
+                            <p class="step-description">Get 5 Sitters to choose from instantly</p>
+                        </div>
+                    </div>
+                    <div class="work-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Deposit</h3>
+                            <p class="step-description">It's secure & no tips necessary</p>
+                        </div>
+                    </div>
+                    <div class="work-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Meet for Boarding</h3>
+                            <p class="step-description">Meet your trusted sitters</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Section -->
+        <section class="info-section">
+            <div class="container">
+                <h2 class="section-title-main">Pet boarding from Home is Great</h2>
+                <p class="info-text">Previously, most people send their pets to pet boarding facilities which houses pets in steel or plastic cages with no common social space resulting in a rather depressing environment.</p>
+                <button class="book-now-btn" onclick="showModal()">Book Now</button>
+                <p class="book-note">We'll let 30+ pet sitters know immediately.</p>
+            </div>
+        </section>
+
+        <!-- Book with PetCare Section -->
+        <section class="book-section-landing">
+            <div class="container">
+                <h2 class="section-title-main">Book with PetCare</h2>
+                <div class="book-features-grid-landing">
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-clipboard"></i></div>
+                        <h3 class="book-feature-title-landing">Reservation Guarantee</h3>
+                        <p class="book-feature-desc-landing">If your Pet Sitter, Walker or Groomer has to cancel at the last minute, we'll work with you to find a new one.</p>
+                    </div>
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-lock"></i></div>
+                        <h3 class="book-feature-title-landing">Secure Payment</h3>
+                        <p class="book-feature-desc-landing">Escrow Payment & Refundable before job starts. Pay safely and securely on PetCare—no tips necessary.</p>
+                    </div>
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-shield-alt"></i></div>
+                        <h3 class="book-feature-title-landing">Free Protection</h3>
+                        <p class="book-feature-desc-landing">Pet safety is our top priority. Every stay booked through PetCare is covered by premium protection.</p>
+                    </div>
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-phone"></i></div>
+                        <h3 class="book-feature-title-landing">24/7 Support</h3>
+                        <p class="book-feature-desc-landing">Team to support any unexpected events (e.g. sick), even SPOT checks to ensure quality.</p>
+                    </div>
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-star"></i></div>
+                        <h3 class="book-feature-title-landing">Top Quality</h3>
+                        <p class="book-feature-desc-landing">All bookings on PetCare are entitled to leave a transparent verified review.</p>
+                    </div>
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-gift"></i></div>
+                        <h3 class="book-feature-title-landing">Royalty Rewards</h3>
+                        <p class="book-feature-desc-landing">Each Spend is entitled for Discount credits on PetCare.</p>
+                    </div>
+                </div>
+                <button class="make-request-btn-landing" onclick="showModal()">Make a Request</button>
+            </div>
+        </section>
+
+        <!-- Modal -->
+        <div id="modalOverlay" class="modal-overlay" onclick="hideModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="hideModal()"><i class="fas fa-times"></i></button>
+                <h2 class="modal-title">What's next?</h2>
+                <p class="modal-text">More than 5 pet lovers will send you a message within minutes to a few hours with their quote and details.</p>
+                <div class="modal-actions">
+                    <button class="modal-btn-primary" onclick="hideModal()">Next</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>PETCARE</h4>
+                <ul>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#happenings">Happenings</a></li>
+                    <li><a href="help-center.html">Help Center</a></li>
+                    <li><a href="#terms">Terms of use</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET LOVER</h4>
+                <ul>
+                    <li><a href="pet-sitter-jobs.html">Be a Pet Sitter</a></li>
+                    <li><a href="#be-walker">Be a Dog Walker</a></li>
+                    <li><a href="#app">Pet Care App</a></li>
+                    <li><a href="#protection">Premium Protection Coverage</a></li>
+                    <li><a href="#rescue">Rescue and Shelter Programme</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET SERVICES</h4>
+                <ul>
+                    <li><a href="services-near-me.html">Pet Boarding</a></li>
+                    <li><a href="services-near-me.html">Pet Sitting</a></li>
+                    <li><a href="services-near-me.html">Dog Walking</a></li>
+                    <li><a href="services-near-me.html">Pet Daycare</a></li>
+                    <li><a href="services-near-me.html">Pet Taxi</a></li>
+                    <li><a href="services-near-me.html">Pet Grooming</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>CONTACT US</h4>
+                <div class="contact-item">
+                    <span class="envelope-icon"><i class="fas fa-envelope"></i></span>
+                    <a href="#contact">Talk to us</a>
+                </div>
+                <div class="connect-section">
+                    <h5>CONNECT WITH US</h5>
+                    <div class="social-icons">
+                        <a href="#facebook" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="language-selector">
+                    <span><i class="fas fa-globe"></i></span>
+                    <span>English (United Kingdom)</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <div class="privacy-toggle">
+                    <div class="toggle-switch">
+                        <span class="toggle-check"><i class="fas fa-check"></i></span>
+                        <span class="toggle-x"><i class="fas fa-times"></i></span>
+                    </div>
+                    <span class="privacy-text">Your privacy choices</span>
+                </div>
+                <p class="copyright">&copy; 2025 PetCare</p>
+            </div>
+            <button class="back-to-top" onclick="scrollToTop()">
+                <span><i class="fas fa-arrow-up"></i></span>
+                <span>back to top</span>
+            </button>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        function showModal() {
+            document.getElementById('modalOverlay').classList.add('show');
+        }
+        function hideModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
+

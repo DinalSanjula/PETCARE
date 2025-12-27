@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Walking - PetCare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="../index.html" class="logo"><span class="logo-text">PetCare</span></a>
+            <nav class="nav">
+                <a href="services-near-me.html" class="nav-link">Services Near Me</a>
+                <a href="pet-sitter-jobs.html" class="nav-link">Pet Sitter Jobs</a>
+                <a href="help-center.html" class="nav-link">Help Center</a>
+            </nav>
+            <div class="header-actions">
+                <a href="signup.html" class="btn-secondary">Sign Up</a>
+                <a href="login.html" class="btn-primary">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="service-landing-page">
+        <section class="service-hero" style="background-image: url('../images/6.jpg')">
+            <div class="hero-overlay">
+                <div class="container">
+                    <h1 class="service-hero-title">DOG WALKING MADE EASY</h1>
+                    <p class="service-hero-subtitle">Get 5 Prices from Dog Walkers nearby. Choose the Best Profile or Price.</p>
+                    <button class="hero-cta-btn" onclick="showModal()">I need dog walking now</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="service-content">
+            <div class="container">
+                <div class="content-layout">
+                    <div class="content-left">
+                        <h2 class="content-heading">When nature calls, our dog walkers are here to answer.</h2>
+                        <p class="content-description">You can't always predict a crazy day at work, but you can anticipate your dog's needs. Instead of rushing home at lunch, book a dog walker to give your dog a 30-minute dog walk.</p>
+                        <div class="testimonials-list">
+                            <div class="testimonial-item">
+                                <div class="testimonial-header">
+                                    <img src="https://images.unsplash.com/photo-1534361960057-19889db9621e?w=100&h=100&fit=crop" alt="Ewa" class="testimonial-avatar" />
+                                    <div class="testimonial-info">
+                                        <div class="testimonial-location">London Dog Walking</div>
+                                        <div class="testimonial-name">Ewa:</div>
+                                    </div>
+                                </div>
+                                <p class="testimonial-text">Techno really enjoying walks in local parks with a few other dogs.</p>
+                            </div>
+                            <div class="testimonial-item">
+                                <div class="testimonial-header">
+                                    <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=100&h=100&fit=crop" alt="PearlynnKendall" class="testimonial-avatar" />
+                                    <div class="testimonial-info">
+                                        <div class="testimonial-location">Singapore Dog Walking</div>
+                                        <div class="testimonial-name">PearlynnKendall:</div>
+                                    </div>
+                                </div>
+                                <p class="testimonial-text">Lyra was punctual arriving at our home.</p>
+                            </div>
+                        </div>
+                        <button class="see-more-btn">See what others say</button>
+                    </div>
+                    <div class="content-right">
+                        <div class="pricing-card">
+                            <h3 class="pricing-title">Price</h3>
+                            <div class="pricing-display">
+                                <span class="pricing-from">from $</span>
+                                <span class="pricing-amount">15</span>
+                                <span class="pricing-unit">/ walk</span>
+                            </div>
+                            <ul class="pricing-features">
+                                <li>30 minutes walk</li>
+                                <li>Few Pets only</li>
+                                <li>Route recorded</li>
+                            </ul>
+                            <button class="get-quotes-btn" onclick="showModal()">Get 5 nearest Quotes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-works-section">
+            <div class="container">
+                <h2 class="section-title-main">How to get the perfect dog walking</h2>
+                <div class="how-works-steps">
+                    <div class="work-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Click [Book]</h3>
+                            <p class="step-description">Get 5 Walkers to choose from instantly</p>
+                        </div>
+                    </div>
+                    <div class="work-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Deposit</h3>
+                            <p class="step-description">It's secure & no tips necessary</p>
+                        </div>
+                    </div>
+                    <div class="work-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Meet for Walk</h3>
+                            <p class="step-description">Meet your trusted walker</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <div class="container">
+                <h2 class="section-title-main">Dog walking is great</h2>
+                <p class="info-text">You can't always predict a crazy day at work, but you can anticipate your dog's needs.</p>
+                <button class="book-now-btn" onclick="showModal()">Book Now</button>
+                <p class="book-note">We'll let 30+ pet sitters know immediately.</p>
+            </div>
+        </section>
+
+        <section class="book-section-landing">
+            <div class="container">
+                <h2 class="section-title-main">Book with PetCare</h2>
+                <div class="book-features-grid-landing">
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-clipboard"></i></div>
+                        <h3 class="book-feature-title-landing">Reservation Guarantee</h3>
+                        <p class="book-feature-desc-landing">If your Pet Sitter, Walker or Groomer has to cancel at the last minute, we'll work with you to find a new one.</p>
+                    </div>
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-lock"></i></div>
+                        <h3 class="book-feature-title-landing">Secure Payment</h3>
+                        <p class="book-feature-desc-landing">Escrow Payment & Refundable before job starts. Pay safely and securely on PetCare—no tips necessary.</p>
+                    </div>
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-shield-alt"></i></div>
+                        <h3 class="book-feature-title-landing">Free Protection</h3>
+                        <p class="book-feature-desc-landing">Pet safety is our top priority. Every stay booked through PetCare is covered by premium protection.</p>
+                    </div>
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-phone"></i></div>
+                        <h3 class="book-feature-title-landing">24/7 Support</h3>
+                        <p class="book-feature-desc-landing">Team to support any unexpected events (e.g. sick), even SPOT checks to ensure quality.</p>
+                    </div>
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-star"></i></div>
+                        <h3 class="book-feature-title-landing">Top Quality</h3>
+                        <p class="book-feature-desc-landing">All bookings on PetCare are entitled to leave a transparent verified review.</p>
+                    </div>
+                    <div class="book-feature-card-landing">
+                        <div class="book-feature-icon-landing"><i class="fas fa-gift"></i></div>
+                        <h3 class="book-feature-title-landing">Royalty Rewards</h3>
+                        <p class="book-feature-desc-landing">Each Spend is entitled for Discount credits on PetCare.</p>
+                    </div>
+                </div>
+                <button class="make-request-btn-landing" onclick="showModal()">Make a Request</button>
+            </div>
+        </section>
+
+        <div id="modalOverlay" class="modal-overlay" onclick="hideModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="hideModal()"><i class="fas fa-times"></i></button>
+                <h2 class="modal-title">What's next?</h2>
+                <p class="modal-text">More than 5 pet lovers will send you a message within minutes to a few hours with their quote and details.</p>
+                <div class="modal-actions">
+                    <button class="modal-btn-primary" onclick="hideModal()">Next</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>PETCARE</h4>
+                <ul>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#happenings">Happenings</a></li>
+                    <li><a href="help-center.html">Help Center</a></li>
+                    <li><a href="#terms">Terms of use</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET LOVER</h4>
+                <ul>
+                    <li><a href="pet-sitter-jobs.html">Be a Pet Sitter</a></li>
+                    <li><a href="#be-walker">Be a Dog Walker</a></li>
+                    <li><a href="#app">Pet Care App</a></li>
+                    <li><a href="#protection">Premium Protection Coverage</a></li>
+                    <li><a href="#rescue">Rescue and Shelter Programme</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET SERVICES</h4>
+                <ul>
+                    <li><a href="services-near-me.html">Pet Boarding</a></li>
+                    <li><a href="services-near-me.html">Pet Sitting</a></li>
+                    <li><a href="services-near-me.html">Dog Walking</a></li>
+                    <li><a href="services-near-me.html">Pet Daycare</a></li>
+                    <li><a href="services-near-me.html">Pet Taxi</a></li>
+                    <li><a href="services-near-me.html">Pet Grooming</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>CONTACT US</h4>
+                <div class="contact-item">
+                    <span class="envelope-icon"><i class="fas fa-envelope"></i></span>
+                    <a href="#contact">Talk to us</a>
+                </div>
+                <div class="connect-section">
+                    <h5>CONNECT WITH US</h5>
+                    <div class="social-icons">
+                        <a href="#facebook" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="language-selector">
+                    <span><i class="fas fa-globe"></i></span>
+                    <span>English (United Kingdom)</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <div class="privacy-toggle">
+                    <div class="toggle-switch">
+                        <span class="toggle-check"><i class="fas fa-check"></i></span>
+                        <span class="toggle-x"><i class="fas fa-times"></i></span>
+                    </div>
+                    <span class="privacy-text">Your privacy choices</span>
+                </div>
+                <p class="copyright">&copy; 2025 PetCare</p>
+            </div>
+            <button class="back-to-top" onclick="scrollToTop()">
+                <span><i class="fas fa-arrow-up"></i></span>
+                <span>back to top</span>
+            </button>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        function showModal() { document.getElementById('modalOverlay').classList.add('show'); }
+        function hideModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+    </script>
+</body>
+</html>
+

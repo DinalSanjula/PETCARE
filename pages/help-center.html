@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - PetCare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="../index.html" class="logo">
+                <span class="logo-text">PetCare</span>
+            </a>
+            <nav class="nav">
+                <a href="services-near-me.html" class="nav-link">Services Near Me</a>
+                <a href="pet-sitter-jobs.html" class="nav-link">Pet Sitter Jobs</a>
+                <a href="help-center.html" class="nav-link">Help Center</a>
+            </nav>
+            <div class="header-actions">
+                <a href="signup.html" class="btn-secondary">Sign Up</a>
+                <a href="login.html" class="btn-primary">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="help-center-page">
+        <!-- Hero Section -->
+        <section class="help-hero">
+            <div class="container">
+                <h1 class="help-title">How can we help?</h1>
+                <div class="search-container-help">
+                    <input
+                        type="text"
+                        id="helpSearchInput"
+                        placeholder="Search"
+                        class="search-input-help"
+                        onkeyup="handleHelpSearch()"
+                    />
+                    <button class="search-btn-help" onclick="handleHelpSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics Section -->
+        <section class="topics-section">
+            <div class="container">
+                <h2 class="section-title-help">QUESTIONS</h2>
+                <h3 class="section-subtitle-help">TOPICS</h3>
+                <div class="topics-grid">
+                    <div class="topic-card" onclick="selectTopic('pet-parents')">
+                        <div class="topic-icon"><i class="fas fa-users"></i></div>
+                        <h4 class="topic-title">Pet Parents FAQ</h4>
+                    </div>
+                    <div class="topic-card" onclick="selectTopic('service-providers')">
+                        <div class="topic-icon"><i class="fas fa-user"></i></div>
+                        <h4 class="topic-title">Pet Service Providers FAQ</h4>
+                    </div>
+                    <div class="topic-card" onclick="selectTopic('payments')">
+                        <div class="topic-icon"><i class="fas fa-credit-card"></i></div>
+                        <h4 class="topic-title">Payments FAQ</h4>
+                    </div>
+                    <div class="topic-card" onclick="selectTopic('bookings')">
+                        <div class="topic-icon"><i class="fas fa-calendar"></i></div>
+                        <h4 class="topic-title">Bookings FAQ</h4>
+                    </div>
+                    <div class="topic-card" onclick="selectTopic('referral')">
+                        <div class="topic-icon"><i class="fas fa-gift"></i></div>
+                        <h4 class="topic-title">FREE Pet Boarding, Taxi - Referral Program FAQ</h4>
+                    </div>
+                    <div class="topic-card" onclick="selectTopic('policies')">
+                        <div class="topic-icon"><i class="fas fa-clipboard"></i></div>
+                        <h4 class="topic-title">Policies FAQ</h4>
+                    </div>
+                    <div class="topic-card" onclick="selectTopic('protection')">
+                        <div class="topic-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h4 class="topic-title">Premium Protection Coverage FAQ</h4>
+                    </div>
+                    <div class="topic-card" onclick="selectTopic('sponsors')">
+                        <div class="topic-icon"><i class="fas fa-handshake"></i></div>
+                        <h4 class="topic-title">PetCare Sponsors FAQ</h4>
+                    </div>
+                    <div class="topic-card" onclick="selectTopic('cancellation')">
+                        <div class="topic-icon"><i class="fas fa-times-circle"></i></div>
+                        <h4 class="topic-title">Cancellation FAQ</h4>
+                    </div>
+                    <div class="topic-card" onclick="selectTopic('events')">
+                        <div class="topic-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <h4 class="topic-title">Unfortunate Events FAQ</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Topics Section -->
+        <section class="popular-topics-section">
+            <div class="container">
+                <h2 class="section-title-help">Popular Topics</h2>
+                <div class="popular-topics-grid">
+                    <div class="popular-topic-card" onclick="selectTopic('service-providers')">
+                        <h3 class="popular-topic-title">Pet Service Providers FAQ</h3>
+                        <p class="popular-topic-description">Learn how to become a pet sitter or walker</p>
+                    </div>
+                    <div class="popular-topic-card" onclick="selectTopic('pet-parents')">
+                        <h3 class="popular-topic-title">Pet Parents FAQ</h3>
+                        <p class="popular-topic-description">Everything you need to know about booking services</p>
+                    </div>
+                    <div class="popular-topic-card" onclick="selectTopic('payments')">
+                        <h3 class="popular-topic-title">Payments FAQ</h3>
+                        <p class="popular-topic-description">Payment methods, refunds, and billing questions</p>
+                    </div>
+                    <div class="popular-topic-card" onclick="selectTopic('referral')">
+                        <h3 class="popular-topic-title">FREE Pet Boarding, Taxi - Referral Program FAQ</h3>
+                        <p class="popular-topic-description">How to earn credits through referrals</p>
+                    </div>
+                    <div class="popular-topic-card" onclick="selectTopic('cancellation')">
+                        <h3 class="popular-topic-title">Cancellation FAQ</h3>
+                        <p class="popular-topic-description">Cancellation policies and refunds</p>
+                    </div>
+                    <div class="popular-topic-card" onclick="selectTopic('protection')">
+                        <h3 class="popular-topic-title">Premium Protection Coverage FAQ</h3>
+                        <p class="popular-topic-description">Pet insurance and protection coverage</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Questions Section -->
+        <section class="popular-questions-section">
+            <div class="container">
+                <h2 class="section-title-help">Popular Questions</h2>
+                <div class="popular-questions-list">
+                    <div class="popular-question-item">
+                        <h3 class="popular-question-title">What are credits for?</h3>
+                        <p class="popular-question-answer">Everyone is encouraged to get 10 free credits by introducing 3 pet lovers to sign up and use PetCare. Credits can be used to get discounts on future bookings.</p>
+                    </div>
+                    <div class="popular-question-item">
+                        <h3 class="popular-question-title">How to be a pet sitter or walker?</h3>
+                        <p class="popular-question-answer">To be a pet service provider, it is free. You need to complete the following steps: 1) Sign up on PetCare, 2) Complete your profile with photos and bio, 3) List your services and set your prices, 4) Get approved by our team, 5) Start accepting bookings!</p>
+                    </div>
+                    <div class="popular-question-item">
+                        <h3 class="popular-question-title">Privacy & Cookie Policy</h3>
+                        <p class="popular-question-answer">This Privacy Policy is effective as of: 1st OCTOBER, 2016. PetCare values your privacy. We collect information to provide and improve our services. Your data is protected and will not be rented, sold or otherwise distributed. See our Privacy Policy for full details.</p>
+                    </div>
+                    <div class="popular-question-item">
+                        <h3 class="popular-question-title">Get more from PetCare!</h3>
+                        <p class="popular-question-answer">Complete your 5th booking and get a 10% cashback of your 5th booking. It can be used for future bookings. This is our way of rewarding loyal customers.</p>
+                    </div>
+                    <div class="popular-question-item">
+                        <h3 class="popular-question-title">Cancellation by Pet Owner</h3>
+                        <p class="popular-question-answer">Before booking starts: If the chosen Backer is not suitable after a meet and greet, you can cancel and get a full refund. After booking starts: Cancellation policies vary. Please check the specific cancellation policy for your booking.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>PETCARE</h4>
+                <ul>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#happenings">Happenings</a></li>
+                    <li><a href="help-center.html">Help Center</a></li>
+                    <li><a href="#terms">Terms of use</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET LOVER</h4>
+                <ul>
+                    <li><a href="pet-sitter-jobs.html">Be a Pet Sitter</a></li>
+                    <li><a href="#be-walker">Be a Dog Walker</a></li>
+                    <li><a href="#app">Pet Care App</a></li>
+                    <li><a href="#protection">Premium Protection Coverage</a></li>
+                    <li><a href="#rescue">Rescue and Shelter Programme</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET SERVICES</h4>
+                <ul>
+                    <li><a href="services-near-me.html">Pet Boarding</a></li>
+                    <li><a href="services-near-me.html">Pet Sitting</a></li>
+                    <li><a href="services-near-me.html">Dog Walking</a></li>
+                    <li><a href="services-near-me.html">Pet Daycare</a></li>
+                    <li><a href="services-near-me.html">Pet Taxi</a></li>
+                    <li><a href="services-near-me.html">Pet Grooming</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>CONTACT US</h4>
+                <div class="contact-item">
+                    <span class="envelope-icon"><i class="fas fa-envelope"></i></span>
+                    <a href="#contact">Talk to us</a>
+                </div>
+                <div class="connect-section">
+                    <h5>CONNECT WITH US</h5>
+                    <div class="social-icons">
+                        <a href="#facebook" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="language-selector">
+                    <span><i class="fas fa-globe"></i></span>
+                    <span>English (United Kingdom)</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <div class="privacy-toggle">
+                    <div class="toggle-switch">
+                        <span class="toggle-check"><i class="fas fa-check"></i></span>
+                        <span class="toggle-x"><i class="fas fa-times"></i></span>
+                    </div>
+                    <span class="privacy-text">Your privacy choices</span>
+                </div>
+                <p class="copyright">&copy; 2025 PetCare</p>
+            </div>
+            <button class="back-to-top" onclick="scrollToTop()">
+                <span><i class="fas fa-arrow-up"></i></span>
+                <span>back to top</span>
+            </button>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>
+

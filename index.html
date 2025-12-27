@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find trusted pet sitters, groomers, dog walkers and pet boarding services">
+    <title>Pet Care - Find Pet Sitters & Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <span class="logo-text">PetCare</span>
+            </a>
+            <nav class="nav">
+                <a href="pages/services-near-me.html" class="nav-link">Services Near Me</a>
+                <a href="pages/pet-sitter-jobs.html" class="nav-link">Pet Sitter Jobs</a>
+                <a href="pages/help-center.html" class="nav-link">Help Center</a>
+            </nav>
+            <div class="header-actions">
+                <a href="pages/signup.html" class="btn-secondary">Sign Up</a>
+                <a href="pages/login.html" class="btn-primary">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="homepage">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">
+                            Get Pet Sitters, Groomers, Dog Walkers and Pet Boarding Near You
+                        </h1>
+                        <p class="hero-subtitle">
+                            Find affordable Pet Sitters, Pet Boarding and Dog Walkers in your city. 
+                            We include free pet insurance for each booking.
+                        </p>
+
+                        <!-- Search Section -->
+                        <div class="search-section">
+                            <div class="search-container">
+                                <div class="search-field">
+                                    <label>I'm Looking For</label>
+                                    <select id="serviceSelect" class="search-select">
+                                        <option value="">Choose a service</option>
+                                        <option value="boarding">Pet Boarding</option>
+                                        <option value="sitting">House Sitting</option>
+                                        <option value="walking">Dog Walking</option>
+                                        <option value="daycare">Pet Daycare</option>
+                                        <option value="grooming">Pet Grooming</option>
+                                        <option value="taxi">Pet Taxi</option>
+                                    </select>
+                                </div>
+                                <div class="search-field">
+                                    <label>Near</label>
+                                    <input
+                                        type="text"
+                                        id="locationInput"
+                                        placeholder="Enter location"
+                                        class="search-input"
+                                    />
+                                </div>
+                                <button onclick="handleSearch()" class="search-btn">
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pet Images Section -->
+                    <div class="hero-images">
+                        <div class="pet-image pet-image-1">
+                            <img src="/images/1.jpg" alt="Pet" />
+                        </div>
+                        <div class="pet-image pet-image-2">
+                            <img src="/images/17.jpg" alt="Pet" />
+                        </div>
+                        <div class="pet-image pet-image-3">
+                            <img src="/images/20.jpg" alt="Pet" />
+                        </div>
+                        <div class="pet-image pet-image-4">
+                            <img src="/images/5.jpg" alt="Pet" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section class="services-section">
+            <div class="container">
+                <h2 class="section-title">Choose a service</h2>
+                <div class="services-grid">
+                    <div class="service-card" onclick="navigateToService('pet-boarding')">
+                        <div class="service-icon"><i class="fas fa-home"></i></div>
+                        <h3 class="service-name">Pet Boarding</h3>
+                        <p class="service-description">Your pets go to the sitter's home</p>
+                    </div>
+                    <div class="service-card" onclick="navigateToService('house-sitting')">
+                        <div class="service-icon"><i class="fas fa-house-user"></i></div>
+                        <h3 class="service-name">House Sitting</h3>
+                        <p class="service-description">Sitter's come to your home</p>
+                    </div>
+                    <div class="service-card" onclick="navigateToService('dog-walking')">
+                        <div class="service-icon"><i class="fas fa-walking"></i></div>
+                        <h3 class="service-name">Dog Walking</h3>
+                        <p class="service-description">Dog walkers to take your dog for a run</p>
+                    </div>
+                    <div class="service-card" onclick="navigateToService('pet-daycare')">
+                        <div class="service-icon"><i class="fas fa-sun"></i></div>
+                        <h3 class="service-name">Pet Daycare</h3>
+                        <p class="service-description">Sitters care for your pet in the day</p>
+                    </div>
+                    <div class="service-card" onclick="navigateToService('pet-grooming')">
+                        <div class="service-icon"><i class="fas fa-cut"></i></div>
+                        <h3 class="service-name">Pet Grooming</h3>
+                        <p class="service-description">Groomers to keep your pet fashionable</p>
+                    </div>
+                    <div class="service-card" onclick="navigateToService('pet-taxi')">
+                        <div class="service-icon"><i class="fas fa-car"></i></div>
+                        <h3 class="service-name">Pet Taxi</h3>
+                        <p class="service-description">Drivers to bring your pet to places</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="container">
+                <h2 class="section-title">Why PetCare?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Great for your pet</h3>
+                        <ul>
+                            <li>✓ Get a pet lover to care, not a cage</li>
+                            <li>✓ Personal care and attention</li>
+                            <li>✓ Stay in a home near yours</li>
+                            <li>✓ Stay in familiar surroundings</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Great for you</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Compare 5 sitters' quotes instantly</li>
+                            <li><i class="fas fa-check"></i> Simple reservation online</li>
+                            <li><i class="fas fa-check"></i> Daily updates with photos and chats</li>
+                            <li><i class="fas fa-check"></i> Customer service always there</li>
+                            <li><i class="fas fa-check"></i> Payment protection</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Trust and Safety</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Profiles that have been reviewed</li>
+                            <li><i class="fas fa-check"></i> Previous jobs' reviews and ratings</li>
+                            <li><i class="fas fa-check"></i> A community of pet lovers</li>
+                            <li><i class="fas fa-check"></i> Communicate directly within platform</li>
+                            <li><i class="fas fa-check"></i> Your pet is insured</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <h2>Get the 5 best nearby services with just one request</h2>
+                <button class="cta-button">Get 5 Best Quotes</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>PETCARE</h4>
+                <ul>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#happenings">Happenings</a></li>
+                    <li><a href="pages/help-center.html">Help Center</a></li>
+                    <li><a href="#terms">Terms of use</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET LOVER</h4>
+                <ul>
+                    <li><a href="pages/pet-sitter-jobs.html">Be a Pet Sitter</a></li>
+                    <li><a href="#be-walker">Be a Dog Walker</a></li>
+                    <li><a href="#app">Pet Care App</a></li>
+                    <li><a href="#protection">Premium Protection Coverage</a></li>
+                    <li><a href="#rescue">Rescue and Shelter Programme</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET SERVICES</h4>
+                <ul>
+                    <li><a href="pages/services-near-me.html">Pet Boarding</a></li>
+                    <li><a href="pages/services-near-me.html">Pet Sitting</a></li>
+                    <li><a href="pages/services-near-me.html">Dog Walking</a></li>
+                    <li><a href="pages/services-near-me.html">Pet Daycare</a></li>
+                    <li><a href="pages/services-near-me.html">Pet Taxi</a></li>
+                    <li><a href="pages/services-near-me.html">Pet Grooming</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>CONTACT US</h4>
+                <div class="contact-item">
+                    <span class="envelope-icon"><i class="fas fa-envelope"></i></span>
+                    <a href="#contact">Talk to us</a>
+                </div>
+                <div class="connect-section">
+                    <h5>CONNECT WITH US</h5>
+                    <div class="social-icons">
+                        <a href="#facebook" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="language-selector">
+                    <span><i class="fas fa-globe"></i></span>
+                    <span>English (United Kingdom)</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                    <div class="privacy-toggle">
+                    <div class="toggle-switch">
+                        <span class="toggle-check"><i class="fas fa-check"></i></span>
+                        <span class="toggle-x"><i class="fas fa-times"></i></span>
+                    </div>
+                    <span class="privacy-text">Your privacy choices</span>
+                </div>
+                <p class="copyright">&copy; 2025 PetCare</p>
+            </div>
+            <button class="back-to-top" onclick="scrollToTop()">
+                <span><i class="fas fa-arrow-up"></i></span>
+                <span>back to top</span>
+            </button>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        function navigateToService(servicePath) {
+            window.location.href = `pages/${servicePath}.html`;
+        }
+    </script>
+</body>
+</html>
+

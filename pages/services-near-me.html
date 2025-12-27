@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services Near Me - PetCare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="../index.html" class="logo">
+                <span class="logo-text">PetCare</span>
+            </a>
+            <nav class="nav">
+                <a href="services-near-me.html" class="nav-link">Services Near Me</a>
+                <a href="pet-sitter-jobs.html" class="nav-link">Pet Sitter Jobs</a>
+                <a href="help-center.html" class="nav-link">Help Center</a>
+            </nav>
+            <div class="header-actions">
+                <a href="signup.html" class="btn-secondary">Sign Up</a>
+                <a href="login.html" class="btn-primary">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="services-near-me-page">
+        <!-- Hero Section -->
+        <section class="services-hero">
+            <div class="container">
+                <h1 class="hero-main-title">
+                    Compare Pet Sitters services near you for the best Pet Sitters prices
+                </h1>
+                <h2 class="hero-sub-title">
+                    Get the 5 best nearby services with just one request.
+                </h2>
+                <p class="hero-description">
+                    Browse cat, dog boarding, walking, grooming in your area
+                </p>
+                
+                <button class="cta-quotes-btn">Get 5 Best Quotes</button>
+                <p class="hero-note">Get Boarding, Walking, Grooming, Taxi & More</p>
+            </div>
+        </section>
+
+        <!-- Service Selection -->
+        <section class="service-selection-section">
+            <div class="container">
+                <h2 class="section-title">Choose a service</h2>
+                <div class="services-grid">
+                    <div class="service-card-small" onclick="navigateToService('pet-boarding')">
+                        <div class="service-icon-small"><i class="fas fa-home"></i></div>
+                        <h3 class="service-name-small">Pet Boarding</h3>
+                        <p class="service-desc-small">Your pets go to the sitter's home</p>
+                    </div>
+                    <div class="service-card-small" onclick="navigateToService('house-sitting')">
+                        <div class="service-icon-small"><i class="fas fa-house-user"></i></div>
+                        <h3 class="service-name-small">House Sitting</h3>
+                        <p class="service-desc-small">Sitter's come to your home</p>
+                    </div>
+                    <div class="service-card-small" onclick="navigateToService('dog-walking')">
+                        <div class="service-icon-small"><i class="fas fa-walking"></i></div>
+                        <h3 class="service-name-small">Dog Walking</h3>
+                        <p class="service-desc-small">Dog walkers to take your dog for a run</p>
+                    </div>
+                    <div class="service-card-small" onclick="navigateToService('pet-daycare')">
+                        <div class="service-icon-small"><i class="fas fa-sun"></i></div>
+                        <h3 class="service-name-small">Pet Daycare</h3>
+                        <p class="service-desc-small">Sitters care for your pet in the day</p>
+                    </div>
+                    <div class="service-card-small" onclick="navigateToService('pet-grooming')">
+                        <div class="service-icon-small"><i class="fas fa-cut"></i></div>
+                        <h3 class="service-name-small">Pet Grooming</h3>
+                        <p class="service-desc-small">Groomers to keep your pet fashionable</p>
+                    </div>
+                    <div class="service-card-small" onclick="navigateToService('pet-taxi')">
+                        <div class="service-icon-small"><i class="fas fa-car"></i></div>
+                        <h3 class="service-name-small">Pet Taxi</h3>
+                        <p class="service-desc-small">Drivers to bring your pet to places</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search and Filter Section -->
+        <section class="search-filter-section">
+            <div class="container">
+                <div class="search-filter-container">
+                    <div class="search-fields">
+                        <div class="search-field-group">
+                            <label>I'm Looking For</label>
+                            <select id="serviceSelect" class="search-select-large">
+                                <option value="">Choose a service</option>
+                                <option value="boarding">Pet Boarding</option>
+                                <option value="sitting">House Sitting</option>
+                                <option value="walking">Dog Walking</option>
+                                <option value="daycare">Pet Daycare</option>
+                                <option value="grooming">Pet Grooming</option>
+                                <option value="taxi">Pet Taxi</option>
+                            </select>
+                        </div>
+                        <div class="search-field-group">
+                            <label>Near</label>
+                            <input
+                                type="text"
+                                id="locationInput"
+                                placeholder="Enter location"
+                                class="search-input-large"
+                            />
+                        </div>
+                        <button onclick="handleSearch()" class="search-btn-large">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section">
+            <div class="container">
+                <div class="results-header">
+                    <div class="results-info">
+                        <h2 id="resultsCount">0 Services Found</h2>
+                        <p id="resultsLocation">Near your location</p>
+                    </div>
+                    <div class="results-controls">
+                        <select id="sortSelect" class="sort-select">
+                            <option value="review">Sort by Review</option>
+                            <option value="price">Sort by Price</option>
+                            <option value="distance">Sort by Distance</option>
+                        </select>
+                        <button onclick="toggleFilters()" class="filter-toggle">
+                            More Filter
+                        </button>
+                        <button onclick="toggleViewMode()" class="view-toggle" id="viewToggle">
+                            View On Map
+                        </button>
+                    </div>
+                </div>
+
+                <div id="filterPanel" class="filter-panel" style="display: none;">
+                    <div class="filter-section">
+                        <label>Select Service</label>
+                        <select id="filterService">
+                            <option value="">All Services</option>
+                            <option value="boarding">Pet Boarding</option>
+                            <option value="sitting">House Sitting</option>
+                            <option value="walking">Dog Walking</option>
+                            <option value="daycare">Pet Daycare</option>
+                            <option value="grooming">Pet Grooming</option>
+                            <option value="taxi">Pet Taxi</option>
+                        </select>
+                    </div>
+                    <div class="filter-section">
+                        <label>Pet Type</label>
+                        <select id="filterPetType">
+                            <option value="all">All Pets</option>
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                            <option value="rabbit">Rabbit</option>
+                            <option value="bird">Bird</option>
+                            <option value="reptile">Reptile</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button onclick="clearFilters()" class="reset-btn">Reset</button>
+                        <button onclick="applyFilters()" class="apply-btn">Apply</button>
+                    </div>
+                </div>
+
+                <div class="providers-grid" id="providersGrid"></div>
+                <div class="map-placeholder" id="mapView" style="display: none;">
+                    <p>Map view coming soon...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section class="benefits-section">
+            <div class="container">
+                <h2 class="section-title">Pay via PetCare to enjoy the following benefits</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon-large"><i class="fas fa-shield-alt"></i></div>
+                        <h3 class="benefit-title">Free Premium Protection for your pet</h3>
+                        <p class="benefit-text">Enjoy peace of mind with free veterinary coverage for your pet with every booking.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon-large"><i class="fas fa-credit-card"></i></div>
+                        <h3 class="benefit-title">Payment Protection</h3>
+                        <p class="benefit-text">Payments are only released when bookings are completed without major disputes.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon-large"><i class="fas fa-check"></i></div>
+                        <h3 class="benefit-title">Reservation guarantee</h3>
+                        <p class="benefit-text">We help to find a replacement Backer for last minute cancelations or you get a full refund.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why PetCare Section -->
+        <section class="why-petcare-section">
+            <div class="container">
+                <h2 class="section-title">Why PetCare?</h2>
+                <div class="why-grid">
+                    <div class="why-card">
+                        <h3 class="why-category">Great for your pet</h3>
+                        <ul class="why-list">
+                            <li>Get a pet lover to care, not a cage</li>
+                            <li>Personal care and attention</li>
+                            <li>Stay in a home near yours</li>
+                            <li>Stay in familiar surroundings and items</li>
+                        </ul>
+                    </div>
+                    <div class="why-card">
+                        <h3 class="why-category">Great for you</h3>
+                        <ul class="why-list">
+                            <li>Compare 5 sitters' quotes instantly</li>
+                            <li>Simple reservation online</li>
+                            <li>Daily updates with photos and chats</li>
+                            <li>Customer service always there for you</li>
+                            <li>Payment protection</li>
+                        </ul>
+                    </div>
+                    <div class="why-card">
+                        <h3 class="why-category">Trust and Safety</h3>
+                        <ul class="why-list">
+                            <li>Profiles that have been reviewed</li>
+                            <li>Previous jobs' reviews and ratings</li>
+                            <li>A community of pet lovers</li>
+                            <li>Communicate directly within platform</li>
+                            <li>Your pet is insured</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section-services">
+            <div class="container">
+                <h2 class="cta-title">Don't have time to find the right pet sitters?</h2>
+                <p class="cta-subtitle">Let us help you!</p>
+                <button class="cta-request-btn">REQUEST TOP 5 QUOTES</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>PETCARE</h4>
+                <ul>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#happenings">Happenings</a></li>
+                    <li><a href="help-center.html">Help Center</a></li>
+                    <li><a href="#terms">Terms of use</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET LOVER</h4>
+                <ul>
+                    <li><a href="pet-sitter-jobs.html">Be a Pet Sitter</a></li>
+                    <li><a href="#be-walker">Be a Dog Walker</a></li>
+                    <li><a href="#app">Pet Care App</a></li>
+                    <li><a href="#protection">Premium Protection Coverage</a></li>
+                    <li><a href="#rescue">Rescue and Shelter Programme</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET SERVICES</h4>
+                <ul>
+                    <li><a href="services-near-me.html">Pet Boarding</a></li>
+                    <li><a href="services-near-me.html">Pet Sitting</a></li>
+                    <li><a href="services-near-me.html">Dog Walking</a></li>
+                    <li><a href="services-near-me.html">Pet Daycare</a></li>
+                    <li><a href="services-near-me.html">Pet Taxi</a></li>
+                    <li><a href="services-near-me.html">Pet Grooming</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>CONTACT US</h4>
+                <div class="contact-item">
+                    <span class="envelope-icon"><i class="fas fa-envelope"></i></span>
+                    <a href="#contact">Talk to us</a>
+                </div>
+                <div class="connect-section">
+                    <h5>CONNECT WITH US</h5>
+                    <div class="social-icons">
+                        <a href="#facebook" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="language-selector">
+                    <span><i class="fas fa-globe"></i></span>
+                    <span>English (United Kingdom)</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <div class="privacy-toggle">
+                    <div class="toggle-switch">
+                        <span class="toggle-check"><i class="fas fa-check"></i></span>
+                        <span class="toggle-x"><i class="fas fa-times"></i></span>
+                    </div>
+                    <span class="privacy-text">Your privacy choices</span>
+                </div>
+                <p class="copyright">&copy; 2025 PetCare</p>
+            </div>
+            <button class="back-to-top" onclick="scrollToTop()">
+                <span><i class="fas fa-arrow-up"></i></span>
+                <span>back to top</span>
+            </button>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // Update results count
+        function updateResultsCount() {
+            const params = getUrlParams();
+            const providers = filterProviders(params.service, params.location);
+            const countEl = document.getElementById('resultsCount');
+            const locationEl = document.getElementById('resultsLocation');
+            
+            if (countEl) {
+                countEl.textContent = `${providers.length} ${providers.length === 1 ? 'Service' : 'Services'} Found`;
+            }
+            if (locationEl) {
+                locationEl.textContent = `Near ${params.location || 'your location'}`;
+            }
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const service = document.getElementById('filterService')?.value || '';
+            const location = document.getElementById('locationInput')?.value || '';
+            window.location.href = `/services-near-me.html?service=${service}&location=${location}`;
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            updateResultsCount();
+        });
+    </script>
+</body>
+</html>
+

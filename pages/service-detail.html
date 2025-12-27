@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Detail - PetCare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="../index.html" class="logo">
+                <span class="logo-text">PetCare</span>
+            </a>
+            <nav class="nav">
+                <a href="services-near-me.html" class="nav-link">Services Near Me</a>
+                <a href="pet-sitter-jobs.html" class="nav-link">Pet Sitter Jobs</a>
+                <a href="help-center.html" class="nav-link">Help Center</a>
+            </nav>
+            <div class="header-actions">
+                <a href="signup.html" class="btn-secondary">Sign Up</a>
+                <a href="login.html" class="btn-primary">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="service-detail-page">
+        <!-- Header Section -->
+        <section class="detail-header">
+            <div class="container">
+                <div class="provider-header">
+                    <div class="provider-info">
+                        <h1 class="provider-title" id="providerTitle">Loading...</h1>
+                        <p class="provider-subtitle" id="providerSubtitle">Loading...</p>
+                        <div class="provider-meta" id="providerMeta"></div>
+                    </div>
+                    <div class="provider-image-large">
+                        <img id="providerImage" src="../images/1.jpg" alt="Provider" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="detail-content">
+            <div class="container">
+                <div class="detail-layout">
+                    <!-- Left Column -->
+                    <div class="detail-main">
+                        <!-- About Provider -->
+                        <section class="about-section">
+                            <h2 class="section-heading" id="aboutHeading">Loading...</h2>
+                            <p class="about-text" id="aboutText">Loading...</p>
+                            
+                            <div class="skills-section">
+                                <h3 class="skills-heading">Skills and qualifications</h3>
+                                <ul class="skills-list" id="skillsList"></ul>
+                            </div>
+                        </section>
+
+                        <!-- About Service -->
+                        <section class="service-about-section">
+                            <h2 class="section-heading" id="serviceHeading">About</h2>
+                            <div class="social-links">
+                                <a href="#" class="social-link">FB</a>
+                                <a href="#" class="social-link">Email</a>
+                                <a href="#" class="social-link">Google</a>
+                                <a href="#" class="social-link">Id</a>
+                            </div>
+                            
+                            <div class="summary-section">
+                                <h3 class="summary-heading">Summary.</h3>
+                                <p class="summary-text" id="summaryText">Loading...</p>
+                            </div>
+
+                            <div class="service-details-grid" id="serviceDetailsGrid"></div>
+                        </section>
+
+                        <!-- Neighborhood -->
+                        <section class="neighborhood-section">
+                            <h2 class="section-heading">Neighbourhood</h2>
+                            <p class="neighborhood-text" id="neighborhoodText">Loading...</p>
+                        </section>
+
+                        <!-- Reviews Section -->
+                        <section class="reviews-section">
+                            <h2 class="section-heading" id="reviewsHeading">Reviews</h2>
+                            <button class="write-review-btn">Write a Review</button>
+                            
+                            <div class="reviews-list" id="reviewsList"></div>
+                        </section>
+
+                        <!-- FAQ Section -->
+                        <section class="faq-section-detail">
+                            <h2 class="section-heading">Frequently Asked Questions</h2>
+                            <div class="faq-list-detail" id="faqList"></div>
+                        </section>
+                    </div>
+
+                    <!-- Right Sidebar -->
+                    <div class="detail-sidebar">
+                        <!-- Services & Rates -->
+                        <div class="services-rates-card">
+                            <h3 class="card-title">Services & Rates</h3>
+                            
+                            <div class="service-rate-item">
+                                <h4 class="rate-service-name">Talk & Greet</h4>
+                                <p class="rate-description">Get to know each other first.</p>
+                                <div class="rate-price">Free</div>
+                                <button class="contact-btn">Contact</button>
+                            </div>
+
+                            <div class="service-rate-item">
+                                <h4 class="rate-service-name" id="rateServiceName">Service</h4>
+                                <div class="rate-price" id="ratePrice">Loading...</div>
+                                <button class="reserve-btn">Make Reservation</button>
+                                <p class="rate-note">
+                                    Book via PetCare to enjoy Premium Insurance, 24/7 support, booking guarantee, 
+                                    safe cashless payments, photo updates and more!
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Book with PetCare -->
+                        <div class="book-with-card">
+                            <h3 class="card-title">Book with PetCare</h3>
+                            <div class="book-features-grid">
+                                <div class="book-feature-item">
+                                    <div class="book-feature-icon">📋</div>
+                                    <h4 class="book-feature-title">Reservation Guarantee</h4>
+                                    <p class="book-feature-desc">If your Pet Sitter, Walker or Groomer has to cancel at the last minute, we'll work with you to find a new one.</p>
+                                </div>
+                                <div class="book-feature-item">
+                                    <div class="book-feature-icon">🔒</div>
+                                    <h4 class="book-feature-title">Secure Payment</h4>
+                                    <p class="book-feature-desc">Escrow Payment & Refundable before job starts. Pay safely and securely on PetCare—no tips necessary.</p>
+                                </div>
+                                <div class="book-feature-item">
+                                    <div class="book-feature-icon">🛡️</div>
+                                    <h4 class="book-feature-title">Free Protection</h4>
+                                    <p class="book-feature-desc">Pet safety is our top priority. Every stay booked through PetCare is covered by premium protection.</p>
+                                </div>
+                                <div class="book-feature-item">
+                                    <div class="book-feature-icon">📞</div>
+                                    <h4 class="book-feature-title">24/7 Support</h4>
+                                    <p class="book-feature-desc">Team to support any unexpected events (e.g. sick), even SPOT checks to ensure quality.</p>
+                                </div>
+                                <div class="book-feature-item">
+                                    <div class="book-feature-icon">⭐</div>
+                                    <h4 class="book-feature-title">Top Quality</h4>
+                                    <p class="book-feature-desc">All bookings on PetCare are entitled to leave a transparent verified review.</p>
+                                </div>
+                                <div class="book-feature-item">
+                                    <div class="book-feature-icon">🎁</div>
+                                    <h4 class="book-feature-title">Royalty Rewards</h4>
+                                    <p class="book-feature-desc">Each Spend is entitled for Discount credits on PetCare.</p>
+                                </div>
+                            </div>
+                            <button class="make-request-btn">Make a Request</button>
+                        </div>
+
+                        <!-- Other Services -->
+                        <div class="other-services-card">
+                            <h3 class="card-title" id="otherServicesTitle">Other Services</h3>
+                            <div class="other-services-list" id="otherServicesList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>PETCARE</h4>
+                <ul>
+                    <li><a href="#careers">Careers</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#happenings">Happenings</a></li>
+                    <li><a href="help-center.html">Help Center</a></li>
+                    <li><a href="#terms">Terms of use</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET LOVER</h4>
+                <ul>
+                    <li><a href="pet-sitter-jobs.html">Be a Pet Sitter</a></li>
+                    <li><a href="#be-walker">Be a Dog Walker</a></li>
+                    <li><a href="#app">Pet Care App</a></li>
+                    <li><a href="#protection">Premium Protection Coverage</a></li>
+                    <li><a href="#rescue">Rescue and Shelter Programme</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>PET SERVICES</h4>
+                <ul>
+                    <li><a href="services-near-me.html">Pet Boarding</a></li>
+                    <li><a href="services-near-me.html">Pet Sitting</a></li>
+                    <li><a href="services-near-me.html">Dog Walking</a></li>
+                    <li><a href="services-near-me.html">Pet Daycare</a></li>
+                    <li><a href="services-near-me.html">Pet Taxi</a></li>
+                    <li><a href="services-near-me.html">Pet Grooming</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>CONTACT US</h4>
+                <div class="contact-item">
+                    <span class="envelope-icon"><i class="fas fa-envelope"></i></span>
+                    <a href="#contact">Talk to us</a>
+                </div>
+                <div class="connect-section">
+                    <h5>CONNECT WITH US</h5>
+                    <div class="social-icons">
+                        <a href="#facebook" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="language-selector">
+                    <span><i class="fas fa-globe"></i></span>
+                    <span>English (United Kingdom)</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <div class="privacy-toggle">
+                    <div class="toggle-switch">
+                        <span class="toggle-check"><i class="fas fa-check"></i></span>
+                        <span class="toggle-x"><i class="fas fa-times"></i></span>
+                    </div>
+                    <span class="privacy-text">Your privacy choices</span>
+                </div>
+                <p class="copyright">&copy; 2025 PetCare</p>
+            </div>
+            <button class="back-to-top" onclick="scrollToTop()">
+                <span><i class="fas fa-arrow-up"></i></span>
+                <span>back to top</span>
+            </button>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // Get provider data from URL
+        function getProviderById(id) {
+            const providers = [
+                {
+                    id: 1,
+                    name: 'Amanda\'s Pet Care',
+                    providerName: 'Amanda',
+                    service: 'boarding',
+                    location: 'Kandy, Central Province',
+                    rating: 4.8,
+                    reviews: 127,
+                    price: 1500,
+                    currency: 'Rs.',
+                    image: '../images/1.jpg',
+                    description: 'Experienced pet sitter with 5+ years of caring for dogs and cats. I provide personalized home-based pet boarding in a cage-free environment.',
+                    about: 'I have been caring for pets for over 5 years. I love animals and provide a safe, loving environment for your pets while you\'re away. My home is pet-friendly with plenty of space for play and rest.',
+                    skills: ['Experienced pet sitter', 'Cage-free boarding', 'Daily photo updates'],
+                    distanceWilling: 'Local area',
+                    acceptedDogSize: ['All sizes'],
+                    walkLength: 'N/A',
+                    lastMinuteBookings: 'Yes'
+                },
+                {
+                    id: 2,
+                    name: 'Happy Paws Grooming',
+                    providerName: 'Amanda',
+                    service: 'grooming',
+                    location: 'Kandy, Central Province',
+                    rating: 4.9,
+                    reviews: 89,
+                    price: 2000,
+                    currency: 'Rs.',
+                    image: '../images/18.jpg',
+                    description: 'Professional grooming services for all breeds. We provide comprehensive grooming including bathing, blow drying, ear cleaning, and nail clipping.',
+                    about: 'I am a professional pet groomer with over 5 years of experience caring for dogs and cats. I love making pets look and feel their best with gentle, professional grooming services.',
+                    skills: ['Professional grooming certification', 'Experience with all breeds', 'Gentle handling techniques'],
+                    distanceWilling: 'Local area',
+                    acceptedDogSize: ['All sizes'],
+                    walkLength: 'N/A',
+                    lastMinuteBookings: 'Yes'
+                },
+                {
+                    id: 3,
+                    name: 'Walk & Play',
+                    providerName: 'Sarah',
+                    service: 'walking',
+                    location: 'Kandy, Central Province',
+                    rating: 4.7,
+                    reviews: 203,
+                    price: 800,
+                    currency: 'Rs.',
+                    image: '../images/6.jpg',
+                    description: 'Daily dog walking and exercise services. I provide 30-minute walks with route recording and regular updates.',
+                    about: 'I am passionate about keeping dogs active and healthy. With years of experience, I ensure your furry friend gets the exercise and attention they need.',
+                    skills: ['Certified dog walker', 'Experience with all dog sizes', 'Route tracking'],
+                    distanceWilling: '1-3km',
+                    acceptedDogSize: ['1-5kg', '5-10kg', '10-20kg', '20-40kg'],
+                    walkLength: '30 minutes',
+                    lastMinuteBookings: 'Yes'
+                },
+                {
+                    id: 4,
+                    name: 'Home Pet Boarding',
+                    providerName: 'Michael',
+                    service: 'boarding',
+                    location: 'Kandy, Central Province',
+                    rating: 4.6,
+                    reviews: 156,
+                    price: 1800,
+                    currency: 'Rs.',
+                    image: '../images/4.jpg',
+                    description: 'Cage-free home boarding for your beloved pets. Your pets stay in a comfortable home environment with 24/7 care.',
+                    about: 'I provide a loving home environment for pets while their owners are away. My home is pet-friendly with plenty of space for play and rest.',
+                    skills: ['Home-based boarding', 'Cage-free environment', 'Daily photo updates'],
+                    distanceWilling: 'Local area',
+                    acceptedDogSize: ['All sizes'],
+                    walkLength: 'N/A',
+                    lastMinuteBookings: 'Yes'
+                },
+                {
+                    id: 5,
+                    name: 'Pet Taxi Services',
+                    providerName: 'David',
+                    service: 'taxi',
+                    location: 'Kandy, Central Province',
+                    rating: 4.5,
+                    reviews: 67,
+                    price: 1200,
+                    currency: 'Rs.',
+                    image: '../images/3.jpg',
+                    description: 'Safe and reliable pet transportation. Comfortable rides for your pets to vet appointments, grooming, or any destination.',
+                    about: 'I specialize in safe pet transportation with a comfortable, pet-friendly vehicle. Your pet\'s safety and comfort are my top priorities.',
+                    skills: ['Pet-friendly vehicle', 'Safe transportation', 'Insurance coverage'],
+                    distanceWilling: 'Up to 20km',
+                    acceptedDogSize: ['All sizes'],
+                    walkLength: 'N/A',
+                    lastMinuteBookings: 'Yes'
+                },
+                {
+                    id: 6,
+                    name: 'Daycare Delight',
+                    providerName: 'Emma',
+                    service: 'daycare',
+                    location: 'Kandy, Central Province',
+                    rating: 4.8,
+                    reviews: 94,
+                    price: 1300,
+                    currency: 'Rs.',
+                    image: '../images/10.jpg',
+                    description: 'Fun-filled daycare for your pets. Socialization, playtime, and exercise in a safe, supervised environment.',
+                    about: 'I run a fun and safe daycare facility where pets can socialize, play, and stay active during the day. Perfect for busy pet parents.',
+                    skills: ['Supervised playtime', 'Socialization', 'Exercise and activities'],
+                    distanceWilling: 'Local area',
+                    acceptedDogSize: ['All sizes'],
+                    walkLength: 'Full day',
+                    lastMinuteBookings: 'Yes'
+                }
+            ];
+            return providers.find(p => p.id === parseInt(id)) || providers[0];
+        }
+
+        function getServiceName(serviceId) {
+            const services = {
+                boarding: 'Pet Boarding',
+                sitting: 'House Sitting',
+                walking: 'Dog Walking',
+                daycare: 'Pet Daycare',
+                grooming: 'Pet Grooming',
+                taxi: 'Pet Taxi'
+            };
+            return services[serviceId] || serviceId;
+        }
+
+        function renderStars(rating) {
+            let html = '';
+            const fullStars = Math.floor(rating);
+            for (let i = 0; i < fullStars; i++) {
+                html += '<span class="star filled">★</span>';
+            }
+            const emptyStars = 5 - fullStars;
+            for (let i = 0; i < emptyStars; i++) {
+                html += '<span class="star">★</span>';
+            }
+            return html;
+        }
+
+        function loadProviderDetail() {
+            const params = new URLSearchParams(window.location.search);
+            const providerId = params.get('id') || '1';
+            const provider = getProviderById(providerId);
+
+            // Update header
+            document.getElementById('providerTitle').textContent = `${provider.name} @ ${provider.location.split(',')[0]}`;
+            document.getElementById('providerSubtitle').textContent = `by ${provider.providerName} (${provider.reviews} Reviews)`;
+            document.getElementById('providerMeta').innerHTML = `
+                <span class="location-badge">${provider.location}</span>
+                <span class="service-badge-large">${getServiceName(provider.service)}</span>
+            `;
+            document.getElementById('providerImage').src = provider.image;
+            document.getElementById('providerImage').alt = provider.name;
+
+            // Update about section
+            document.getElementById('aboutHeading').textContent = `${provider.providerName} & Guest's Pets`;
+            document.getElementById('aboutText').textContent = provider.about;
+            const skillsList = document.getElementById('skillsList');
+            skillsList.innerHTML = provider.skills.map(skill => `<li>${skill}</li>`).join('');
+
+            // Update service section
+            document.getElementById('serviceHeading').textContent = `About ${provider.name}`;
+            document.getElementById('summaryText').textContent = provider.description;
+            
+            const serviceDetailsGrid = document.getElementById('serviceDetailsGrid');
+            serviceDetailsGrid.innerHTML = `
+                <div class="detail-item">
+                    <h4>Distance willing to travel.</h4>
+                    <p>${provider.distanceWilling}</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Accepted Dog size</h4>
+                    <div class="size-tags">
+                        ${provider.acceptedDogSize.map(size => `<span class="size-tag">${size}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <h4>The length of each walk.</h4>
+                    <p>${provider.walkLength}</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Last minute bookings.</h4>
+                    <p>${provider.lastMinuteBookings}</p>
+                </div>
+            `;
+
+            // Update neighborhood
+            document.getElementById('neighborhoodText').textContent = 
+                `${provider.providerName}'s ${getServiceName(provider.service)} service is located in or nearby ${provider.location}. Book via PetCare for Insurance, Payment protection & 24x7 support.`;
+
+            // Update reviews
+            document.getElementById('reviewsHeading').textContent = `${provider.reviews} Reviews`;
+            const reviews = [
+                {
+                    reviewer: 'Samaakhya',
+                    date: 'November 11',
+                    verified: false,
+                    text: 'Thakeisha has been sitting our Max for over a year now. When ever we go on vacation she has been a life saver. And not for getting her amazing meal planning skill for max. And she sometimes takes max to the beach for a play day too. Makes has grown to love her company.'
+                },
+                {
+                    reviewer: 'Anjum',
+                    date: 'November 11',
+                    verified: false,
+                    text: 'Last year I had to leave the country multiple times and Thakeisha responsibly made sure my fur babies were well taken care of, She fed them on time, played with them and really cared for them the way I would if I were home. She even sent me images and videos to keep me updated which was reassuring and allowed me to travel with no worry. My cat and dog both love her and get excited when she is present. Highly recommend her services, you can trust that your pet will be taken care of.'
+                },
+                {
+                    reviewer: 'Shehan',
+                    date: 'November 11',
+                    verified: false,
+                    text: 'Thakeisha has been an absolute blessing! Cierra (my dog) loves t Thakeisha and does a happy dance upon her arrival. She is prompt, reliable, trustworthy and will update me when I\'m out of town which is always comforting. I don\'t know what i would do without her!'
+                }
+            ];
+            const reviewsList = document.getElementById('reviewsList');
+            reviewsList.innerHTML = reviews.map(review => `
+                <div class="review-item">
+                    <div class="review-header">
+                        <h3 class="reviewer-name">${review.reviewer}</h3>
+                        <span class="review-date">${review.date}</span>
+                        ${!review.verified ? '<span class="unverified-badge">Unverified</span>' : ''}
+                    </div>
+                    <p class="review-text">${review.text}</p>
+                </div>
+            `).join('');
+
+            // Update FAQ
+            const faqs = [
+                {
+                    question: 'What is PetCare?',
+                    answer: 'PetCare is a top multi-national pet company with a presence in 50 countries for pet lovers to share their love for pets and to hire trusted Pet Sitters with millions of nights stayed. Pet stays via PetCare are protected by insurance with a world class support team at your side.'
+                },
+                {
+                    question: `Is booking ${provider.providerName} on PetCare safe?`,
+                    answer: 'When you book and pay via PetCare, PetCare protects you and your pet with payment protection, pet injury insurance, GPS dog walk reports, daily photo and video reports to ensure a job well done. Reviews by previous pet owners after job completion are transparent to help with your hiring decision.'
+                }
+            ];
+            const faqList = document.getElementById('faqList');
+            faqList.innerHTML = faqs.map(faq => `
+                <div class="faq-item-detail">
+                    <h3 class="faq-question-detail">${faq.question}</h3>
+                    <p class="faq-answer-detail">${faq.answer}</p>
+                </div>
+            `).join('');
+
+            // Update sidebar
+            const serviceName = getServiceName(provider.service);
+            const priceUnit = provider.service === 'walking' ? '/walk' : 
+                             provider.service === 'taxi' ? '/trip' :
+                             provider.service === 'grooming' ? '/session' :
+                             provider.service === 'daycare' ? '/day' : '/night';
+            document.getElementById('rateServiceName').textContent = serviceName;
+            document.getElementById('ratePrice').textContent = `From ${provider.currency} ${provider.price.toLocaleString()} ${priceUnit}`;
+
+            // Update other services
+            const otherServices = [
+                { id: 2, name: 'Keisha\'s Boarding', service: 'boarding', location: 'Maharagama, Western Province' },
+                { id: 3, name: 'Keisha\'s Pet Taxi', service: 'taxi', location: 'Maharagama, Western Province' }
+            ];
+            document.getElementById('otherServicesTitle').textContent = `Other Services by ${provider.providerName}`;
+            const otherServicesList = document.getElementById('otherServicesList');
+            otherServicesList.innerHTML = otherServices.map(service => `
+                <div class="other-service-item" onclick="viewServiceDetail(${service.id})">
+                    <h4>${service.name}</h4>
+                    <span class="other-service-type">${getServiceName(service.service)}</span>
+                </div>
+            `).join('');
+        }
+
+        // Load provider detail when page loads
+        document.addEventListener('DOMContentLoaded', loadProviderDetail);
+    </script>
+</body>
+</html>
+
