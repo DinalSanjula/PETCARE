@@ -1,6 +1,7 @@
+
 from fastapi import (
     APIRouter, Depends, UploadFile, File, Form,
-    HTTPException, status
+    HTTPException, status, Query
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
@@ -91,8 +92,8 @@ async def create_new_report(
 
 @router.get("/", response_model=List[ReportResponseBase])  # CHANGED
 async def read_reports(
-    skip: int = 0,
-    limit: int = 100,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
 ):
     return await list_reports(db, skip=skip, limit=limit)
