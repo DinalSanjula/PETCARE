@@ -12,7 +12,7 @@ from Users.models import User, UserRole
 
 from Reports.schemas.schemas import (
     ReportResponse,
-    ReportResponseBase,  # ADD THIS
+    ReportResponseBase,
     ReportCreate,
     ReportUpdate,
     ReportImageResponse,
@@ -48,7 +48,7 @@ router = APIRouter(tags=["reports"])
 
 @router.post(
     "/",
-    response_model=ReportResponseBase,  # CHANGED
+    response_model=ReportResponseBase,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_new_report(
@@ -137,7 +137,7 @@ async def update_report_details(
 
 @router.patch(
     "/{report_id}/status",
-    response_model=ReportResponseBase,  # CHANGED
+    response_model=ReportResponseBase,
     dependencies=[Depends(require_roles(UserRole.ADMIN))],
 )
 async def update_report_status_endpoint(

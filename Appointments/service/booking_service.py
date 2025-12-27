@@ -10,6 +10,22 @@ from fastapi import HTTPException, status
 
 from Notification.service.notification_service import create_notification
 
+from Users.models.user_model import User, UserRole
+
+def assert_booking_access(booking: Booking, current_user: User):
+    if current_user.role in (UserRole.OWNER, UserRole.WELFARE):
+        if booking.user_id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not your booking"
+            )
+
+    elif current_user.role == UserRole.CLINIC:
+        if booking.clinic_id != current_user.clinic_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not your clinic booking"
+            )
 
 async def has_conflict(db: AsyncSession, clinic_id: int, start_time, end_time) -> bool:
     stmt = select(Booking).where(
@@ -24,7 +40,11 @@ async def has_conflict(db: AsyncSession, clinic_id: int, start_time, end_time) -
     return result.scalars().first() is not None
 
 
-async def create_time_slot(db: AsyncSession , slot_data: TimeSlotCreate) -> BookingServiceResponse[TimeSlot]:
+async def create_time_slot(db: AsyncSession , slot_data: TimeSlotCreate, current_user : User) -> BookingServiceResponse[TimeSlot]:
+
+    if current_user.role == UserRole.CLINIC:
+        if slot_data.clinic_id != current_user.id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot create slot for another clinic")
 
     slot = TimeSlot(
         clinic_id=slot_data.clinic_id,
@@ -85,13 +105,13 @@ async def get_available_time_slots(db: AsyncSession, clinic_id: int, target_date
     )
 
 
-async def create_booking(db: AsyncSession, booking_data: BookingCreate) -> BookingServiceResponse[Booking]:
+async def create_booking(db: AsyncSession, booking_data: BookingCreate, current_user: User) -> BookingServiceResponse[Booking]:
 
+    booking_data.user_id = current_user.id
     day_name = booking_data.start_time.strftime("%A")
     start_time_str = booking_data.start_time.strftime("%H:%M")
     end_time_str = booking_data.end_time.strftime("%H:%M")
 
-    # Check if a matching slot exists
     slot_stmt = select(TimeSlot).where(
         and_(
             TimeSlot.clinic_id == booking_data.clinic_id,
@@ -144,7 +164,8 @@ async def create_booking(db: AsyncSession, booking_data: BookingCreate) -> Booki
     )
 
 
-async def cancel_booking(db: AsyncSession, booking_id: int) -> BookingServiceResponse[Booking]:
+async def cancel_booking(db: AsyncSession, booking_id: int, current_user: User) -> BookingServiceResponse[Booking]:
+
 
     stmt = select(Booking).where(Booking.id == booking_id)
     result = await db.execute(stmt)
@@ -152,6 +173,8 @@ async def cancel_booking(db: AsyncSession, booking_id: int) -> BookingServiceRes
 
     if not booking:
         return BookingServiceResponse(success=False, message="Booking not found", data=None)
+
+    assert_booking_access(booking=booking, current_user=current_user)
 
     if booking.status == BookingStatus.CANCELLED:
         return BookingServiceResponse(success=False, message="Booking already cancelled", data=None)
@@ -174,7 +197,7 @@ async def cancel_booking(db: AsyncSession, booking_id: int) -> BookingServiceRes
     )
 
 
-async def reschedule_booking(db: AsyncSession , booking_id: int , new_start_time , new_end_time
+async def reschedule_booking(db: AsyncSession , booking_id: int , new_start_time , new_end_time, current_user: User
                              )-> BookingServiceResponse[Booking]:
 
     stmt = select(Booking).where(Booking.id == booking_id)
@@ -183,6 +206,8 @@ async def reschedule_booking(db: AsyncSession , booking_id: int , new_start_time
 
     if not booking:
         return BookingServiceResponse(success=False, message="Booking not found", data=None)
+
+    assert_booking_access(booking=booking, current_user=current_user)
 
     if booking.status != BookingStatus.CONFIRMED:
         return BookingServiceResponse(success=False, message="Only confirmed bookings can be rescheduled", data=None)

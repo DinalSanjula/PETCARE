@@ -12,6 +12,7 @@ from Appointments.router.booking_router import router as booking_router
 from Reports.routers.reports_router import router as report_router
 from Reports.routers.report_messages import router as report_messages_router
 from Notification.router.notification_router import router as notification_router
+from Appointments.router.stats_router import router as stats_router
 
 app = FastAPI()
 
@@ -28,3 +29,4 @@ app.include_router(booking_router, prefix="/appointments")
 app.include_router(report_router, prefix="/reports")
 app.include_router(report_messages_router, prefix="/reports")
 app.include_router(notification_router, prefix="/notifications")
+app.include_router(stats_router)
