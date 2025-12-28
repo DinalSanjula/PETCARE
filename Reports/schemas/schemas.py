@@ -70,7 +70,7 @@ class ReportUpdate(BaseModel):
 class ReportStatusUpdate(BaseModel):
     status: ReportStatus
 
-class ReportResponseBase(ReportBase):
+class ReportResponseBase(TimezoneAwareResponse, ReportBase):
     id: int
     status: ReportStatus
     created_at: datetime
@@ -78,9 +78,22 @@ class ReportResponseBase(ReportBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+class ReportListResponse(TimezoneAwareResponse, BaseModel):
+    id : int
+    animal_type: str
+    condition: str
+    description: str
+    address: str
+    status : ReportStatus
+    created_at : datetime
+    cover_image_url : Optional[str] =None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class ReportResponse(ReportResponseBase):
-    images: Optional[List[ReportImageResponse]] = []
-    notes: Optional[List[ReportNoteResponse]] = []
+    images: List[ReportImageResponse] = Field(default_factory=list)
+    notes: List[ReportNoteResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
 

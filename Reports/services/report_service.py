@@ -1,9 +1,10 @@
 from typing import Optional, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
+from sqlalchemy import select, func
+from Reports.models.models import Report, ReportImage
 
 from Reports.models.models import Report, ReportStatus, ReportNote
 from Reports.schemas.schemas import ReportCreate, ReportUpdate
@@ -44,15 +45,27 @@ async def get_report_by_id(
 
     return await get_or_404(session, Report, report_id, name="Report")
 
+
 async def list_reports(
     session: AsyncSession,
     skip: int = 0,
     limit: int = 100,
 ):
-    result = await session.execute(
-        select(Report).offset(skip).limit(limit)
+    stmt = (select(Report,func.min(ReportImage.image_url).label("cover_image_url"))
+        .outerjoin(ReportImage, ReportImage.report_id == Report.id)
+        .group_by(Report.id)
+        .offset(skip)
+        .limit(limit)
     )
-    return result.scalars().all()
+
+    result = await session.execute(stmt)
+
+    reports = []
+    for report, cover_image_url in result.all():
+        report.cover_image_url = cover_image_url
+        reports.append(report)
+
+    return reports
 
 async def update_report(
     session: AsyncSession,

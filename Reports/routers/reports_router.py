@@ -19,7 +19,7 @@ from Reports.schemas.schemas import (
     ReportImageResponse,
     ReportNoteResponse,
     ReportNoteCreate,
-    ReportStatusUpdate,
+    ReportStatusUpdate, ReportListResponse,
 )
 
 from Reports.services.report_service import (
@@ -90,7 +90,7 @@ async def create_new_report(
 
     return report
 
-@router.get("/", response_model=List[ReportResponseBase])  # CHANGED
+@router.get("/", response_model=List[ReportListResponse])
 async def read_reports(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=100),
