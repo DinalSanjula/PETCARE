@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-
 from Users.schemas.service_schema import NotificationMsgResponse
 from Notification.model.notification_model import Notification
 

@@ -111,3 +111,12 @@ async def login(user_login: UserLogin, db: AsyncSession = Depends(get_db)):
         refresh = security.create_refresh_token({"sub": email_for_token if 'email_for_token' in locals() else user_login.email})
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={"success": True, "data": {"access_token": access, "refresh_token": refresh}})
+
+
+@router.post("/logout", status_code=status.HTTP_200_OK)
+async def logout():
+
+    return {
+        "success": True,
+        "message": "Logout successful"
+    }
