@@ -2,14 +2,18 @@ from fastapi import HTTPException, status, Depends, APIRouter
 from fastapi.responses import JSONResponse
 import logging
 
+from sqlalchemy import select
+
 from Users.auth import security
+from Users.models.logout_and_forgetpw_model import RefreshToken
 from Users.schemas.user_schema import UserCreate, UserLogin
 from sqlalchemy.ext.asyncio import AsyncSession
-# from Users.database.session import get_db_session
-from Users.services.auth_service import register_user, login_user
+from Users.services.auth_service import register_user, login_user, forgot_password, reset_password
 from db import get_db
 
+
 router = APIRouter()
+
 
 #Register endpoint
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -113,10 +117,52 @@ async def login(user_login: UserLogin, db: AsyncSession = Depends(get_db)):
     return JSONResponse(status_code=status.HTTP_200_OK, content={"success": True, "data": {"access_token": access, "refresh_token": refresh}})
 
 
-@router.post("/logout", status_code=status.HTTP_200_OK)
-async def logout():
+# @router.post("/logout", status_code=status.HTTP_200_OK)
+# async def logout(
+#     refresh_token: str,
+#     db: AsyncSession = Depends(get_db)
+# ):
+#     await logout_user(refresh_token, db)
+#     return {
+#         "success": True,
+#         "message": "Logout successful"
+#     }
 
-    return {
-        "success": True,
-        "message": "Logout successful"
-    }
+@router.post("/logout")
+async def logout(
+    refresh_token: str,
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(
+        select(RefreshToken).where(RefreshToken.token == refresh_token)
+    )
+    token = result.scalars().first()
+
+    if token:
+        token.is_revoked = True
+        await db.commit()
+
+    return {"success": True, "message": "Logout successful"}
+
+
+@router.post("/forgot-password")
+async def forgot_password_endpoint(
+    email: str,
+    db: AsyncSession = Depends(get_db)
+):
+    await forgot_password(email, db)
+    return {"message": "If the email exists, a reset link has been sent"}
+
+
+@router.post("/reset-password")
+async def reset_password_endpoint(
+    token: str,
+    new_password: str,
+    db: AsyncSession = Depends(get_db)
+):
+    success = await reset_password(token, new_password, db)
+
+    if not success:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+
+    return {"message": "Password reset successful"}

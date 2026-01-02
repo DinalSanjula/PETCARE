@@ -23,6 +23,7 @@ async def create_report_message(
         report_id=report_id,
         sender_user_id=sender_user_id,
         message=message,
+        is_read=False,
     )
 
     session.add(msg)

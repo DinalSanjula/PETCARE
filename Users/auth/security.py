@@ -132,3 +132,9 @@ async def require_admin(current_user: User = Depends(get_current_user)) -> User:
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
     return current_user
+
+def hash_reset_token(token: str) -> str:
+    return get_password_hash(token)
+
+def verify_reset_token(token: str, hashed_token: str) -> bool:
+    return verify_password(token, hashed_token)

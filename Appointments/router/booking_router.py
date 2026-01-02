@@ -29,6 +29,7 @@ async def create_slot(slot_data: TimeSlotCreate, db: AsyncSession = Depends(get_
 
     if not result.success:
         raise HTTPException(400 , result.message)
+    return result.data
 
 @router.get("/slots/{clinic_id}/available", response_model=List[AvailableSlot])
 async def get_available_slots(clinic_id: int, date: date, db: AsyncSession = Depends(get_db), current_user : User = Depends(get_current_active_user)):
