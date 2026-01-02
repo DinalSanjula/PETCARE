@@ -164,6 +164,17 @@ async def login_user(
         )
 
 
+async def logout_user(refresh_token: str, db: AsyncSession):
+    result = await db.execute(
+        select(RefreshToken).where(RefreshToken.token == refresh_token)
+    )
+    token_obj = result.scalars().first()
+
+    if token_obj:
+        token_obj.is_revoked = True
+        await db.commit()
+
+
 async def forgot_password(email: str, db: AsyncSession) -> None:
     user = await get_user_by_email(email, db)
 
