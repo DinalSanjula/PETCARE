@@ -57,7 +57,7 @@ class ReportBase(BaseModel):
     address: str
     contact_phone: Optional[str] = None
 
-    @field_validator("phone")
+    @field_validator("contact_phone")
     def validate_phone(cls, v):
         if v is None:
             return v
