@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 from Clinics.schemas.timezone import TimezoneAwareResponse
 from Reports.models.models import ReportStatus
@@ -56,6 +56,24 @@ class ReportBase(BaseModel):
     description: str
     address: str
     contact_phone: Optional[str] = None
+
+    @field_validator("phone")
+    def validate_phone(cls, v):
+        if v is None:
+            return v
+        cleared = "".join(ch for ch in v if ch.isdigit())
+
+        if cleared.startswith("+94") and len(cleared) == 11:
+            return cleared
+
+        if cleared.startswith("94") and len(cleared) == 11:
+            return "+" + cleared
+
+        if cleared.startswith("0") and len(cleared) == 10:
+            return "+94" + cleared[1:]
+
+        raise ValueError("Invalid phone number format or length")
+
 
 class ReportCreate(ReportBase):
     pass

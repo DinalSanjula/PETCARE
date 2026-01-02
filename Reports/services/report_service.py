@@ -140,11 +140,7 @@ async def create_report_note(
     note: str,
     created_by: Optional[str] = None,
 ) -> ReportNote:
-    """
-    Create a note for a report.
-    """
 
-    # Ensure report exists
     await get_or_404(session, Report, report_id, name="Report")
 
     report_note = ReportNote(
@@ -173,7 +169,6 @@ async def list_notes_for_report(
 ) -> List[ReportNote]:
 
 
-    # Ensure report exists
     await get_or_404(session, Report, report_id, name="Report")
 
     result = await session.execute(
