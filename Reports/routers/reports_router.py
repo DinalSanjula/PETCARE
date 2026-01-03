@@ -72,6 +72,7 @@ async def create_new_report(
 
     report = await create_report(db, report_create)
 
+    # set reporter
     report.reporter_user_id = current_user.id
     await db.commit()
     await db.refresh(report)
@@ -223,8 +224,7 @@ async def create_report_note_endpoint(
     return await create_report_note(
         db,
         report_id=report_id,
-        note=note.note,
-        created_by="admin",
+        note=note.note
     )
 
 

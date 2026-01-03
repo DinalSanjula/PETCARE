@@ -70,3 +70,4 @@ class ReportMessage(Base):
     created_at = Column(DateTime(timezone=True),server_default=func.now(),nullable=False)
 
     report = relationship("Report", back_populates="messages")
+    sender = relationship("User")

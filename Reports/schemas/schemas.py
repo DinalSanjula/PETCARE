@@ -45,7 +45,6 @@ class ReportNoteCreate(ReportNoteBase):
 class ReportNoteResponse(TimezoneAwareResponse, ReportNoteBase):
     id: int
     report_id: int
-    created_by: Optional[str] = None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
@@ -125,7 +124,8 @@ class ReportMessageCreate(ReportMessageBase):
 class ReportMessageResponse(TimezoneAwareResponse, ReportMessageBase):
     id: int
     report_id: int
-    sender_user_id: Optional[int] = None
+    sender_user_id: int
+    sender_name : str
     is_read: bool
     created_at: datetime
 

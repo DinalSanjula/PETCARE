@@ -7,7 +7,7 @@ from Clinics.storage.minio_storage import (
     generate_stored_filename,
 )
 
-MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
+MAX_IMAGE_SIZE = 5 * 1024 * 1024
 
 
 async def upload_report_image(

@@ -138,15 +138,15 @@ async def create_report_note(
     session: AsyncSession,
     report_id: int,
     note: str,
-    created_by: Optional[str] = None,
 ) -> ReportNote:
 
+
+    # Ensure report exists
     await get_or_404(session, Report, report_id, name="Report")
 
     report_note = ReportNote(
         report_id=report_id,
-        note=note,
-        created_by=created_by,
+        note=note
     )
 
     session.add(report_note)
@@ -169,6 +169,7 @@ async def list_notes_for_report(
 ) -> List[ReportNote]:
 
 
+    # Ensure report exists
     await get_or_404(session, Report, report_id, name="Report")
 
     result = await session.execute(
