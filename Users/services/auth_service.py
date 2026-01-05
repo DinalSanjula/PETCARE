@@ -28,7 +28,7 @@ from Users.services.user_service import get_user_by_email, create_user
 RESET_TOKEN_EXPIRE_MINUTES = 15
 
 
-#Register new user and return access & refresh tokens
+#Register new user and return token
 async def register_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[Token]:
     try:
         existing = await get_user_by_email(user.email, db)
@@ -133,7 +133,6 @@ async def login_user(
             data={"sub": user.email, "user_id": user.id}
         )
 
-        # 🔥 STORE REFRESH TOKEN
         db_token = RefreshToken(
             user_id=user.id,
             token=refresh_token,
