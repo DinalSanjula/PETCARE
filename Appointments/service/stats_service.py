@@ -1,10 +1,10 @@
-# Appointments/service/stats_service.py
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timezone
 
 from Appointments.model.booking_models import Booking, BookingStatus
 from Appointments.schema.stats_schema import AppointmentStatsOut
+from Clinics.models.models import Clinic
 from Users.models.user_model import User, UserRole
 from fastapi import HTTPException, status
 
@@ -16,8 +16,20 @@ async def get_clinic_appointment_stats(
     current_user: User
 ) -> AppointmentStatsOut:
 
-    clinic_id = current_user.clinic_id
-    now  = datetime.now(timezone.utc)
+    result = await db.execute(
+        select(Clinic).where(Clinic.owner_id == current_user.id)
+    )
+    clinic = result.scalars().first()
+
+    if not clinic:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Clinic not found for current user"
+        )
+
+    clinic_id = clinic.id
+
+    now = datetime.now(timezone.utc)
 
     total = await db.scalar(
         select(func.count()).where(Booking.clinic_id == clinic_id)
@@ -47,7 +59,10 @@ async def get_clinic_appointment_stats(
     upcoming = await db.scalar(
         select(func.count()).where(
             Booking.clinic_id == clinic_id,
-            Booking.status == BookingStatus.CONFIRMED,
+            Booking.status.in_([
+                BookingStatus.CONFIRMED,
+                BookingStatus.RESCHEDULED
+            ]),
             Booking.start_time > now
         )
     )
@@ -59,7 +74,6 @@ async def get_clinic_appointment_stats(
         rescheduled=rescheduled or 0,
         upcoming=upcoming or 0
     )
-
 async def get_admin_appointment_stats(
     db: AsyncSession,
     current_user: User,

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 from Clinics.schemas.timezone import TimezoneAwareResponse
 from Reports.models.models import ReportStatus
@@ -45,7 +45,6 @@ class ReportNoteCreate(ReportNoteBase):
 class ReportNoteResponse(TimezoneAwareResponse, ReportNoteBase):
     id: int
     report_id: int
-    created_by: Optional[str] = None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
@@ -56,6 +55,24 @@ class ReportBase(BaseModel):
     description: str
     address: str
     contact_phone: Optional[str] = None
+
+    @field_validator("contact_phone")
+    def validate_phone(cls, v):
+        if v is None:
+            return v
+        cleared = "".join(ch for ch in v if ch.isdigit())
+
+        if cleared.startswith("+94") and len(cleared) == 11:
+            return cleared
+
+        if cleared.startswith("94") and len(cleared) == 11:
+            return "+" + cleared
+
+        if cleared.startswith("0") and len(cleared) == 10:
+            return "+94" + cleared[1:]
+
+        raise ValueError("Invalid phone number format or length")
+
 
 class ReportCreate(ReportBase):
     pass
@@ -107,7 +124,8 @@ class ReportMessageCreate(ReportMessageBase):
 class ReportMessageResponse(TimezoneAwareResponse, ReportMessageBase):
     id: int
     report_id: int
-    sender_user_id: Optional[int] = None
+    sender_user_id: int
+    sender_name : str
     is_read: bool
     created_at: datetime
 

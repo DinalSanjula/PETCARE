@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, status
+from sqlalchemy import false
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
@@ -29,13 +30,22 @@ async def send_report_message(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
-    return await create_report_message(
-        session=db,
-        report_id=report_id,
-        sender_user_id=current_user.id,
-        message=payload.message,
-    )
+   msg = await create_report_message(
+       session=db,
+       report_id=report_id,
+       sender_user_id=current_user.id,
+       message=payload.message
+   )
 
+   return ReportMessageResponse(
+       id=msg.id,
+       report_id=msg.report_id,
+       message=msg.message,
+       sender_user_id=msg.sender_user_id,
+       sender_name=current_user.name,
+       created_at=msg.created_at,
+       is_read=False
+   )
 
 
 @router.get(
@@ -47,4 +57,17 @@ async def read_report_messages(
     report_id: int,
     db: AsyncSession = Depends(get_db),
 ):
-    return await list_messages_for_report(db, report_id)
+    messages = await list_messages_for_report(db, report_id)
+
+    return [
+        ReportMessageResponse(
+            id=msg.id,
+            report_id=msg.report_id,
+            message=msg.message,
+            sender_user_id=msg.sender_user_id,
+            sender_name=msg.sender.name,
+            created_at=msg.created_at,
+            is_read=msg.is_read
+        )
+        for msg in messages
+    ]

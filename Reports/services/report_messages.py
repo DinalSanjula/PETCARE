@@ -3,6 +3,7 @@ from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
+from sqlalchemy.orm import selectinload
 
 from Reports.models.models import Report, ReportMessage
 from Clinics.utils.helpers import get_or_404
@@ -50,6 +51,7 @@ async def list_messages_for_report(
     # Fetch messages
     result = await session.execute(
         select(ReportMessage)
+        .options(selectinload(ReportMessage.sender))
         .where(ReportMessage.report_id == report_id)
         .order_by(ReportMessage.created_at.asc())
     )

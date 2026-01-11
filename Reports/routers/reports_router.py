@@ -224,8 +224,7 @@ async def create_report_note_endpoint(
     return await create_report_note(
         db,
         report_id=report_id,
-        note=note.note,
-        created_by="admin",
+        note=note.note
     )
 
 

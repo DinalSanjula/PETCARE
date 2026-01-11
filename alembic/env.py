@@ -22,7 +22,7 @@ import Clinics.models.models
 import Appointments.model.booking_models
 import Reports.models.models
 import Notification.model.notification_model
-
+import Users.models.logout_and_forgetpw_model
 # ------------------------------------------------------------------
 
 # Alembic Config object

@@ -6,7 +6,6 @@ from Clinics.schemas.timezone import TimezoneAwareResponse
 
 class BookingBase(BaseModel):
     clinic_id: int
-    user_id: int
     start_time: datetime
     end_time: datetime
 
@@ -25,14 +24,14 @@ class TimeSlotBase(BaseModel):
     day_of_week: str
     start_time: str
     end_time: str
-    slot_index: int | None = None
-    is_active: bool = True
 
 class TimeSlotCreate(TimeSlotBase):
     pass
 
 class TimeSlotOut(TimeSlotBase):
     id: int
+    slot_index : int
+    is_active: bool
 
     model_config = ConfigDict(from_attributes=True)
 

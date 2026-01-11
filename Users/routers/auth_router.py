@@ -3,13 +3,15 @@ from fastapi.responses import JSONResponse
 import logging
 
 from Users.auth import security
+from Users.models.logout_and_forgetpw_model import RefreshToken
 from Users.schemas.user_schema import UserCreate, UserLogin
 from sqlalchemy.ext.asyncio import AsyncSession
-# from Users.database.session import get_db_session
-from Users.services.auth_service import register_user, login_user
+from Users.services.auth_service import register_user, login_user, forgot_password, reset_password, logout_user
 from db import get_db
 
+
 router = APIRouter()
+
 
 #Register endpoint
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -111,3 +113,33 @@ async def login(user_login: UserLogin, db: AsyncSession = Depends(get_db)):
         refresh = security.create_refresh_token({"sub": email_for_token if 'email_for_token' in locals() else user_login.email})
 
     return JSONResponse(status_code=status.HTTP_200_OK, content={"success": True, "data": {"access_token": access, "refresh_token": refresh}})
+
+@router.post("/logout")
+async def logout(
+    refresh_token: str,
+    db: AsyncSession = Depends(get_db)
+):
+    await logout_user(refresh_token, db)
+    return {"success": True, "message": "Logged out successfully"}
+
+@router.post("/forgot-password")
+async def forgot_password_endpoint(
+    email: str,
+    db: AsyncSession = Depends(get_db)
+):
+    await forgot_password(email, db)
+    return {"message": "If the email exists, a reset link has been sent"}
+
+
+@router.post("/reset-password")
+async def reset_password_endpoint(
+    token: str,
+    new_password: str,
+    db: AsyncSession = Depends(get_db)
+):
+    success = await reset_password(token, new_password, db)
+
+    if not success:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+
+    return {"message": "Password reset successful"}
