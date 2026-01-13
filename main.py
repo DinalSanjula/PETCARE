@@ -13,8 +13,21 @@ from Reports.routers.reports_router import router as report_router
 from Reports.routers.report_messages import router as report_messages_router
 from Notification.router.notification_router import router as notification_router
 from Appointments.router.stats_router import router as stats_router
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5500",   # VS Code Live Server
+        "http://127.0.0.1:5500",
+        "http://localhost:3000",   # if needed later
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(user_router, prefix="/users")
 app.include_router(auth_router, prefix="/auth")
