@@ -13,7 +13,6 @@ from db import get_db
 router = APIRouter()
 
 
-#Register endpoint
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
     result = await register_user(user, db)
@@ -50,7 +49,6 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
         refresh = getattr(tokens_obj, "refresh_token", None) or getattr(tokens_obj, "refreshToken", None) or getattr(tokens_obj, "refresh", None)
 
     if not access:
-        # Prefer email from tokens, else from request payload
         email_for_token = None
         if isinstance(tokens, dict):
             email_for_token = tokens.get("email")
@@ -66,7 +64,6 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"success": True, "data": {"access_token": access, "refresh_token": refresh}})
 
 
-#Login endpoint
 @router.post("/login", status_code=status.HTTP_200_OK)
 async def login(user_login: UserLogin, db: AsyncSession = Depends(get_db)):
     result = await login_user(user_login, db)

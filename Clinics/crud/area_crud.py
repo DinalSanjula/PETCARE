@@ -1,4 +1,3 @@
-# crud/area.py
 from typing import List, Optional, Tuple
 from fastapi import HTTPException, status
 from sqlalchemy import select
@@ -6,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from Clinics.models.models import Area
-from Clinics.schemas.area import AreaCreate, AreaUpdate  # AreaResponse is used by FastAPI response_model
+from Clinics.schemas.area import AreaCreate, AreaUpdate
 from Clinics.crud.geocode import geocode_async, OpenCageUnknownError, OpenCageRateLimitError, OpenCageInvalidInputError
 from Clinics.utils.helpers import normalize_address, now_utc
 
@@ -102,7 +101,6 @@ async def autocomplete(session: AsyncSession, q: str, limit: int = 10) -> List[A
     if not q:
         return []
 
-    # try prefix matches first
     prefix = f"{q}%"
     stmt = select(Area).where(Area.name.ilike(prefix)).order_by(Area.name).limit(limit)
     res = await session.execute(stmt)
@@ -110,7 +108,6 @@ async def autocomplete(session: AsyncSession, q: str, limit: int = 10) -> List[A
     if len(rows) >= limit:
         return rows
 
-    # fallback to substring search to fill results
     remaining = limit - len(rows)
     substr = f"%{q}%"
     stmt2 = select(Area).where(Area.name.ilike(substr)).order_by(Area.name).limit(remaining)
@@ -140,7 +137,6 @@ async def update_area(session: AsyncSession, area_id: int, area_up: AreaUpdate) 
         return area
 
     for key, val in data.items():
-        # Allow admin to override coordinates directly
         setattr(area, key, val)
 
     if any(k in data for k in ("name", "main_region", "formatted_address")) and not ("latitude" in data and "longitude" in data):

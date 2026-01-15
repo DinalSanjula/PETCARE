@@ -57,12 +57,4 @@ async def geocode_async(query : str, countrycode: str = "lk"):
 
     return lat, lng, formatted
 
-# import asyncio
-#
-# async def try_geo():
-#     lat, lng, formatted = await geocode_async("Colombo", "lk")
-#     print(lat, lng, formatted)
-#
-# if __name__ == "__main__":
-#     asyncio.run(try_geo())
 

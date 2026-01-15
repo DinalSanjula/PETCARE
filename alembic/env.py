@@ -9,13 +9,9 @@ from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
 # ------------------------------------------------------------------
-# Ensure project root is on sys.path
-# ------------------------------------------------------------------
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-# ------------------------------------------------------------------
-# Import Base and models
-# ------------------------------------------------------------------
+
 from db import Base
 import Users.models.user_model
 import Clinics.models.models

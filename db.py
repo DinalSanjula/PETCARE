@@ -5,20 +5,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Correct async PostgreSQL URL
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql+asyncpg://test:test@localhost:5432/test_db"
 )
 
-# Async engine
 engine = create_async_engine(
     DATABASE_URL,
     echo=False,
     future=True
 )
 
-# Async session maker
 AsyncSessionLocal = async_sessionmaker(
     bind=engine,
     expire_on_commit=False,
@@ -27,10 +24,8 @@ AsyncSessionLocal = async_sessionmaker(
     class_=AsyncSession
 )
 
-# Base model class
 Base = declarative_base()
 
-# Dependency for FastAPI
 async def get_db():
     async with AsyncSessionLocal() as session:
         try:

@@ -85,7 +85,7 @@ async def create_clinic(session : AsyncSession, clinic_data : ClinicCreate) -> C
 
 
     data = Clinic(
-        owner_id = clinic_data.owner_id, #maybe current user from users
+        owner_id = clinic_data.owner_id,
         name = clinic_data.name,
         description = clinic_data.description,
         phone = clinic_data.phone,
@@ -197,10 +197,18 @@ async def update_clinic(session : AsyncSession, clinic_id:int, clinic_data: Clin
     for key, val in data.items():
         if key not in UPDATABLE_FIELDS:
             continue
-        if key == "address" and isinstance(val, str):
+
+        if isinstance(val, str) and not val.strip():
+            continue
+
+        if key == "address":
             val = normalize_address(val)
-        setattr(clinic, key, val)
-        changed = True
+
+        old_val = getattr(clinic, key)
+
+        if old_val != val:
+            setattr(clinic, key, val)
+            changed = True
 
 
     if "latitude" in data and "longitude" in data:

@@ -10,7 +10,6 @@ from Clinics.utils.helpers import get_or_404
 from sqlalchemy import select, update
 
 
-
 async def create_report_message(
     session: AsyncSession,
     report_id: int,
@@ -48,7 +47,6 @@ async def list_messages_for_report(
 
     await get_or_404(session, Report, report_id, name="Report")
 
-    # Fetch messages
     result = await session.execute(
         select(ReportMessage)
         .options(selectinload(ReportMessage.sender))
@@ -58,7 +56,6 @@ async def list_messages_for_report(
 
     messages = list(result.scalars().all())
 
-    # Mark unread messages as read
     unread_ids = [m.id for m in messages if not m.is_read]
 
     if unread_ids:
@@ -69,7 +66,6 @@ async def list_messages_for_report(
         )
         await session.commit()
 
-        # Reflect updated state in objects
         for m in messages:
             m.is_read = True
 

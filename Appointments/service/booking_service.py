@@ -112,14 +112,12 @@ async def create_time_slot(db: AsyncSession , slot_data: TimeSlotCreate, current
     start_t = time(hour=start_hour, minute=start_minute)
     end_t = time(hour=end_hour, minute=end_minute)
 
-    #  start must be before end
     if start_t >= end_t:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="start_time must be before end_time"
         )
 
-    # minimum duration check
     start_dt = datetime.combine(date.today(), start_t)
     end_dt = datetime.combine(date.today(), end_t)
 

@@ -28,7 +28,6 @@ from Users.services.user_service import get_user_by_email, create_user
 RESET_TOKEN_EXPIRE_MINUTES = 15
 
 
-#Register new user and return access & refresh tokens
 async def register_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[Token]:
     try:
         existing = await get_user_by_email(user.email, db)
@@ -49,18 +48,15 @@ async def register_user(user: UserCreate, db: AsyncSession) -> ServiceResponse[T
 
         user_obj: User = result.data
 
-        # Create access token
         access_token = create_access_token(
             data={"sub": user_obj.email, "user_id": user_obj.id},
             expires_delta=timedelta(minutes=30)
         )
 
-        # Create refresh token
         refresh_token = create_refresh_token(
             data={"sub": user_obj.email, "user_id": user_obj.id}
         )
 
-        # 🔥 STORE REFRESH TOKEN (THIS IS THE KEY PART)
         db_token = RefreshToken(
             user_id=user_obj.id,
             token=refresh_token,
@@ -122,18 +118,15 @@ async def login_user(
                 data=None
             )
 
-        # Create access token
         access_token = create_access_token(
             data={"sub": user.email, "user_id": user.id},
             expires_delta=timedelta(minutes=30)
         )
 
-        # Create refresh token
         refresh_token = create_refresh_token(
             data={"sub": user.email, "user_id": user.id}
         )
 
-        # 🔥 STORE REFRESH TOKEN
         db_token = RefreshToken(
             user_id=user.id,
             token=refresh_token,
@@ -179,7 +172,7 @@ async def forgot_password(email: str, db: AsyncSession) -> None:
     user = await get_user_by_email(email, db)
 
     if not user:
-        return  # silent for security
+        return
 
     raw_token = secrets.token_urlsafe(32)
     token_hash = hash_reset_token(raw_token)
@@ -193,7 +186,7 @@ async def forgot_password(email: str, db: AsyncSession) -> None:
     db.add(reset)
     await db.commit()
 
-    send_reset_email(user.email, raw_token) #mail sending part
+    send_reset_email(user.email, raw_token)
 
 
 async def reset_password(token: str, new_password: str, db: AsyncSession) -> bool:

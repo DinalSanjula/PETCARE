@@ -22,7 +22,7 @@ class Clinic(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(),nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(),nullable=False)
 
-    owner = relationship("User", back_populates="clinics", passive_deletes=True) #USe passive delete also in owner table
+    owner = relationship("User", back_populates="clinics", passive_deletes=True)
     area = relationship("Area", back_populates="clinics")
     images = relationship("ClinicImage", back_populates="clinic", cascade="all, delete-orphan", passive_deletes=True)
     bookings = relationship("Booking", back_populates="clinic", cascade="all, delete-orphan", passive_deletes=True)
