@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/user.css" />
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <a href="index.html" class="nav-link">Home</a>
+    <button id="logoutBtn" class="btn-outline">Logout</button>
+  </header>
+
+  <!-- MAIN -->
+  <main class="dashboard-layout">
+
+    <!-- LEFT: DASHBOARD -->
+    <section class="card dashboard-card" id="dashboardCard">
+      <!-- Filled by JS -->
+    </section>
+
+    <!-- RIGHT COLUMN -->
+    <section class="right-column">
+
+      <!-- PROFILE -->
+      <div class="card">
+        <h3>My Profile</h3>
+        <p><strong>Name:</strong> <span id="userName">—</span></p>
+        <p><strong>Email:</strong> <span id="userEmail">—</span></p>
+        <p><strong>Role:</strong> <span id="userRole">—</span></p>
+        <p><strong>Joined:</strong> <span id="userCreated">—</span></p>
+      </div>
+
+      <!-- CHANGE PASSWORD -->
+      <div class="card">
+        <h3>Change Password</h3>
+        <p class="muted">
+          Update your account password to keep your account secure.
+        </p>
+
+        <button class="btn-primary" id="togglePw">Change Password</button>
+
+        <div id="pwBox" class="hidden">
+          <input type="password" id="newPassword" placeholder="New password" />
+          <input type="password" id="confirmPassword" placeholder="Confirm password" />
+          <small class="error-text" id="pwError"></small>
+          <button class="btn-primary">Update Password</button>
+        </div>
+      </div>
+
+      <!-- DELETE ACCOUNT -->
+      <div class="card danger">
+        <h3>Delete Account</h3>
+        <p class="muted">
+          Permanently delete your account and all associated data.
+        </p>
+
+        <button class="btn-danger" id="toggleDelete">Delete Account</button>
+
+        <div id="deleteBox" class="hidden">
+          <p class="warning">
+            Type <strong>DELETE MY ACCOUNT</strong> to confirm.
+          </p>
+          <input type="text" id="deleteConfirm" />
+          <button class="btn-danger" id="deleteBtn" disabled>
+            Confirm Delete
+          </button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="support-footer">
+    <p><strong>Need further support?</strong></p>
+    <p>📞 +94 77 123 4567</p>
+    <p>📧 support@petcare.lk</p>
+    <p>💬 WhatsApp: +94 77 123 4567</p>
+
+    <div class="social-links">
+        <a href="#" aria-label="Facebook">🌐 Facebook</a>
+        <a href="#" aria-label="Instagram">📸 Instagram</a>
+        <a href="#" aria-label="LinkedIn">💼 LinkedIn</a>
+        <a href="#" aria-label="YouTube">▶ YouTube</a>
+    </div>
+  </footer>
+
+  <script src="js/user.js"></script>
+</body>
+</html>

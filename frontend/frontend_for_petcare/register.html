@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+
+  <div class="auth-container">
+
+    <div class="auth-box">
+      <h2 id="registerTitle">Create Account</h2>
+      <p class="subtitle" id="registerSubtitle"></p>
+
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" required />
+          <!-- Inline error message -->
+          <small class="error-text" id="passwordError"></small>
+        </div>
+
+        <button type="submit" class="btn-primary">Sign Up</button>
+      </form>
+
+      <p class="switch-text">
+        Already have an account?
+        <a href="login.html" class="link">Sign in</a>
+      </p>
+    </div>
+
+  </div>
+
+  <script src="js/register.js"></script>
+</body>
+</html>

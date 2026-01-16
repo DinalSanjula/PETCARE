@@ -1,0 +1,140 @@
+.page-header {
+  max-width: 700px;
+  margin: 30px auto;
+}
+
+.page-header p {
+  margin-top: 6px;
+  color: #666;
+}
+
+/* =========================
+   FORM
+========================= */
+.clinic-form {
+  max-width: 700px;
+  margin: 0 auto 60px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+/* =========================
+   INFO
+========================= */
+.info-box {
+  background: #eef3ff;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* =========================
+   MAP (LEAFLET)
+========================= */
+.map-box {
+  height: 280px;
+  border-radius: 12px;
+  border: 1px solid #cfd8ff;
+  margin: 12px 0;
+}
+
+/* Prevent Leaflet controls breaking layout */
+.map-box .leaflet-control {
+  font-size: 12px;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* =========================
+   UTILITY
+========================= */
+.muted {
+  font-size: 13px;
+  color: #777;
+}
+
+.error-text {
+  color: #d93025;
+  font-size: 13px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.footer-blue {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.footer-blue a {
+  color: #e0e0e0;
+}
+
+.footer-blue .footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.3);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #007bff;
+  border: 1px solid #007bff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 700px) {
+  .form-row {
+    flex-direction: column;
+  }
+}

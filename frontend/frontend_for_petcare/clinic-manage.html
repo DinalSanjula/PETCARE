@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Clinic | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/clinic-manage.css" />
+
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    defer
+  ></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare</div>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="my-clinics.html">My Clinics</a>
+  </nav>
+  <div class="auth">
+    <a href="user.html" class="btn-link">My Profile</a>
+  </div>
+</header>
+
+<section class="container page-header">
+  <div class="clinic-header">
+    <img id="profilePic" class="clinic-profile-pic" />
+    <div>
+      <h1 id="clinicName"></h1>
+      <p id="clinicAddress"></p>
+      <span id="statusBadge" class="badge badge-pending">Pending</span>
+    </div>
+  </div>
+</section>
+
+<main class="container manage-grid">
+
+  <section class="left-col">
+
+    <!-- PROFILE PIC -->
+    <div class="card">
+      <h3>Profile Picture</h3>
+      <input type="file" id="profilePicInput" hidden />
+      <button class="btn-outline" id="changeProfilePicBtn">
+        Change Profile Picture
+      </button>
+      <p class="muted">This is the main image shown to users.</p>
+    </div>
+
+    <!-- INFO -->
+    <div class="card">
+      <h3>Clinic Information</h3>
+
+      <div id="clinicInfoView">
+        <p><strong>Description:</strong> <span id="descText"></span></p>
+        <p><strong>Phone:</strong> <span id="phoneText"></span></p>
+        <p><strong>Address:</strong> <span id="addressText"></span></p>
+        <button class="btn-primary" id="editClinicBtn">Edit Details</button>
+      </div>
+
+      <form id="clinicEditForm" class="hidden">
+        <textarea id="descInput"></textarea>
+        <input id="phoneInput" />
+        <input id="addressInput" />
+
+        <div class="form-actions">
+          <button type="button" class="btn-primary" id="saveClinicBtn">Save</button>
+          <button type="button" class="btn-outline" id="cancelEdit">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- LOCATION -->
+    <div class="card">
+      <h3>Location</h3>
+      <p>Latitude: <span id="latText"></span></p>
+      <p>Longitude: <span id="lngText"></span></p>
+      <div id="map" class="map-box"></div>
+      <p class="muted" id="mapHint">Click map to pin location</p>
+    </div>
+
+    <!-- IMAGES -->
+    <div class="card">
+      <h3>Clinic Images</h3>
+      <div id="imageGrid" class="image-grid"></div>
+      <input type="file" id="imageInput" hidden />
+      <button class="btn-outline" id="uploadImageBtn">Add Image</button>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="card">
+      <button class="btn-primary full-width" id="manageAppointmentsBtn">
+        Manage Appointments
+      </button>
+    </div>
+
+  </section>
+
+  <aside class="right-col">
+
+    <div class="card">
+      <h3>Owner</h3>
+      <p><strong>Name:</strong> <span id="ownerName">-</span></p>
+      <p><strong>Email:</strong> <span id="ownerEmail">-</span></p>
+    </div>
+
+    <div class="card danger">
+      <button class="btn-danger" id="toggleDelete">Delete Clinic</button>
+      <div id="deleteBox" class="hidden">
+        <input id="deleteConfirm" placeholder="DELETE CLINIC" />
+        <button class="btn-danger" id="deleteBtn" disabled>Confirm</button>
+      </div>
+    </div>
+
+  </aside>
+</main>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">© 2026 PetCare</div>
+</footer>
+
+<script src="js/clinic-manage.js"></script>
+</body>
+</html>

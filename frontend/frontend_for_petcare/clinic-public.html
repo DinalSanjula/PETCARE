@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clinic Profile | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/clinic-public.css" />
+
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    defer
+  ></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare</div>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="clinics.html">Clinics</a>
+  </nav>
+
+  <div class="auth" id="authActions"></div>
+</header>
+
+<!-- HERO -->
+<section class="clinic-hero container">
+  <h1 id="clinicName">Clinic</h1>
+  <p id="clinicDesc" class="clinic-desc"></p>
+
+  <div class="clinic-meta">
+    <span id="clinicAddress">📍</span>
+    <span id="clinicPhone">📞</span>
+  </div>
+</section>
+
+<!-- ACTION -->
+<section class="clinic-actions container">
+  <button class="btn-primary slots-main-btn" id="slotsBtn">
+    View Available Slots for Appointment
+  </button>
+</section>
+
+<!-- SLOTS (HIDDEN INITIALLY) -->
+<section class="container hidden" id="slotsSection">
+  <h2 class="section-title">Available Slots</h2>
+
+  <input type="date" id="slotDate" class="slot-date" />
+
+  <div id="slotsGrid" class="slots-grid"></div>
+
+  <p id="noSlots" class="muted hidden">
+    No slots available for selected date.
+  </p>
+</section>
+
+<!-- BOOKING CONFIRM -->
+<div id="bookingBox" class="booking-box hidden">
+  <p id="bookingInfo"></p>
+
+  <div class="booking-actions">
+    <button class="btn-primary" id="confirmBookingBtn">
+      Confirm Booking
+    </button>
+    <button class="btn-outline" onclick="closeBookingBox()">
+      Cancel
+    </button>
+  </div>
+</div>
+
+<p id="bookingMessage" class="container muted"></p>
+
+<!-- GALLERY -->
+<section class="container">
+  <h2 class="section-title">Clinic Gallery</h2>
+  <div id="galleryGrid" class="gallery-grid"></div>
+  <p id="noImages" class="muted hidden">No images uploaded by clinic.</p>
+</section>
+
+<!-- MAP -->
+<section class="container">
+  <h2 class="section-title">Location</h2>
+  <div id="map" class="map-preview"></div>
+</section>
+
+<!-- DETAILS -->
+<section class="container clinic-details">
+  <h2 class="section-title">Clinic Details</h2>
+  <p><strong>Name:</strong> <span id="detailName"></span></p>
+  <p><strong>Address:</strong> <span id="detailAddress"></span></p>
+  <p><strong>Phone:</strong> <span id="detailPhone"></span></p>
+  <p><strong>Registered on:</strong> <span id="detailCreated"></span></p>
+</section>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">
+    © 2026 PetCare. All rights reserved.
+  </div>
+</footer>
+
+<script src="js/clinic-public.js"></script>
+</body>
+</html>

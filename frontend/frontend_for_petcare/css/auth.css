@@ -1,0 +1,161 @@
+/* =========================
+   COMMON AUTH CONTAINER
+   ========================= */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f8f9fb;
+  padding: 20px;
+}
+
+/* =========================
+   AUTH BOX (LOGIN / REGISTER)
+   ========================= */
+.auth-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px; /* increased slightly, still safe for login */
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  margin-bottom: 30px;
+}
+
+.auth-box h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Subtitle (used in register.html, ignored elsewhere) */
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* =========================
+   FORM ELEMENTS
+   ========================= */
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* =========================
+   LOGIN-SPECIFIC
+   ========================= */
+.forgot-password {
+  text-align: right;
+  margin-bottom: 16px;
+}
+
+.forgot-password a {
+  font-size: 13px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+/* =========================
+   BUTTONS & LINKS
+   ========================= */
+.btn-primary {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #007bff;
+  background: transparent;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.switch-text {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 14px;
+}
+
+.link {
+  color: #007bff;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* =========================
+   SIGNUP SECTION (LOGIN PAGE)
+   ========================= */
+.signup-section {
+  max-width: 800px;
+  width: 100%;
+}
+
+.signup-section h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.signup-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.signup-card {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.signup-card h4 {
+  margin-bottom: 8px;
+}
+
+.signup-card p {
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+/* =========================
+   UTILITIES
+   ========================= */
+.hidden {
+  display: none;
+}
+
+
+/* =========================
+   INLINE VALIDATION ERRORS
+   ========================= */
+.error-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #d93025; /* red */
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+
+  <div class="auth-container">
+
+    <!-- LOGIN BOX -->
+    <div class="auth-box">
+      <h2>Sign In</h2>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required />
+        </div>
+
+        <div class="forgot-password">
+          <a href="forgot-password.html">Forgot password?</a>
+        </div>
+
+        <small id="loginError" class="error-text"></small>
+
+        <button type="submit" class="btn-primary">Sign In</button>
+      </form>
+
+      <p class="switch-text">
+        Don’t have an account?
+        <span id="showSignup" class="link">Sign up</span>
+      </p>
+    </div>
+
+    <!-- SIGNUP OPTIONS (HIDDEN INITIALLY) -->
+    <div id="signupSection" class="signup-section hidden">
+      <h3>Create an Account</h3>
+
+      <div class="signup-cards">
+
+        <div class="signup-card" onclick="goToRegister('owner')">
+          <h4>Pet Owner</h4>
+          <p>Manage pets, appointments, and reports.</p>
+          <button class="btn-secondary">Sign up as Pet Owner</button>
+        </div>
+
+        <div class="signup-card" onclick="goToRegister('clinic')">
+          <h4>Clinic</h4>
+          <p>Register your clinic and manage appointments.</p>
+          <button class="btn-secondary">Sign up as Clinic</button>
+        </div>
+
+        <div class="signup-card" onclick="goToRegister('welfare')">
+          <h4>Welfare</h4>
+          <p>Contribute to animal welfare and reporting.</p>
+          <button class="btn-secondary">Sign up as Welfare</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

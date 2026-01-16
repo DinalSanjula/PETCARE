@@ -1,0 +1,194 @@
+/* =========================
+   TOP BAR
+   ========================= */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
+
+.nav-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* =========================
+   MAIN LAYOUT
+   ========================= */
+.dashboard-layout {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.right-column {
+  display: grid;
+  gap: 20px;
+}
+
+/* =========================
+   CARDS
+   ========================= */
+.card {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* =========================
+   DASHBOARD (LEFT)
+   ========================= */
+.dashboard-card h2 {
+  margin-bottom: 10px;
+}
+
+.dashboard-card .main-desc {
+  margin-bottom: 20px;
+  line-height: 1.5;
+  font-size: 15px;
+}
+
+.dashboard-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.dashboard-box {
+  background: #f9fafb;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.dashboard-box h4 {
+  margin-bottom: 6px;
+}
+
+.dashboard-box p {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* =========================
+   PROFILE (RIGHT)
+   ========================= */
+.profile-card p {
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+/* =========================
+   ACTION SECTIONS
+   ========================= */
+.muted {
+  font-size: 14px;
+  color: #666;
+}
+
+.warning {
+  font-size: 13px;
+  color: #d93025;
+  margin-top: 8px;
+}
+
+/* =========================
+   INPUTS
+   ========================= */
+input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* =========================
+   BUTTONS
+   ========================= */
+.btn-primary {
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-outline {
+  margin-top: 10px;
+  padding: 8px 14px;
+  border: 1px solid #007bff;
+  background: transparent;
+  color: #007bff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: #d93025;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-danger:disabled {
+  background: #f2b8b5;
+  cursor: not-allowed;
+}
+
+/* =========================
+   VALIDATION
+   ========================= */
+.error-text {
+  color: #d93025;
+  font-size: 12px;
+}
+
+/* =========================
+   UTILITIES
+   ========================= */
+.hidden {
+  display: none;
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+.support-footer {
+  margin-top: 40px;
+  padding: 24px;
+  text-align: center;
+  background: #0d6efd;
+  color: #ffffff;
+}
+
+.support-footer p {
+  margin: 4px 0;
+}
+
+.social-links {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.social-links a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}

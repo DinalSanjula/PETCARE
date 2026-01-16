@@ -1,0 +1,228 @@
+/* =========================
+   PAGE HEADER
+========================= */
+.page-header {
+  max-width: 1000px;
+  margin: 30px auto;
+}
+
+/* =========================
+   STATUS
+========================= */
+.status,
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  display: inline-block;
+}
+
+.badge-active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+.manage-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  margin-bottom: 60px;
+}
+
+/* =========================
+   CARD
+========================= */
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card h3 {
+  margin-bottom: 14px;
+}
+
+.danger {
+  border-color: #f5c6cb;
+}
+
+/* =========================
+   PROFILE PICTURE
+========================= */
+.profile-pic-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-pic-wrapper {
+  width: 90px;
+  height: 90px;
+  position: relative;
+}
+
+.profile-pic-wrapper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+/* =========================
+   FORMS
+========================= */
+form {
+  margin-top: 10px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  display: block;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* =========================
+   FORM ACTIONS (FIX)
+========================= */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #007bff;
+  border: 1px solid #007bff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* =========================
+   MAP
+========================= */
+.map-box {
+  height: 260px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+}
+
+/* =========================
+   IMAGES
+========================= */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 12px;
+}
+
+.image-card {
+  position: relative;
+}
+
+.image-card img {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Delete button overlay (clickable) */
+.image-card button {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  padding: 4px 10px;
+  z-index: 2;
+}
+
+/* =========================
+   TEXT
+========================= */
+.muted {
+  font-size: 13px;
+  color: #666;
+}
+
+/* =========================
+   VISIBILITY
+========================= */
+.hidden {
+  display: none;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.footer-blue {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.footer-blue .footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 900px) {
+  .manage-grid {
+    grid-template-columns: 1fr;
+  }
+}

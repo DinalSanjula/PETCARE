@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Clinics | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/my-clinics.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">PetCare</div>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="user.html">Dashboard</a>
+    </nav>
+
+    <div class="auth">
+      <a href="user.html" class="btn-link">My Profile</a>
+    </div>
+  </header>
+
+  <!-- PAGE HEADER -->
+  <section class="page-header container">
+    <div>
+      <h1>My Clinics</h1>
+      <p>Manage clinics you own and control their profiles</p>
+    </div>
+
+    <button class="btn-primary" onclick="goToCreateClinic()">
+      + Register New Clinic
+    </button>
+  </section>
+
+  <!-- CLINICS GRID -->
+  <main class="container">
+
+    <!-- GRID -->
+    <div id="clinicsGrid" class="clinics-grid"></div>
+
+    <!-- EMPTY STATE (hidden by default) -->
+    <div id="emptyState" class="empty-state hidden">
+      <p>You haven’t registered any clinics yet.</p>
+      <button class="btn-primary" onclick="goToCreateClinic()">
+        Register Your First Clinic
+      </button>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer footer-blue">
+    <div class="footer-bottom">
+      <p>© 2026 PetCare. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="js/my-clinics.js"></script>
+</body>
+</html>

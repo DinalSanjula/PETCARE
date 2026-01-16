@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Clinic | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/clinic-create.css" />
+
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    defer
+  ></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare</div>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="my-clinics.html">My Clinics</a>
+  </nav>
+  <div class="auth">
+    <a href="user.html" class="btn-link">My Profile</a>
+  </div>
+</header>
+
+<section class="container page-header">
+  <h1>Register New Clinic</h1>
+  <p>Provide details to register your clinic</p>
+</section>
+
+<main class="container">
+  <form id="clinicForm" class="clinic-form">
+
+    <div class="info-box">
+      ℹ️ Clinics require admin approval before appearing publicly.
+    </div>
+
+    <div class="form-group">
+      <label>Clinic Name *</label>
+      <input type="text" id="name" required />
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="description"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Phone</label>
+      <input id="phone" placeholder="0771234567 or +94771234567" />
+    </div>
+
+     <!-- DISTRICT -->
+    <div class="form-group">
+      <label>District</label>
+      <select id="area">
+        <option value="">Select district</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Address</label>
+      <input id="address" />
+      <small class="muted">Pin exact location on the map</small>
+    </div>
+
+    <!-- MAP -->
+    <div id="map" class="map-box"></div>
+    <p class="muted" id="mapHint">Click map to pin clinic location</p>
+
+    <small id="formError" class="error-text"></small>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Create Clinic</button>
+      <button type="button" class="btn-outline" onclick="goBack()">Cancel</button>
+    </div>
+
+  </form>
+</main>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">© 2026 PetCare</div>
+</footer>
+
+<script src="js/clinic-create.js"></script>
+</body>
+</html>
