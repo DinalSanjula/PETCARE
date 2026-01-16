@@ -405,3 +405,54 @@ async def reschedule_booking(
         message="Booking rescheduled",
         data=booking
     )
+
+async def list_bookings_for_clinic(
+    db: AsyncSession,
+    clinic_id: int,
+    *,
+    booking_date: Optional[date] = None,
+    status: Optional[BookingStatus] = None,
+    limit: int = 20,
+    offset: int = 0,
+):
+    stmt = (
+        select(Booking)
+        .where(Booking.clinic_id == clinic_id)
+        .options(selectinload(Booking.user))
+    )
+
+    if booking_date:
+        stmt = stmt.where(func.date(Booking.start_time) == booking_date)
+
+    if status:
+        stmt = stmt.where(Booking.status == status)
+
+    stmt = stmt.order_by(Booking.start_time).limit(limit).offset(offset)
+
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def list_my_bookings(
+    db: AsyncSession,
+    user_id: int,
+    *,
+    status: Optional[BookingStatus] = None,
+    upcoming_only: bool = False,
+):
+    stmt = (
+        select(Booking)
+        .where(Booking.user_id == user_id)
+        .options(selectinload(Booking.clinic))
+    )
+
+    if status:
+        stmt = stmt.where(Booking.status == status)
+
+    if upcoming_only:
+        stmt = stmt.where(Booking.start_time >= func.now())
+
+    stmt = stmt.order_by(Booking.start_time.desc())
+
+    result = await db.execute(stmt)
+    return list(result.scalars().all())

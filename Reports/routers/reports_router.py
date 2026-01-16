@@ -33,7 +33,7 @@ from Reports.services.report_service import (
 
 from Reports.services.report_images import (
     create_report_image,
-    list_images_for_report,
+    list_images_for_report, get_report_image_by_id, delete_report_image,
 )
 
 from Reports.services.report_service import (
@@ -208,7 +208,30 @@ async def list_report_images(
     report = await get_report_by_id(db, report_id)
     return await list_images_for_report(db, report_id)
 
+@router.delete(
+    "/images/{image_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_report_image_endpoint(
+    image_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    image = await get_report_image_by_id(db, image_id)
 
+    if (
+        current_user.role != UserRole.ADMIN
+        and image.report.reporter_user_id != current_user.id
+    ):
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    await delete_report_image(
+        session=db,
+        image_id=image_id,
+        delete_from_storage=True,
+    )
+
+    return None
 
 @router.post(
     "/{report_id}/notes",

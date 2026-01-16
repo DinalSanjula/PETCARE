@@ -1,223 +1,183 @@
 from typing import List, Optional
-from fastapi import APIRouter, UploadFile, File, HTTPException, status, Form, Depends
+from fastapi import (
+    APIRouter, UploadFile, File,
+    HTTPException, status, Depends
+)
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from Clinics.crud.clinic_crud import get_clinic_by_id
-from Clinics.utils.helpers import require_roles
-from Users.auth.security import get_current_active_user
-from db import get_db
-from Clinics.schemas.clinic_image import ClinicImageCreate, ClinicImageResponse, ClinicImageUpdate
-from Clinics.crud.images_crud import create_clinic_image, update_clinic_image, delete_image, get_image_by_id, list_images_for_clinic
-from Clinics.storage.minio_storage import generate_stored_filename, upload_file,delete_file as minio_delete_file
 from PIL import Image
 import io
+
+from db import get_db
+from Users.auth.security import get_current_active_user
 from Users.models.user_model import User, UserRole
+from Clinics.utils.helpers import require_roles
+from Clinics.crud.clinic_crud import get_clinic_by_id
+from Clinics.crud.images_crud import (
+    create_clinic_image,
+    update_clinic_image,
+    delete_image,
+    get_image_by_id,
+    list_images_for_clinic,
+)
+from Clinics.storage.minio_storage import (
+    generate_stored_filename,
+    upload_file,
+    delete_file as minio_delete_file,
+)
+from Clinics.schemas.clinic_image import ClinicImageResponse
 
 router = APIRouter(tags=["Images"])
 
-@router.post("/clinics/{clinic_id}", response_model=ClinicImageResponse, status_code=status.HTTP_201_CREATED,
-             summary="Upload image for clinic", dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
-async def upload_clinic_image(clinic_id:int, file:UploadFile = File(...),
-                              session : AsyncSession = Depends(get_db),
-                              current_user: User = Depends(get_current_active_user)):
+ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
+MAX_SIZE = 5 * 1024 * 1024
 
+
+@router.post(
+    "/clinics/{clinic_id}",
+    response_model=ClinicImageResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))],
+)
+async def upload_clinic_image(
+    clinic_id: int,
+    file: UploadFile = File(...),
+    session: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
     clinic = await get_clinic_by_id(clinic_id=clinic_id, session=session)
+
     if clinic.owner_id != current_user.id and current_user.role != UserRole.ADMIN:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to access")
+        raise HTTPException(status_code=403, detail="Not allowed")
 
-    ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
     if file.content_type not in ALLOWED_TYPES:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Unsupported file type : {file.content_type}")
+        raise HTTPException(status_code=400, detail="Unsupported file type")
 
-    MAX_SIZE = 5 * 1024 * 1024
     data = await file.read()
-
     if len(data) > MAX_SIZE:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"File too large : Max allowed size is {MAX_SIZE/1024/1024}")
+        raise HTTPException(status_code=400, detail="File too large (max 5MB)")
 
     try:
         Image.open(io.BytesIO(data)).verify()
     except Exception:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or corrupted image")
+        raise HTTPException(status_code=400, detail="Invalid image")
 
-    stored_filename = generate_stored_filename(file.filename)
-    content_type = file.content_type
+    stored_name = generate_stored_filename(file.filename)
+    object_key = f"clinics/clinic-{clinic_id}/{stored_name}"
 
-    public_url = await upload_file(filename=stored_filename, content_type=content_type, data=data)
-
-    created = await create_clinic_image(
-        session=session,
-        clinic_id=clinic_id,
-        filename=stored_filename,
-        url=public_url,
-        content_type=content_type,
-        original_filename=file.filename
+    public_url = await upload_file(
+        filename=object_key,
+        data=data,
+        content_type=file.content_type,
     )
 
-    return created
+    image = await create_clinic_image(
+        session=session,
+        clinic_id=clinic_id,
+        filename=object_key,
+        url=public_url,
+        content_type=file.content_type,
+        original_filename=file.filename,
+    )
+
+    return image
+
 
 @router.get("/clinics/{clinic_id}", response_model=List[ClinicImageResponse])
-async def images_for_clinic(clinic_id:int, session: AsyncSession = Depends(get_db)):
-    images = await list_images_for_clinic(session=session, clinic_id=clinic_id)
-    return images
+async def images_for_clinic(
+    clinic_id: int,
+    session: AsyncSession = Depends(get_db),
+):
+    return await list_images_for_clinic(session=session, clinic_id=clinic_id)
+
 
 @router.get("/{image_id}", response_model=ClinicImageResponse)
-async def get_image(image_id:int, session:AsyncSession = Depends(get_db)):
-    img = await get_image_by_id(session=session, image_id=image_id)
-    if img is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found!")
-    return img
+async def get_image(
+    image_id: int,
+    session: AsyncSession = Depends(get_db),
+):
+    return await get_image_by_id(session=session, image_id=image_id)
 
-@router.patch("/{image_id}", response_model=ClinicImageResponse, dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
+
+@router.patch(
+    "/{image_id}",
+    response_model=ClinicImageResponse,
+    dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))],
+)
 async def patch_image(
     image_id: int,
     file: Optional[UploadFile] = File(None),
-    original_filename: Optional[str] = Form(None),
-    content_type: Optional[str] = Form(None),
-    url: Optional[str] = Form(None),
     session: AsyncSession = Depends(get_db),
-    current_user : User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     img = await get_image_by_id(session, image_id)
-    if img is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found!")
 
     if img.clinic.owner_id != current_user.id and current_user.role != UserRole.ADMIN:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
+        raise HTTPException(status_code=403, detail="Not allowed")
 
-    updates = {}
-
-    if file is not None:
-        ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
-        MAX_SIZE = 5 * 1024 * 1024
-
-        if file.content_type not in ALLOWED_TYPES:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Unsupported file type: {file.content_type}",
-            )
-
-        data = await file.read()
-        if len(data) > MAX_SIZE:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"File too large: Max allowed size is {MAX_SIZE / (1024 * 1024)} MB",
-            )
-
-
-        buf = io.BytesIO(data)
-        try:
-            pil_img = Image.open(buf)
-            pil_img.verify()
-        except Exception:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or corrupted image")
-
-        try:
-            buf.seek(0)
-            pil_img = Image.open(buf)
-            fmt = getattr(pil_img, "format", None)
-        except Exception:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unable to read image format")
-
-        fmt_map = {"JPEG": "image/jpeg", "JPG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}
-        detected_mime = fmt_map.get(fmt, file.content_type or "application/octet-stream")
-
-        if detected_mime not in ALLOWED_TYPES:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Unsupported file type detected: {detected_mime}",
-            )
-
-        if content_type is not None and content_type != detected_mime:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Provided content_type does not match actual file content ({detected_mime})",
-            )
-
-        if url is not None:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot set url when uploading a file")
-
-        chosen_original = original_filename or file.filename
-
-        new_stored_filename = generate_stored_filename(file.filename)
-        try:
-            new_url = await upload_file(filename=new_stored_filename, data=data, content_type=detected_mime)
-        except Exception as e:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Upload failed: {e}")
-
-        #delete the old file
-        try:
-            removed = await minio_delete_file(img.filename)
-        except Exception:
-            try:
-                await minio_delete_file(new_stored_filename)
-            except Exception:
-                pass
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete old file from storage")
-
-        if not removed:
-            try:
-                await minio_delete_file(new_stored_filename)
-            except Exception:
-                pass
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete old file from storage")
-
-        updates["filename"] = new_stored_filename
-        updates["url"] = new_url
-        updates["content_type"] = detected_mime
-        updates["original_filename"] = chosen_original
-
-    else:
-        if content_type is not None:
-            if content_type not in {"image/jpeg", "image/png", "image/webp"}:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Unsupported content_type: {content_type}",
-                )
-            updates["content_type"] = content_type
-
-        if url is not None:
-            updates["url"] = url
-
-        if original_filename is not None:
-            updates["original_filename"] = original_filename
-
-    if not updates:
+    if not file:
         return img
 
-    updated = await update_clinic_image(
-        session=session,
-        image_id=image_id,
-        filename=updates.get("filename"),
-        url=updates.get("url"),
-        content_type=updates.get("content_type"),
-        original_filename=updates.get("original_filename"),
-    )
+    if file.content_type not in ALLOWED_TYPES:
+        raise HTTPException(status_code=400, detail="Unsupported file type")
 
-    return updated
-
-
-
-
-@router.delete("/{image_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))])
-async def delete_image_endpoint(image_id:int,
-                       session:AsyncSession = Depends(get_db),
-                       current_user: User = Depends(get_current_active_user)):
-
-    img = await get_image_by_id(session, image_id)
-    if img is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found!")
-
-    if img.clinic.owner_id != current_user.id and current_user.role != UserRole.ADMIN:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to delete")
+    data = await file.read()
+    if len(data) > MAX_SIZE:
+        raise HTTPException(status_code=400, detail="File too large")
 
     try:
-        await delete_image(session=session,
-                           image_id=image_id,
-                           delete_from_storage=True)
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-    return None
+        Image.open(io.BytesIO(data)).verify()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid image")
 
+    stored_name = generate_stored_filename(file.filename)
+    object_key = f"clinics/clinic-{img.clinic_id}/{stored_name}"
+
+    new_url = await upload_file(
+        filename=object_key,
+        data=data,
+        content_type=file.content_type,
+    )
+
+    # Delete old file with proper rollback
+    try:
+        removed = await minio_delete_file(img.filename)
+        if not removed:
+            raise Exception("Delete returned False")
+    except Exception:
+        # Rollback: delete newly uploaded file
+        try:
+            await minio_delete_file(object_key)
+        except Exception:
+            pass
+        raise HTTPException(status_code=500, detail="Failed to delete old file")
+
+    return await update_clinic_image(
+        session=session,
+        image_id=image_id,
+        filename=object_key,
+        url=new_url,
+        content_type=file.content_type,
+        original_filename=file.filename,
+    )
+
+
+@router.delete(
+    "/{image_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))],
+)
+async def delete_image_endpoint(
+    image_id: int,
+    session: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    img = await get_image_by_id(session, image_id)
+
+    if img.clinic.owner_id != current_user.id and current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    await delete_image(
+        session=session,
+        image_id=image_id,
+        delete_from_storage=True,
+    )

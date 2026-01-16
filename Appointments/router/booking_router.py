@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from Appointments.model.booking_models import BookingStatus
+from Appointments.service.booking_service import list_bookings_for_clinic, list_my_bookings
+from Clinics.crud.clinic_crud import get_clinic_by_id
 from db import get_db
 from datetime import date
-from typing import List
+from typing import List, Optional
 from Users.auth.security import get_current_active_user
 from Clinics.utils.helpers import require_roles
 from Users.models.user_model import User, UserRole
@@ -13,7 +17,7 @@ from Appointments.schema.booking_schema import (
     TimeSlotCreate,
     TimeSlotOut,
     AvailableSlot,
-    RescheduleRequest
+    RescheduleRequest, ClinicBookingResponse, BookingListResponse
 )
 from Appointments.service import booking_service
 
@@ -74,3 +78,74 @@ async def reschedule_booking(
         raise HTTPException(400, result.message)
 
     return result.data
+
+@router.get(
+    "/clinic/{clinic_id}",
+    response_model=List[ClinicBookingResponse],
+    dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))],
+)
+async def view_clinic_bookings(
+    clinic_id: int,
+    booking_date: Optional[date] = Query(None),
+    status: Optional[BookingStatus] = Query(None),
+    limit: int = 20,
+    offset: int = 0,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    clinic = await get_clinic_by_id(db, clinic_id)
+
+    if current_user.role == UserRole.CLINIC and clinic.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    bookings = await list_bookings_for_clinic(
+        db=db,
+        clinic_id=clinic_id,
+        booking_date=booking_date,
+        status=status,
+        limit=limit,
+        offset=offset,
+    )
+
+    return [
+        ClinicBookingResponse(
+            booking_id=b.id,
+            owner_id=b.user.id,
+            owner_name=b.user.name,
+            owner_email=b.user.email,
+            start_time=b.start_time,
+            end_time=b.end_time,
+            status=b.status,
+        )
+        for b in bookings
+    ]
+
+@router.get(
+    "/my",
+    response_model=List[BookingListResponse],
+    dependencies=[Depends(require_roles(UserRole.OWNER, UserRole.ADMIN))],
+)
+async def my_appointments(
+    status: Optional[BookingStatus] = Query(None),
+    upcoming_only: bool = Query(False),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    bookings = await list_my_bookings(
+        db=db,
+        user_id=current_user.id,
+        status=status,
+        upcoming_only=upcoming_only,
+    )
+
+    return [
+        BookingListResponse(
+            booking_id=b.id,
+            clinic_id=b.clinic.id,
+            clinic_name=b.clinic.name,
+            start_time=b.start_time,
+            end_time=b.end_time,
+            status=b.status,
+        )
+        for b in bookings
+    ]
