@@ -1,0 +1,90 @@
+/* =========================
+   FILTERS
+========================= */
+.filters {
+  margin-bottom: 20px;
+}
+
+.filters select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* =========================
+   GRID
+========================= */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/* =========================
+   CARD
+========================= */
+.report-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+  position: relative;
+}
+
+.report-card:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.report-card h3 {
+  margin: 6px 0;
+}
+
+.location {
+  color: #555;
+  font-size: 14px;
+}
+
+.desc {
+  font-size: 14px;
+  color: #666;
+  margin: 8px 0;
+}
+
+.meta {
+  font-size: 13px;
+  color: #888;
+}
+
+/* =========================
+   STATUS BADGE
+========================= */
+.status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #fff;
+}
+
+.status-badge.OPEN { background: #ffc107; color: #000; }
+.status-badge.IN_PROGRESS { background: #0dcaf0; }
+.status-badge.RESCUED { background: #198754; }
+.status-badge.TREATED { background: #20c997; }
+.status-badge.TRANSFERED { background: #6f42c1; }
+.status-badge.CLOSED { background: #6c757d; }
+.status-badge.REJECTED { background: #dc3545; }
+
+/* =========================
+   PAGINATION
+========================= */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px auto;
+  max-width: 300px;
+}

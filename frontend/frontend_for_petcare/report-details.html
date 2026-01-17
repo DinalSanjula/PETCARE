@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Details | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/report-details.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare</div>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="reports.html">Reports</a>
+  </nav>
+
+  <div class="auth" id="authBox"></div>
+</header>
+
+<main class="container">
+
+  <!-- REPORT HEADER -->
+  <section class="report-header">
+    <h1 id="animalType">Loading...</h1>
+    <span id="statusBadge" class="status-badge">OPEN</span>
+    <p class="muted" id="createdAt"></p>
+  </section>
+
+  <!-- REPORT INFO -->
+  <section class="report-info">
+    <p><strong>Condition:</strong> <span id="condition"></span></p>
+    <p><strong>Description:</strong></p>
+    <p id="description" class="desc-box"></p>
+
+    <p><strong>Location:</strong> <span id="address"></span></p>
+    <p id="contactWrapper" class="hidden">
+      <strong>Contact:</strong> <span id="contactPhone"></span>
+    </p>
+  </section>
+
+  <!-- IMAGES -->
+  <section>
+    <h2>Images</h2>
+    <div id="imagesGrid" class="images-grid"></div>
+    <p id="noImages" class="muted hidden">No images uploaded.</p>
+  </section>
+
+  <!-- MESSAGE BOX -->
+  <section id="messageSection" class="message-section hidden">
+    <h2>Send a Message</h2>
+    <p class="muted">
+      Messages are reviewed by administrators only.
+    </p>
+
+    <textarea id="messageInput" placeholder="Type your message..."></textarea>
+    <button class="btn-primary" id="sendMessageBtn">
+      Send Message
+    </button>
+
+    <p id="messageStatus" class="muted"></p>
+  </section>
+
+</main>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">© 2026 PetCare</div>
+</footer>
+
+<script src="js/report-details.js"></script>
+</body>
+</html>

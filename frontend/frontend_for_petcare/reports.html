@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animal Reports | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/reports.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare</div>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="clinics.html">Clinics</a>
+  </nav>
+
+  <div class="auth" id="authActions">
+  </div>
+</header>
+
+<section class="container page-header">
+  <h1>Animal Reports</h1>
+  <p>Reported animals that need attention or updates</p>
+</section>
+
+<!-- FILTERS -->
+<section class="container filters">
+  <select id="statusFilter">
+    <option value="">All Statuses</option>
+    <option>OPEN</option>
+    <option>IN_PROGRESS</option>
+    <option>RESCUED</option>
+    <option>TREATED</option>
+    <option>TRANSFERED</option>
+    <option>CLOSED</option>
+    <option>REJECTED</option>
+  </select>
+</section>
+
+<!-- REPORT LIST -->
+<main class="container">
+  <div id="reportsGrid" class="reports-grid"></div>
+
+  <p id="emptyState" class="muted hidden">
+    No reports found.
+  </p>
+</main>
+
+<!-- PAGINATION -->
+<section class="container pagination">
+  <button class="btn-outline" id="prevBtn">← Previous</button>
+  <button class="btn-primary" id="nextBtn">Next →</button>
+</section>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">© 2026 PetCare</div>
+</footer>
+
+<script src="js/reports.js"></script>
+</body>
+</html>

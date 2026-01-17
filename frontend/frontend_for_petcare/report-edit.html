@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Report | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/report-edit.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare</div>
+
+  <nav class="nav">
+    <a href="my-reports.html">My Reports</a>
+  </nav>
+
+  <div class="auth">
+    <a href="logout.html" class="btn-link">Logout</a>
+  </div>
+</header>
+
+<section class="container page-header">
+  <button class="btn-outline" onclick="goBack()">← Back</button>
+  <h1>Edit Report</h1>
+  <span id="statusBadge" class="status-badge"></span>
+</section>
+
+<main class="container report-edit">
+
+  <!-- REPORT FORM -->
+  <section class="card">
+    <h2>Report Details</h2>
+
+    <label>Animal Type</label>
+    <input type="text" id="animalType" disabled />
+
+    <label>Condition</label>
+    <input type="text" id="condition" />
+
+    <label>Description</label>
+    <textarea id="description"></textarea>
+
+    <label>Location</label>
+    <input type="text" id="address" />
+
+    <label>Contact Phone</label>
+    <input type="text" id="contactPhone" placeholder="+947XXXXXXXX" />
+
+    <p id="formError" class="error-text"></p>
+
+    <button class="btn-primary" id="updateBtn">
+      Update Report
+    </button>
+  </section>
+
+  <!-- IMAGES -->
+  <section class="card">
+    <h2>Images <small>(max 3)</small></h2>
+
+    <input type="file" id="imageInput" accept="image/*" />
+
+    <div id="imagesGrid" class="images-grid"></div>
+  </section>
+
+  <!-- DELETE -->
+  <section class="card danger-zone">
+    <h3>Danger Zone</h3>
+    <button class="btn-danger" onclick="deleteReport()">
+      Delete Report
+    </button>
+  </section>
+
+</main>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">© 2026 PetCare</div>
+</footer>
+
+<script src="js/report-edit.js"></script>
+</body>
+</html>

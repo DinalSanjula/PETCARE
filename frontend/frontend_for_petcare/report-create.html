@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Report | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/report-create.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare</div>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="reports.html">Reports</a>
+  </nav>
+
+  <div class="auth">
+    <a href="logout.html" class="btn-link">Logout</a>
+  </div>
+</header>
+
+<section class="container page-header">
+  <h1>Create Animal Report</h1>
+  <p>Report injured, lost, or abandoned animals</p>
+</section>
+
+<main class="container report-form-container">
+
+  <form id="reportForm" enctype="multipart/form-data">
+
+    <div class="form-group">
+      <label>Animal Type *</label>
+      <input type="text" id="animalType" required />
+    </div>
+
+    <div class="form-group">
+      <label>Condition *</label>
+      <select id="condition" required>
+        <option value="">Select condition</option>
+        <option>Injured</option>
+        <option>Lost</option>
+        <option>Abandoned</option>
+        <option>Sick</option>
+        <option>Abuse</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Description *</label>
+      <textarea id="description" rows="4" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Location *</label>
+      <input type="text" id="address" placeholder="City / Area / Landmark" required />
+    </div>
+
+    <div class="form-group">
+      <label>Contact Phone (optional)</label>
+      <input type="tel" id="contactPhone" placeholder="+94xxxxxxxxx" />
+    </div>
+
+    <div class="form-group">
+      <label>Image (optional)</label>
+      <input type="file" id="image" accept="image/*" />
+      <small class="muted">You can upload more images later</small>
+    </div>
+
+    <p id="formError" class="error-text"></p>
+
+    <button type="submit" class="btn-primary">
+      Submit Report
+    </button>
+
+  </form>
+
+</main>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">© 2026 PetCare</div>
+</footer>
+
+<script src="js/report-create.js"></script>
+</body>
+</html>

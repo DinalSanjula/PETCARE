@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin | Report Details</title>
+
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/admin-report-details.css"/>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare Admin</div>
+
+  <nav class="nav">
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-reports.html">Reports</a>
+  </nav>
+
+  <div class="auth">
+    <a href="logout.html" class="btn-link">Logout</a>
+  </div>
+</header>
+
+<section class="container page-header">
+  <h1>Report Details</h1>
+  <span id="statusBadge" class="status"></span>
+</section>
+
+<main class="container report-layout">
+
+  <!-- REPORT INFO (EDITABLE) -->
+  <section class="card">
+    <h2>Report Information</h2>
+
+    <label>Animal</label>
+    <input id="animalType" disabled />
+
+    <label>Condition</label>
+    <input id="condition" />
+
+    <label>Description</label>
+    <textarea id="description"></textarea>
+
+    <label>Location</label>
+    <input id="address" />
+
+    <label>Contact Phone</label>
+    <input id="contactPhone" />
+
+    <p class="muted">Created: <span id="createdAt"></span></p>
+
+    <button class="btn-primary" id="saveReportBtn">
+      Save Changes
+    </button>
+
+    <p id="saveMsg" class="muted"></p>
+  </section>
+
+  <!-- IMAGES -->
+  <section class="card">
+    <h2>Images</h2>
+    <div id="imagesGrid" class="images-grid"></div>
+    <p id="noImages" class="muted hidden">No images uploaded.</p>
+  </section>
+
+  <!-- STATUS -->
+  <section class="card">
+    <h2>Update Status</h2>
+
+    <select id="statusSelect">
+      <option>OPEN</option>
+      <option>IN_PROGRESS</option>
+      <option>RESCUED</option>
+      <option>TREATED</option>
+      <option>TRANSFERED</option>
+      <option>CLOSED</option>
+      <option>REJECTED</option>
+    </select>
+
+    <button class="btn-outline" id="updateStatusBtn">
+      Update Status
+    </button>
+
+    <p id="statusMsg" class="muted"></p>
+  </section>
+
+  <!-- NOTES -->
+  <section class="card">
+    <h2>Admin Notes</h2>
+
+    <textarea id="noteInput" placeholder="Add internal note..."></textarea>
+    <button class="btn-outline" id="addNoteBtn">Add Note</button>
+
+    <div id="notesList"></div>
+    <p id="noNotes" class="muted hidden">No notes.</p>
+  </section>
+
+  <!-- MESSAGES -->
+  <section class="card">
+    <h2>Messages</h2>
+    <div id="messagesList"></div>
+    <p id="noMessages" class="muted hidden">No messages.</p>
+  </section>
+
+</main>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">© 2026 PetCare</div>
+</footer>
+
+<script src="js/admin-report-details.js"></script>
+</body>
+</html>

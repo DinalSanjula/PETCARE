@@ -1,0 +1,84 @@
+/* PAGE */
+.page-header {
+  margin-bottom: 20px;
+}
+
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* FILTERS */
+.filters {
+  margin-bottom: 20px;
+}
+
+.filters select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* REPORT GRID */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.report-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.report-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+}
+
+.report-card h3 {
+  margin: 8px 0 4px;
+}
+
+.report-card small {
+  color: #777;
+}
+
+/* STATUS BADGE */
+.status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.status.OPEN { background: #ffeeba; }
+.status.IN_PROGRESS { background: #bee5eb; }
+.status.RESCUED { background: #c3e6cb; }
+.status.TREATED { background: #d4edda; }
+.status.TRANSFERED { background: #d1ecf1; }
+.status.CLOSED { background: #e2e3e5; }
+.status.REJECTED { background: #f8d7da; }
+
+/* PAGINATION */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}

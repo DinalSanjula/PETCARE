@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Reports | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/my-reports.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare</div>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="clinics.html">Clinics</a>
+  </nav>
+
+  <div class="auth">
+    <a href="logout.html" class="btn-link">Logout</a>
+  </div>
+</header>
+
+<section class="container page-header">
+  <h1>My Reports</h1>
+  <p>Reports you have submitted to PetCare</p>
+</section>
+
+<main class="container">
+  <div id="reportsGrid" class="reports-grid"></div>
+
+  <p id="emptyState" class="muted hidden">
+    You haven’t submitted any reports yet.
+  </p>
+</main>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">
+    © 2026 PetCare. All rights reserved.
+  </div>
+</footer>
+
+<script src="js/my-reports.js"></script>
+</body>
+</html>

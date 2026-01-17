@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Reports | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin-reports.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare Admin</div>
+
+  <nav class="nav">
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-reports.html" class="active">Reports</a>
+  </nav>
+
+  <div class="auth">
+    <a href="logout.html" class="btn-link">Logout</a>
+  </div>
+</header>
+
+<section class="container page-header">
+  <h1>Reports</h1>
+  <p>Monitor and manage reported animal cases</p>
+</section>
+
+<!-- STATS -->
+<section class="container stats-grid" id="statsGrid">
+  <!-- populated by JS -->
+</section>
+
+<!-- FILTERS -->
+<section class="container filters">
+  <select id="statusFilter">
+    <option value="">All Statuses</option>
+    <option>OPEN</option>
+    <option>IN_PROGRESS</option>
+    <option>RESCUED</option>
+    <option>TREATED</option>
+    <option>TRANSFERED</option>
+    <option>CLOSED</option>
+    <option>REJECTED</option>
+  </select>
+</section>
+
+<!-- REPORT LIST -->
+<main class="container">
+  <div id="reportsGrid" class="reports-grid"></div>
+
+  <p id="emptyState" class="muted hidden">
+    No reports found.
+  </p>
+</main>
+
+<!-- PAGINATION -->
+<section class="container pagination">
+  <button class="btn-outline" id="prevBtn">Previous</button>
+  <button class="btn-outline" id="nextBtn">Next</button>
+</section>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">© 2026 PetCare</div>
+</footer>
+
+<script src="js/admin-reports.js"></script>
+</body>
+</html>
