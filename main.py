@@ -15,7 +15,7 @@ from Notification.router.notification_router import router as notification_route
 from Appointments.router.stats_router import router as stats_router
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+app = FastAPI(redirect_slashes=False)
 
 app.add_middleware(
     CORSMiddleware,

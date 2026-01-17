@@ -10,7 +10,7 @@ from sqlalchemy.orm import selectinload
 from Clinics.models.models import Clinic
 from Users.schemas.service_schema import BookingServiceResponse
 from Appointments.model.booking_models import BookingStatus, Booking, TimeSlot
-from Appointments.schema.booking_schema import BookingCreate, TimeSlotCreate, AvailableSlot
+from Appointments.schema.booking_schema import BookingCreate, TimeSlotCreate, AvailableSlot, TimeSlotUpdate
 from datetime import datetime, date, time, timedelta
 from sqlalchemy import select, func
 from fastapi import HTTPException, status
@@ -20,6 +20,17 @@ from Users.models.user_model import User, UserRole
 
 SL_TZ = ZoneInfo("Asia/Colombo")
 now_sl = datetime.now(SL_TZ)
+
+DAYS_MAP = {
+    "MONDAY": 0,
+    "TUESDAY": 1,
+    "WEDNESDAY": 2,
+    "THURSDAY": 3,
+    "FRIDAY": 4,
+    "SATURDAY": 5,
+    "SUNDAY": 6
+}
+
 
 def assert_booking_access(booking: Booking, current_user: User):
     if current_user.role == UserRole.ADMIN:
@@ -456,3 +467,194 @@ async def list_my_bookings(
 
     result = await db.execute(stmt)
     return list(result.scalars().all())
+
+
+async def update_time_slot_status(
+    db: AsyncSession,
+    slot_id: int,
+    update_data: TimeSlotUpdate,
+    current_user: User
+) -> BookingServiceResponse[dict]:
+
+    result = await db.execute(
+        select(TimeSlot).where(TimeSlot.id == slot_id)
+    )
+    slot = result.scalars().first()
+
+    if not slot:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Time slot not found"
+        )
+
+    clinic_result = await db.execute(
+        select(Clinic).where(Clinic.id == slot.clinic_id)
+    )
+    clinic = clinic_result.scalars().first()
+
+    if not clinic:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Clinic not found"
+        )
+
+    if current_user.role == UserRole.CLINIC and clinic.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Cannot modify slots of another clinic"
+        )
+
+    if update_data.is_active is False:
+        now = datetime.now(SL_TZ)
+
+        start_hour, start_minute = map(int, slot.start_time.split(':'))
+        end_hour, end_minute = map(int, slot.end_time.split(':'))
+
+        booking_check = await db.execute(
+            select(Booking).where(
+                and_(
+                    Booking.clinic_id == slot.clinic_id,
+                    Booking.status.in_([BookingStatus.CONFIRMED, BookingStatus.RESCHEDULED]),
+                    Booking.start_time >= now,
+                    func.upper(func.to_char(Booking.start_time, 'DAY')).like(f'{slot.day_of_week}%'),
+                    func.extract('hour', Booking.start_time) == start_hour,
+                    func.extract('minute', Booking.start_time) == start_minute,
+                    func.extract('hour', Booking.end_time) == end_hour,
+                    func.extract('minute', Booking.end_time) == end_minute
+                )
+            )
+        )
+
+        active_booking = booking_check.scalars().first()
+
+        if active_booking:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Cannot disable slot with upcoming confirmed bookings"
+            )
+
+    slot.is_active = update_data.is_active
+    await db.commit()
+    await db.refresh(slot)
+
+    start_hour, start_minute = map(int, slot.start_time.split(':'))
+    end_hour, end_minute = map(int, slot.end_time.split(':'))
+
+    today = datetime.now(SL_TZ).date()
+    days_ahead = (DAYS_MAP[slot.day_of_week] - today.weekday()) % 7
+    if days_ahead == 0:
+        days_ahead = 7
+
+    target_date = today + timedelta(days=days_ahead)
+
+    slot_start_dt = datetime.combine(
+        target_date,
+        time(hour=start_hour, minute=start_minute),
+        tzinfo=SL_TZ
+    )
+    slot_end_dt = datetime.combine(
+        target_date,
+        time(hour=end_hour, minute=end_minute),
+        tzinfo=SL_TZ
+    )
+
+    return BookingServiceResponse(
+        success=True,
+        message="Time slot updated",
+        data={
+            "id": slot.id,
+            "clinic_id": slot.clinic_id,
+            "start_time": slot_start_dt,
+            "end_time": slot_end_dt,
+            "slot_index": slot.slot_index,
+            "is_active": slot.is_active,
+            "has_bookings": False
+        }
+    )
+
+
+async def get_clinic_time_slots(
+        db: AsyncSession,
+        clinic_id: int,
+        current_user: User
+) -> BookingServiceResponse[list[dict]]:
+    clinic = (
+        await db.execute(
+            select(Clinic).where(Clinic.id == clinic_id)
+        )
+    ).scalars().first()
+
+    if not clinic:
+        raise HTTPException(status_code=404, detail="Clinic not found")
+
+    if current_user.role == UserRole.CLINIC:
+        if clinic.owner_id != current_user.id:
+            raise HTTPException(status_code=403, detail="Not allowed")
+
+    slots = (
+        await db.execute(
+            select(TimeSlot)
+            .where(TimeSlot.clinic_id == clinic_id)
+            .order_by(TimeSlot.day_of_week, TimeSlot.slot_index)
+        )
+    ).scalars().all()
+
+    now = datetime.now(SL_TZ)
+
+    bookings = (
+        await db.execute(
+            select(Booking)
+            .where(
+                Booking.clinic_id == clinic_id,
+                Booking.status.in_([BookingStatus.CONFIRMED, BookingStatus.RESCHEDULED]),
+                Booking.start_time >= now
+            )
+        )
+    ).scalars().all()
+
+    booked_times = {
+        (b.start_time, b.end_time)
+        for b in bookings
+    }
+
+    output = []
+
+    for slot in slots:
+        start_hour, start_minute = map(int, slot.start_time.split(':'))
+        end_hour, end_minute = map(int, slot.end_time.split(':'))
+
+        today = datetime.now(SL_TZ).date()
+        days_ahead = (DAYS_MAP[slot.day_of_week] - today.weekday()) % 7
+        if days_ahead == 0:
+            days_ahead = 7
+
+        target_date = today + timedelta(days=days_ahead)
+
+        slot_start_dt = datetime.combine(
+            target_date,
+            time(hour=start_hour, minute=start_minute),
+            tzinfo=SL_TZ
+        )
+        slot_end_dt = datetime.combine(
+            target_date,
+            time(hour=end_hour, minute=end_minute),
+            tzinfo=SL_TZ
+        )
+
+        slot_has_booking = (slot_start_dt, slot_end_dt) in booked_times
+
+        output.append({
+            "id": slot.id,
+            "clinic_id": slot.clinic_id,
+            "start_time": slot_start_dt,
+            "end_time": slot_end_dt,
+            "slot_index": slot.slot_index,
+            "is_active": slot.is_active,
+            "has_bookings": slot_has_booking
+        })
+
+    return BookingServiceResponse(
+        success=True,
+        message="Clinic time slots fetched",
+        data=output
+    )

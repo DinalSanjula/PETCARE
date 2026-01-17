@@ -6,6 +6,7 @@ from fastapi import (
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 
+from Reports.services import report_service
 from db import get_db
 from Users.auth.security import get_current_active_user
 from Clinics.utils.helpers import require_roles
@@ -89,6 +90,20 @@ async def create_new_report(
         )
 
     return report
+
+@router.get(
+    "/my",
+    response_model=list[ReportResponseBase]
+)
+async def read_my_reports(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    reports = await report_service.get_my_reports(
+        db=db,
+        current_user=current_user
+    )
+    return reports
 
 @router.get("/", response_model=List[ReportListResponse])
 async def read_reports(

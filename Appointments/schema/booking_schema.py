@@ -71,3 +71,19 @@ class BookingListResponse(TimezoneAwareResponse, BaseModel):
     status: BookingStatus
 
     model_config = ConfigDict(from_attributes=True)
+
+class TimeSlotUpdate(BaseModel):
+    is_active: bool
+
+
+class TimeSlotClinicOut(TimezoneAwareResponse, BaseModel):
+    id: int
+    clinic_id: int
+    start_time: datetime
+    end_time: datetime
+    slot_index: Optional[int]
+    is_active: bool
+    has_bookings: bool
+
+    model_config = ConfigDict(from_attributes=True)
+

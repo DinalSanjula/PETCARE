@@ -9,6 +9,8 @@ from Reports.models.models import Report, ReportImage
 from Reports.models.models import Report, ReportStatus, ReportNote
 from Reports.schemas.schemas import ReportCreate, ReportUpdate
 from Clinics.utils.helpers import get_or_404
+from Users.models import User
+
 
 async def create_report(
     session: AsyncSession,
@@ -178,3 +180,19 @@ async def list_notes_for_report(
 
     return list(result.scalars().all())
 
+async def get_my_reports(
+    db: AsyncSession,
+    current_user: User
+) -> list[Report]:
+    """
+    Fetch reports created by the currently authenticated user.
+    """
+
+    result = await db.execute(
+        select(Report)
+        .where(Report.reporter_user_id == current_user.id)
+        .order_by(Report.created_at.desc())
+    )
+
+    reports = result.scalars().all()
+    return reports

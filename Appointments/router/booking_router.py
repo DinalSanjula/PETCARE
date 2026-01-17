@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from Appointments.model.booking_models import BookingStatus
-from Appointments.service.booking_service import list_bookings_for_clinic, list_my_bookings
+from Appointments.service.booking_service import list_bookings_for_clinic, list_my_bookings, update_time_slot_status
 from Clinics.crud.clinic_crud import get_clinic_by_id
 from db import get_db
 from datetime import date
@@ -17,7 +17,7 @@ from Appointments.schema.booking_schema import (
     TimeSlotCreate,
     TimeSlotOut,
     AvailableSlot,
-    RescheduleRequest, ClinicBookingResponse, BookingListResponse
+    RescheduleRequest, ClinicBookingResponse, BookingListResponse, TimeSlotUpdate, TimeSlotClinicOut
 )
 from Appointments.service import booking_service
 
@@ -149,3 +149,49 @@ async def my_appointments(
         )
         for b in bookings
     ]
+
+
+@router.patch(
+    "/slots/{slot_id}",
+    response_model=TimeSlotClinicOut,
+    dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))]
+)
+async def update_slot(
+    slot_id: int,
+    update_data: TimeSlotUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    result = await booking_service.update_time_slot_status(
+        db=db,
+        slot_id=slot_id,
+        update_data=update_data,
+        current_user=current_user
+    )
+
+    if not result.success:
+        raise HTTPException(status_code=400, detail=result.message)
+
+    return result.data
+
+
+@router.get(
+    "/slots/clinic/{clinic_id}",
+    response_model=List[TimeSlotClinicOut],
+    dependencies=[Depends(require_roles(UserRole.CLINIC, UserRole.ADMIN))]
+)
+async def get_clinic_slots(
+    clinic_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    result = await booking_service.get_clinic_time_slots(
+        db=db,
+        clinic_id=clinic_id,
+        current_user=current_user
+    )
+
+    if not result.success:
+        raise HTTPException(status_code=400, detail=result.message)
+
+    return result.data
