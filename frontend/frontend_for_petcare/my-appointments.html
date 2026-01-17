@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Appointments | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/my-appointments.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare</div>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="clinics.html">Clinics</a>
+  </nav>
+
+  <div class="auth">
+    <a href="logout.html" class="btn-link">Logout</a>
+  </div>
+</header>
+
+<section class="container page-header">
+  <h1>My Appointments</h1>
+  <p>View and manage your booked appointments</p>
+</section>
+
+<main class="container">
+  <div id="appointmentsGrid" class="appointments-grid"></div>
+
+  <p id="emptyState" class="muted hidden">
+    You have no appointments yet.
+  </p>
+</main>
+
+<!-- CONFIRM CANCEL MODAL -->
+<div id="cancelModal" class="modal hidden">
+  <div class="modal-box">
+    <p>Are you sure you want to cancel this appointment?</p>
+    <div class="modal-actions">
+      <button class="btn-danger" id="confirmCancelBtn">Yes, Cancel</button>
+      <button class="btn-outline" onclick="closeCancelModal()">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESCHEDULE MODAL -->
+<div id="rescheduleModal" class="modal hidden">
+  <div class="modal-box">
+    <h3>Reschedule Appointment</h3>
+
+    <input type="date" id="rescheduleDate" class="slot-date" />
+
+    <div id="rescheduleSlots" class="slots-grid"></div>
+
+    <p id="rescheduleMsg" class="muted"></p>
+
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeRescheduleModal()">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">
+    © 2026 PetCare. All rights reserved.
+  </div>
+</footer>
+
+<script src="js/my-appointments.js"></script>
+</body>
+</html>
