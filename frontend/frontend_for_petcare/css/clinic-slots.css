@@ -1,0 +1,156 @@
+.page-header p {
+  color: #666;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: #f5f7fa;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.slot-create {
+  margin-bottom: 40px;
+}
+
+.slot-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.slot-form select,
+.slot-form input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.slots-grid,
+.bookings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 16px;
+}
+
+
+
+.booking-card h4 {
+  margin-bottom: 6px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  width: 90%;
+  max-width: 420px;
+}
+
+.hidden {
+  display: none;
+}
+
+.error-text {
+  color: #d93025;
+  margin-top: 8px;
+}
+
+.slot-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+
+.slot-card.disabled {
+  background: #f4f4f4;
+  opacity: 0.6;
+}
+
+.slot-time {
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+.booking-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.booking-card .status {
+  display: inline-block;
+  margin: 6px 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.status.CONFIRMED { color: green; }
+.status.CANCELLED { color: red; }
+.status.RESCHEDULED { color: orange; }
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #ff0000;
+  border: 1px solid #ff0011;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}

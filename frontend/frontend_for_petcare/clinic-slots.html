@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clinic Appointments | PetCare</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/clinic-slots.css" />
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">PetCare</div>
+
+  <nav class="nav">
+    <a href="my-clinics.html">My Clinics</a>
+    <a href="user.html">Profile</a>
+  </nav>
+
+  <div class="auth">
+    <a href="logout.html" class="btn-link">Logout</a>
+  </div>
+</header>
+
+<section class="container page-header">
+  <h1>Clinic Appointments</h1>
+  <p>Manage time slots and booked appointments</p>
+</section>
+
+<!-- STATS -->
+<section class="container stats-grid">
+  <div class="stat-card"><h3 id="totalBookings">0</h3><p>Total</p></div>
+  <div class="stat-card"><h3 id="confirmedBookings">0</h3><p>Confirmed</p></div>
+  <div class="stat-card"><h3 id="cancelledBookings">0</h3><p>Cancelled</p></div>
+  <div class="stat-card"><h3 id="upcomingBookings">0</h3><p>Upcoming</p></div>
+</section>
+
+<!-- CREATE SLOT -->
+<section class="container slot-create">
+  <h2>Create Time Slot</h2>
+
+  <div class="slot-form">
+    <!-- Date (only once) -->
+    <input type="date" id="slotDate" />
+
+    <!-- Time only -->
+    <input type="time" id="startTime" />
+    <input type="time" id="endTime" />
+
+    <button class="btn-primary" id="createSlotBtn">
+      Create Slot
+    </button>
+  </div>
+
+  <p id="slotError" class="error-text"></p>
+</section>
+
+<!-- SLOT LIST -->
+<section class="container">
+  <h2>Slots</h2>
+  <div id="slotsGrid" class="slots-grid"></div>
+</section>
+
+<!-- BOOKINGS -->
+<section class="container">
+  <h2>Bookings</h2>
+  <div id="bookingsGrid" class="bookings-grid"></div>
+</section>
+
+<!-- RESCHEDULE MODAL -->
+<div id="rescheduleModal" class="modal hidden">
+  <div class="modal-box">
+    <h3>Reschedule Booking</h3>
+
+    <input type="date" id="rescheduleDate" />
+    <div id="rescheduleSlots" class="slots-grid"></div>
+
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeReschedule()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer footer-blue">
+  <div class="footer-bottom">© 2026 PetCare</div>
+</footer>
+
+<script src="js/clinic-slots.js"></script>
+</body>
+</html>

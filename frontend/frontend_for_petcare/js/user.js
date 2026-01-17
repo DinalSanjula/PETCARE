@@ -162,7 +162,7 @@ async function loadClinicDashboard() {
 
   try {
     const res = await fetch(
-      `http://localhost:9002/clinics?owner_id=${userId}`,
+      `http://localhost:9002/clinics/?owner_id=${userId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`

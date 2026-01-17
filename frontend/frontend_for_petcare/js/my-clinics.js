@@ -39,7 +39,7 @@ const emptyState = document.getElementById("emptyState");
 async function loadMyClinics() {
   try {
     const res = await fetch(
-      `http://localhost:9002/clinics?owner_id=${userId}`,
+      `http://localhost:9002/clinics/?owner_id=${userId}`,
       {
         headers: { Authorization: `Bearer ${accessToken}` }
       }
@@ -129,7 +129,7 @@ function manageClinic(id) {
 }
 
 function manageAppointments(id) {
-  window.location.href = `appointments.html?clinic_id=${id}`;
+  window.location.href = `clinic-slots.html?clinic_id=${id}`;
 }
 
 function goToCreateClinic() {
